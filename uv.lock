@@ -1322,7 +1322,7 @@ wheels = [
 [[package]]
 name = "litellm"
 version = "1.77.7"
-source = { git = "https://github.com/BerriAI/litellm.git?rev=v1.77.7.dev9#763d2f8ccdd8412dbe6d4ac0e136d9ac34dcd4c0" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "click" },
@@ -1336,6 +1336,10 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "tiktoken" },
     { name = "tokenizers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5a/4b/4e9a204462687ca3796cc0fdaefbd624d7b2216edd4ad243d60a3b95127e/litellm-1.77.7.tar.gz", hash = "sha256:e3398fb2575b98726e787c0a1481daed5938d58cafdcd96fbca80c312221af3e", size = 10401706, upload-time = "2025-10-05T00:22:37.646Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/86/50/53df2244d4aca2af73d2f2c6ad21c731cf24bd0dbe89d896184a1eaa874f/litellm-1.77.7-py3-none-any.whl", hash = "sha256:1b3a1b17bd521a0ad25226fb62a912602c803922aabb4a16adf83834673be574", size = 9223061, upload-time = "2025-10-05T00:22:34.112Z" },
 ]
 
 [[package]]
@@ -1719,8 +1723,8 @@ wheels = [
 
 [[package]]
 name = "openhands-agent-server"
-version = "1.0.0"
-source = { editable = "vendor/agent-sdk/openhands/agent_server" }
+version = "1.0.0a3"
+source = { editable = "vendor/agent-sdk/openhands-agent-server" }
 dependencies = [
     { name = "aiosqlite" },
     { name = "alembic" },
@@ -1730,6 +1734,7 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "uvicorn" },
     { name = "websockets" },
+    { name = "wsproto" },
 ]
 
 [package.metadata]
@@ -1742,6 +1747,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2" },
     { name = "uvicorn", specifier = ">=0.31.1" },
     { name = "websockets", specifier = ">=12" },
+    { name = "wsproto", specifier = ">=1.2.0" },
 ]
 
 [[package]]
@@ -1753,6 +1759,7 @@ dependencies = [
     { name = "jinja2" },
     { name = "modal" },
     { name = "openhands-agent-server" },
+    { name = "openhands-sdk" },
     { name = "openhands-tools" },
     { name = "openhands-workspace" },
     { name = "pandas" },
@@ -1775,9 +1782,10 @@ requires-dist = [
     { name = "datasets" },
     { name = "jinja2" },
     { name = "modal", specifier = ">=1.1.4" },
-    { name = "openhands-agent-server", editable = "vendor/agent-sdk/openhands/agent_server" },
-    { name = "openhands-tools", editable = "vendor/agent-sdk/openhands/tools" },
-    { name = "openhands-workspace", editable = "vendor/agent-sdk/openhands/workspace" },
+    { name = "openhands-agent-server", editable = "vendor/agent-sdk/openhands-agent-server" },
+    { name = "openhands-tools", editable = "vendor/agent-sdk/openhands-tools" },
+    { name = "openhands-workspace", editable = "vendor/agent-sdk/openhands-workspace" },
+    { name = "openhands-sdk", editable = "vendor/agent-sdk/openhands-sdk" },
     { name = "pandas" },
     { name = "toml" },
     { name = "tqdm" },
@@ -1795,10 +1803,11 @@ dev = [
 
 [[package]]
 name = "openhands-sdk"
-version = "1.0.0"
-source = { editable = "vendor/agent-sdk/openhands/sdk" }
+version = "1.0.0a3"
+source = { editable = "vendor/agent-sdk/openhands-sdk" }
 dependencies = [
     { name = "fastmcp" },
+    { name = "httpx" },
     { name = "litellm" },
     { name = "pydantic" },
     { name = "python-frontmatter" },
@@ -1816,7 +1825,8 @@ boto3 = [
 requires-dist = [
     { name = "boto3", marker = "extra == 'boto3'", specifier = ">=1.35.0" },
     { name = "fastmcp", specifier = ">=2.11.3" },
-    { name = "litellm", git = "https://github.com/BerriAI/litellm.git?rev=v1.77.7.dev9" },
+    { name = "httpx", specifier = ">=0.27.0" },
+    { name = "litellm", specifier = ">=1.77.7.dev9" },
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "python-frontmatter", specifier = ">=1.1.0" },
     { name = "python-json-logger", specifier = ">=3.3.0" },
@@ -1827,8 +1837,8 @@ provides-extras = ["boto3"]
 
 [[package]]
 name = "openhands-tools"
-version = "1.0.0"
-source = { editable = "vendor/agent-sdk/openhands/tools" }
+version = "1.0.0a3"
+source = { editable = "vendor/agent-sdk/openhands-tools" }
 dependencies = [
     { name = "bashlex" },
     { name = "binaryornot" },
@@ -1848,14 +1858,14 @@ requires-dist = [
     { name = "cachetools" },
     { name = "func-timeout", specifier = ">=4.3.5" },
     { name = "libtmux", specifier = ">=0.46.2" },
-    { name = "openhands-sdk", editable = "vendor/agent-sdk/openhands/sdk" },
+    { name = "openhands-sdk", editable = "vendor/agent-sdk/openhands-sdk" },
     { name = "pydantic", specifier = ">=2.11.7" },
 ]
 
 [[package]]
 name = "openhands-workspace"
-version = "1.0.0"
-source = { editable = "vendor/agent-sdk/openhands/workspace" }
+version = "1.0.0a3"
+source = { editable = "vendor/agent-sdk/openhands-workspace" }
 dependencies = [
     { name = "openhands-sdk" },
     { name = "pydantic" },
@@ -1863,7 +1873,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "openhands-sdk", editable = "vendor/agent-sdk/openhands/sdk" },
+    { name = "openhands-sdk", editable = "vendor/agent-sdk/openhands-sdk" },
     { name = "pydantic", specifier = ">=2.11.7" },
 ]
 
@@ -5856,6 +5866,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/32/af/d4502dc713b4ccea7175d764718d5183caf8d0867a4f0190d5d4a45cea49/werkzeug-3.1.1.tar.gz", hash = "sha256:8cd39dfbdfc1e051965f156163e2974e52c210f130810e9ad36858f0fd3edad4", size = 806453, upload-time = "2024-11-01T16:40:45.462Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ee/ea/c67e1dee1ba208ed22c06d1d547ae5e293374bfc43e0eb0ef5e262b68561/werkzeug-3.1.1-py3-none-any.whl", hash = "sha256:a71124d1ef06008baafa3d266c02f56e1836a5984afd6dd6c9230669d60d9fb5", size = 224371, upload-time = "2024-11-01T16:40:43.994Z" },
+]
+
+[[package]]
+name = "wsproto"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "h11" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/4a/44d3c295350d776427904d73c189e10aeae66d7f555bb2feee16d1e4ba5a/wsproto-1.2.0.tar.gz", hash = "sha256:ad565f26ecb92588a3e43bc3d96164de84cd9902482b130d0ddbaa9664a85065", size = 53425, upload-time = "2022-08-23T19:58:21.447Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/78/58/e860788190eba3bcce367f74d29c4675466ce8dddfba85f7827588416f01/wsproto-1.2.0-py3-none-any.whl", hash = "sha256:b9acddd652b585d75b20477888c56642fdade28bdfd3579aa24a4d2c037dd736", size = 24226, upload-time = "2022-08-23T19:58:19.96Z" },
 ]
 
 [[package]]

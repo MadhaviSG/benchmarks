@@ -10,11 +10,9 @@ from benchmarks.utils.dataset import get_dataset
 from benchmarks.utils.evaluation import Evaluation
 from benchmarks.utils.evaluation_utils import (
     construct_eval_output_dir,
-    read_completed_instances,
 )
 from benchmarks.utils.models import (
     EvalInstance,
-    EvalInstanceID,
     EvalMetadata,
     EvalOutput,
 )
@@ -44,7 +42,7 @@ def get_official_docker_image(
 def get_agent_server_docker_image(
     instance_id: str,
     docker_image_prefix="docker.io/swebench/",
-    target: str = "binary-minimal",
+    target: str = "source-minimal",
 ) -> str:
     official_image_name = get_official_docker_image(instance_id, docker_image_prefix)
     return (
@@ -102,14 +100,12 @@ class SWEBenchEvaluation(Evaluation):
             split=self.metadata.dataset_split,
             eval_limit=self.metadata.eval_limit,
             completed_instances=self._get_completed_instances(),
+            selected_instances_file=self.metadata.selected_instances_file,
         )
 
-        completed: set[EvalInstanceID] = read_completed_instances(self.output_path)
         instances: List[EvalInstance] = []
         for _, row in df.iterrows():
             inst_id = str(row["instance_id"])
-            if inst_id in completed:
-                continue
             instances.append(EvalInstance(id=inst_id, data=row.to_dict()))
 
         logger.info("Total instances to process: %d", len(instances))
@@ -133,6 +129,7 @@ class SWEBenchEvaluation(Evaluation):
             workspace = DockerWorkspace(
                 base_image=official_docker_image,
                 working_dir="/workspace",
+                target="source-minimal",
             )
             logger.info(
                 f"Building workspace from {official_docker_image}. "
@@ -179,12 +176,27 @@ class SWEBenchEvaluation(Evaluation):
         def _log_event(ev):  # keep it simple
             logger.debug("Event: %s", ev)
 
+        repo_path = f"/workspace/{instance.data['repo'].split('/')[-1]}/"
+        instance.data["repo_path"] = repo_path
+
         conversation = Conversation(
             agent=agent,
             workspace=workspace,
             callbacks=[_log_event],
             max_iteration_per_run=self.metadata.max_iterations,
         )
+
+        logger.info("repo_path: %s", repo_path)
+        cp_testebed_repo = workspace.execute_command(
+            (f"mkdir -p {repo_path} ; cp -r /testbed/. {repo_path}")
+        )
+        assert cp_testebed_repo.exit_code == 0, (
+            f"cp_testebed_repo failed: {cp_testebed_repo.stderr}"
+        )
+
+        # git reset
+        git_reset = workspace.execute_command(f"cd {repo_path} ; git reset --hard")
+        assert git_reset.exit_code == 0, f"git reset failed: {git_reset.stderr}"
 
         instruction = get_instruction(
             instance=instance.data,
@@ -197,8 +209,22 @@ class SWEBenchEvaluation(Evaluation):
         # Collect results
         history = list(map(lambda event: event.model_dump(), conversation.state.events))
 
+        # git add
+        workspace.execute_command(f"cd {repo_path} ; git add -A")
+
+        # git commit
+        workspace.execute_command(
+            f"cd {repo_path} && "
+            "git config --global user.email 'evaluation@openhands.dev' && "
+            "git config --global user.name 'OpenHands Evaluation' && "
+            "git commit -m 'patch'"
+        )
+
         # Get git patch
-        git_patch_result = workspace.execute_command("git diff")
+        base_commit = instance.data["base_commit"]
+        git_patch_result = workspace.execute_command(
+            (f"cd {repo_path} ; git --no-pager diff --no-color {base_commit} HEAD")
+        )
         assert git_patch_result.exit_code == 0, (
             f"git diff failed: {git_patch_result.stderr}"
         )
@@ -235,6 +261,10 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    # Validate max_attempts
+    if args.max_attempts < 1:
+        raise ValueError(f"max_attempts must be >= 1, got {args.max_attempts}")
+
     llm_config_path = args.llm_config_path
     if not os.path.isfile(llm_config_path):
         raise ValueError(f"LLM config file {llm_config_path} does not exist")
@@ -265,6 +295,9 @@ def main() -> None:
         prompt_path=args.prompt_path,
         eval_limit=args.n_limit,
         env_setup_commands=["export PIP_CACHE_DIR=~/.cache/pip"],
+        max_attempts=args.max_attempts,
+        critic_name=args.critic,
+        selected_instances_file=args.select,
     )
 
     # Run orchestrator with a simple JSONL writer
