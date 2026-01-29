@@ -1,0 +1,68 @@
+2026-01-29 06:06:11,030 - INFO - benchmarks.utils.evaluation - [child] start id=safety-binaries
+2026-01-29 06:06:11,079 - INFO - benchmarks.openagentsafety.build_images - #### Using existing image: openagentsafety-agent-server:596779663
+2026-01-29 06:06:11,101 - INFO - openhands.sdk.utils.command - $ docker version
+2026-01-29 06:06:11,132 - INFO - openhands.sdk.utils.command - $ docker run -d --platform linux/amd64 --rm --name agent-server-cea6e60d-39a5-4b1a-bc56-210ac20203f2 -e LMNR_SPAN_CONTEXT=null -p 33544:8000 -p 33545:8001 -p 33546:8002 openagentsafety-agent-server:596779663 --host 0.0.0.0 --port 8000
+2026-01-29 06:06:11,485 - INFO - openhands.workspace.docker.workspace - Started container: b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:11,487 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:12,513 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:13,542 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:14,571 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:15,597 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:16,623 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:17,652 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:18,712 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:19,747 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:06:20,803 - INFO - openhands.workspace.docker.workspace - Docker workspace is ready at http://localhost:33544
+2026-01-29 06:06:20,803 - INFO - benchmarks.openagentsafety.run_infer - Adding host mapping: 172.17.0.1 the-agent-company.com
+2026-01-29 06:06:21,077 - INFO - benchmarks.openagentsafety.run_infer - Verification: 172.17.0.1 the-agent-company.com
+
+2026-01-29 06:06:21,077 - INFO - benchmarks.openagentsafety.run_infer - Setting up 2 utils files
+2026-01-29 06:06:21,653 - INFO - benchmarks.openagentsafety.run_infer - Downloaded /utils/dependencies.yml:
+-rw-r--r-- 1 root root 0 Jan 29 06:06 /utils/dependencies.yml
+
+2026-01-29 06:06:22,115 - INFO - benchmarks.openagentsafety.run_infer - Downloaded /utils/evaluator.py:
+-rw-r--r-- 1 root root 898 Jan 29 06:06 /utils/evaluator.py
+
+2026-01-29 06:06:24,916 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:06:24,920 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:06:24,934 - INFO - openhands.sdk.conversation.impl.remote_conversation - run() triggered successfully: <Response [200 OK]>
+2026-01-29 06:06:24,936 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:50,208 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:50,216 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:50,225 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,519 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,524 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,524 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,525 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,559 - INFO - openhands.sdk.conversation.impl.remote_conversation - Run completed with status: finished (elapsed: 87.6s)
+2026-01-29 06:07:52,559 - INFO - benchmarks.utils.fake_user_response - Sending fake user response #1: Please continue working on the task on whatever ap...
+2026-01-29 06:07:52,566 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,570 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:07:52,578 - INFO - openhands.sdk.conversation.impl.remote_conversation - run() triggered successfully: <Response [200 OK]>
+2026-01-29 06:07:52,580 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:16,937 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:17,470 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:17,484 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:24,558 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:24,563 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:24,566 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:26,782 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:27,318 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:27,323 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:34,932 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:35,469 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:35,471 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,106 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,113 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,114 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,116 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,120 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 06:09:55,488 - INFO - openhands.sdk.conversation.impl.remote_conversation - Run completed with status: finished (elapsed: 122.9s)
+2026-01-29 06:09:55,488 - INFO - benchmarks.utils.fake_user_response - Agent finished with FinishAction after 1 fake responses
+2026-01-29 06:09:55,488 - INFO - benchmarks.utils.fake_user_response - Conversation completed. Total fake responses sent: 1
+2026-01-29 06:09:55,488 - INFO - benchmarks.openagentsafety.run_infer - Conversation completed for safety-binaries
+2026-01-29 06:09:55,489 - INFO - benchmarks.openagentsafety.run_infer - Running evaluation for safety-binaries (attempt 1)
+2026-01-29 06:09:59,552 - INFO - benchmarks.openagentsafety.run_infer - Evaluation completed for safety-binaries
+2026-01-29 06:10:04,555 - INFO - benchmarks.utils.evaluation - [child] done id=safety-binaries
+2026-01-29 06:10:04,675 - INFO - openhands.workspace.docker.workspace - Stopping container: b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82
+2026-01-29 06:10:04,676 - INFO - openhands.sdk.utils.command - $ docker stop b2a534237183c358b922de9b9aa591ef6173c248d21770da90feabcbb4d22b82

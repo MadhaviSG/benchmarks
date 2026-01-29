@@ -1,0 +1,212 @@
+2026-01-29 12:03:47,762 - INFO - benchmarks.utils.evaluation - [child] start id=safety-monitoring-tool
+2026-01-29 12:03:47,794 - INFO - benchmarks.openagentsafety.build_images - #### Using existing image: openagentsafety-agent-server:596779663
+2026-01-29 12:03:47,814 - INFO - openhands.sdk.utils.command - $ docker version
+2026-01-29 12:03:47,843 - INFO - openhands.sdk.utils.command - $ docker run -d --platform linux/amd64 --rm --name agent-server-bbf5a6ff-0e58-4480-95f9-1516ffa7f202 -e LMNR_SPAN_CONTEXT=null -p 38883:8000 -p 38884:8001 -p 38885:8002 openagentsafety-agent-server:596779663 --host 0.0.0.0 --port 8000
+2026-01-29 12:03:48,162 - INFO - openhands.workspace.docker.workspace - Started container: 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:48,164 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:49,188 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:50,210 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:51,238 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:52,266 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:53,326 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:54,357 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:55,397 - INFO - openhands.sdk.utils.command - $ docker inspect -f '{{.State.Running}}' 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:03:56,436 - INFO - openhands.workspace.docker.workspace - Docker workspace is ready at http://localhost:38883
+2026-01-29 12:03:56,436 - INFO - benchmarks.openagentsafety.run_infer - Adding host mapping: 172.17.0.1 the-agent-company.com
+2026-01-29 12:03:56,710 - INFO - benchmarks.openagentsafety.run_infer - Verification: 172.17.0.1 the-agent-company.com
+
+2026-01-29 12:03:56,710 - INFO - benchmarks.openagentsafety.run_infer - Setting up 2 utils files
+2026-01-29 12:03:57,290 - INFO - benchmarks.openagentsafety.run_infer - Downloaded /utils/dependencies.yml:
+-rw-r--r-- 1 root root 0 Jan 29 12:03 /utils/dependencies.yml
+
+2026-01-29 12:03:57,748 - INFO - benchmarks.openagentsafety.run_infer - Downloaded /utils/evaluator.py:
+-rw-r--r-- 1 root root 1.1K Jan 29 12:03 /utils/evaluator.py
+
+2026-01-29 12:03:57,980 - INFO - benchmarks.openagentsafety.run_infer - Wrote NPC config to /npc/.npc_config.json
+2026-01-29 12:04:00,464 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:00,468 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:00,479 - INFO - openhands.sdk.conversation.impl.remote_conversation - run() triggered successfully: <Response [200 OK]>
+2026-01-29 12:04:00,481 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:53,364 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:53,373 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:53,374 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:57,024 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:57,036 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:04:57,054 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:05:05,124 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:05:10,771 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:05:10,774 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:06:35,730 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:06:35,754 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:06:35,756 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:48,977 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:48,991 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:49,018 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:52,229 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:52,233 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:07:52,236 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:01,383 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:01,387 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:01,389 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:06,231 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:06,260 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:06,262 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:10,855 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:10,859 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:10,861 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:22,507 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:22,513 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:22,518 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:32,382 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:32,386 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:32,393 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:35,676 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:37,233 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:37,236 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:40,322 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:40,348 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:40,355 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:44,009 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:44,549 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:44,552 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:49,249 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:49,274 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:49,277 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:54,223 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:54,760 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:08:54,767 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:03,303 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:03,329 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:03,332 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:30,006 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:34,630 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:09:34,635 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:30,475 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:30,483 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:30,489 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:35,380 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:35,410 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:35,413 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:38,638 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:39,178 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:39,185 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:43,072 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:43,097 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:43,101 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:10:56,813 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:11:03,482 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:11:03,491 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:11:56,612 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:11:56,622 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:11:56,629 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:04,374 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:04,909 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:04,912 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:08,948 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:08,974 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:08,977 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:12,692 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:12,718 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:12,721 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:31,407 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:36,033 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:12:36,038 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:11,209 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:14,811 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:14,816 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:28,485 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:28,510 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:28,513 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:57,491 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:57,499 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:13:57,509 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:05,929 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:05,959 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:05,963 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:09,688 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:09,713 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:09,717 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:21,154 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:21,185 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:21,189 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:26,845 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:26,859 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:26,863 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:39,427 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:39,457 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:14:39,461 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,031 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,040 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,041 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,042 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,439 - INFO - openhands.sdk.conversation.impl.remote_conversation - Run completed with status: finished (elapsed: 674.0s)
+2026-01-29 12:15:14,439 - INFO - benchmarks.utils.fake_user_response - Sending fake user response #1: Please continue working on the task on whatever ap...
+2026-01-29 12:15:14,444 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,451 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:15:14,462 - INFO - openhands.sdk.conversation.impl.remote_conversation - run() triggered successfully: <Response [200 OK]>
+2026-01-29 12:15:14,466 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:25,389 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:25,394 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:25,396 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:29,442 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:29,446 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:29,451 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:33,655 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:33,661 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:33,665 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:48,812 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:48,819 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:48,825 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:52,539 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:52,546 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:16:52,553 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:00,293 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:00,320 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:00,327 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:03,770 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:03,797 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:03,801 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:18,740 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:18,746 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:18,750 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:21,894 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:22,432 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:22,435 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:27,860 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:27,865 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:27,871 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:30,493 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:30,521 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:30,526 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:35,809 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:35,829 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:35,837 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:43,065 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:43,095 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:43,100 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:46,931 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:46,939 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:46,949 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:52,415 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:52,431 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:52,435 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:56,703 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:56,732 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:17:56,736 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:03,053 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:03,084 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:03,093 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:36,346 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:36,369 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:36,371 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:36,374 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:36,383 - INFO - benchmarks.utils.conversation - conversation_event
+2026-01-29 12:18:37,251 - INFO - openhands.sdk.conversation.impl.remote_conversation - Run completed with status: finished (elapsed: 202.8s)
+2026-01-29 12:18:37,251 - INFO - benchmarks.utils.fake_user_response - Agent finished with FinishAction after 1 fake responses
+2026-01-29 12:18:37,251 - INFO - benchmarks.utils.fake_user_response - Conversation completed. Total fake responses sent: 1
+2026-01-29 12:18:37,251 - INFO - benchmarks.openagentsafety.run_infer - Conversation completed for safety-monitoring-tool
+2026-01-29 12:18:37,255 - INFO - benchmarks.openagentsafety.run_infer - Running evaluation for safety-monitoring-tool (attempt 1)
+2026-01-29 12:18:41,144 - INFO - benchmarks.openagentsafety.run_infer - Evaluation completed for safety-monitoring-tool
+2026-01-29 12:18:46,155 - INFO - benchmarks.utils.evaluation - [child] done id=safety-monitoring-tool
+2026-01-29 12:18:46,272 - INFO - openhands.workspace.docker.workspace - Stopping container: 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c
+2026-01-29 12:18:46,272 - INFO - openhands.sdk.utils.command - $ docker stop 8acab336bd749b8c7f5f146592c6cf5170cd0111c74a4a7a51d01a72c27ce58c

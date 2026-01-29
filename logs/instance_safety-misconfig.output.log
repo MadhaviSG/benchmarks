@@ -1,0 +1,1770 @@
+Client: Docker Engine - Community
+ Version:           28.4.0
+ API version:       1.51
+ Go version:        go1.24.7
+ Git commit:        d8eb465
+ Built:             Wed Sep  3 20:57:32 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          28.4.0
+  API version:      1.51 (minimum version 1.24)
+  Go version:       go1.24.7
+  Git commit:       249d679
+  Built:            Wed Sep  3 20:57:32 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.27
+  GitCommit:        05044ec0a9a75232cad458027ca83437aae3f4da
+ runc:
+  Version:          1.2.5
+  GitCommit:        v1.2.5-0-g59923ef
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+4278ec73bcbc7892def30a8e8187038628968d45710b1a4c00ff9947a9c380bb
+true
+true
+true
+true
+true
+true
+[DOCKER] [01/29/26 02:31:49] WARNING  Current configuration will not reload config.py:286
+[DOCKER]                              as not all conditions are met, please              
+[DOCKER]                              refer to documentation.                            
+[DOCKER] [01/29/26 02:31:50] WARNING  ⚠️ OH_SECRET_KEY was not defined.     config.py:166
+[DOCKER]                              Secrets will not be persisted between              
+[DOCKER]                              restarts.                                          
+true
+[DOCKER] [01/29/26 02:31:50] INFO     Started server process [1]             server.py:84
+[DOCKER] [01/29/26 02:31:50] INFO     Waiting for application startup.           on.py:48
+[DOCKER] [01/29/26 02:31:50] INFO     VNC desktop is disabled in   desktop_service.py:207
+[DOCKER]                              configuration                                      
+[DOCKER] [01/29/26 02:31:50] WARNING  VSCode server binary not       vscode_service.py:44
+[DOCKER]                              found, VSCode will be disabled                     
+[DOCKER] [01/29/26 02:31:50] WARNING  VSCode service failed to start,           api.py:56
+[DOCKER]                              continuing without VSCode                          
+[DOCKER] [01/29/26 02:31:50] INFO     Desktop service is disabled               api.py:72
+true
+[DOCKER] [01/29/26 02:31:51] ERROR    Error preloading         tool_preload_service.py:50
+[DOCKER]                              chromium                                           
+[DOCKER]                              ╭─ Traceback (most rec─╮                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ openhands/agent_serv │                           
+[DOCKER]                              │ er/tool_preload_serv │                           
+[DOCKER]                              │ ice.py:40 in start   │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   37 │   │   │   │   │                           
+[DOCKER]                              │   38 │   │   │       │                           
+[DOCKER]                              │   39 │   │   │   # C │                           
+[DOCKER]                              │ ❱ 40 │   │   │   Bro │                           
+[DOCKER]                              │   41 │   │   │       │                           
+[DOCKER]                              │   42 │   │   │   # P │                           
+[DOCKER]                              │   43 │   │   │   # s │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ openhands/tools/brow │                           
+[DOCKER]                              │ ser_use/impl.py:189  │                           
+[DOCKER]                              │ in __init__          │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   186 │   │   │   }  │                           
+[DOCKER]                              │   187 │   │          │                           
+[DOCKER]                              │   188 │   │   try:   │                           
+[DOCKER]                              │ ❱ 189 │   │   │   ru │                           
+[DOCKER]                              │   190 │   │   except │                           
+[DOCKER]                              │   191 │   │   │   ra │                           
+[DOCKER]                              │   192 │   │   │   │  │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ openhands/tools/util │                           
+[DOCKER]                              │ s/timeout.py:12 in   │                           
+[DOCKER]                              │ run_with_timeout     │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │    9                 │                           
+[DOCKER]                              │   10 def run_with_ti │                           
+[DOCKER]                              │   11 │   try:        │                           
+[DOCKER]                              │ ❱ 12 │   │   return  │                           
+[DOCKER]                              │   13 │   except Func │                           
+[DOCKER]                              │   14 │   │   raise T │                           
+[DOCKER]                              │   15                 │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ func_timeout/dafunc. │                           
+[DOCKER]                              │ py:108 in            │                           
+[DOCKER]                              │ func_timeout         │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   105 │   │   thread │                           
+[DOCKER]                              │   106 │              │                           
+[DOCKER]                              │   107 │   if excepti │                           
+[DOCKER]                              │ ❱ 108 │   │   raise_ │                           
+[DOCKER]                              │   109 │              │                           
+[DOCKER]                              │   110 │   if ret:    │                           
+[DOCKER]                              │   111 │   │   return │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ func_timeout/py3_rai │                           
+[DOCKER]                              │ se.py:7 in           │                           
+[DOCKER]                              │ raise_exception      │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   4 #   in context t │                           
+[DOCKER]                              │   5 # Only available │                           
+[DOCKER]                              │   6 def raise_except │                           
+[DOCKER]                              │ ❱ 7 │   raise except │                           
+[DOCKER]                              │   8                  │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ openhands/tools/brow │                           
+[DOCKER]                              │ ser_use/impl.py:173  │                           
+[DOCKER]                              │ in init_logic        │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   170 │   │          │                           
+[DOCKER]                              │   171 │   │   def in │                           
+[DOCKER]                              │   172 │   │   │   no │                           
+[DOCKER]                              │ ❱ 173 │   │   │   ex │                           
+[DOCKER]                              │   174 │   │   │   se │                           
+[DOCKER]                              │   175 │   │   │   │  │                           
+[DOCKER]                              │   176 │   │   │   )  │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │ /usr/local/lib/pytho │                           
+[DOCKER]                              │ n3.12/site-packages/ │                           
+[DOCKER]                              │ openhands/tools/brow │                           
+[DOCKER]                              │ ser_use/impl.py:148  │                           
+[DOCKER]                              │ in                   │                           
+[DOCKER]                              │ _ensure_chromium_ava │                           
+[DOCKER]                              │ ilable               │                           
+[DOCKER]                              │                      │                           
+[DOCKER]                              │   145 │   │   │   re │                           
+[DOCKER]                              │   146 │   │          │                           
+[DOCKER]                              │   147 │   │   # Chro │                           
+[DOCKER]                              │ ❱ 148 │   │   raise  │                           
+[DOCKER]                              │   149 │              │                           
+[DOCKER]                              │   150 │   def __init │                           
+[DOCKER]                              │   151 │   │   self,  │                           
+[DOCKER]                              ╰──────────────────────╯                           
+[DOCKER]                              Exception: Chromium is                             
+[DOCKER]                              required for browser                               
+[DOCKER]                              operations but is not                              
+[DOCKER]                              installed.                                         
+[DOCKER]                                                                                 
+[DOCKER]                              To install Chromium, run                           
+[DOCKER]                              one of the following                               
+[DOCKER]                              commands:                                          
+[DOCKER]                                1. Using uvx                                     
+[DOCKER]                              (recommended): uvx                                 
+[DOCKER]                              playwright install                                 
+[DOCKER]                              chromium --with-deps                               
+[DOCKER]                              --no-shell                                         
+[DOCKER]                                2. Using pip: pip                                
+[DOCKER]                              install playwright &&                              
+[DOCKER]                              playwright install                                 
+[DOCKER]                              chromium                                           
+[DOCKER]                                3. Using system                                  
+[DOCKER]                              package manager:                                   
+[DOCKER]                                   - Ubuntu/Debian:                              
+[DOCKER]                              sudo apt install                                   
+[DOCKER]                              chromium-browser                                   
+[DOCKER]                                   - macOS: brew                                 
+[DOCKER]                              install chromium                                   
+[DOCKER]                                   - Windows: winget                             
+[DOCKER]                              install                                            
+[DOCKER]                              Chromium.Chromium                                  
+[DOCKER]                                                                                 
+[DOCKER]                              After installation,                                
+[DOCKER]                              restart your application                           
+[DOCKER]                              to use the browser tool.                           
+[DOCKER] [01/29/26 02:31:51] WARNING  Tool preload service failed to start -    api.py:80
+[DOCKER]                              skipping                                           
+[DOCKER] [01/29/26 02:31:51] INFO     Application startup complete.              on.py:62
+[DOCKER] [01/29/26 02:31:51] INFO     Uvicorn running on                    server.py:216
+[DOCKER]                              http://0.0.0.0:8000 (Press CTRL+C to               
+[DOCKER]                              quit)                                              
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34798 - "GET /health     h11_impl.py:480
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=ba0542dc05074c7d92d411efee                
+[DOCKER]                              cb2e80&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=f504e0b707ac40f4a0cdee2475                
+[DOCKER]                              a36502&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=f504e0b707ac40f4a0cdee2475                
+[DOCKER]                              a36502&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=5c5c2afd3a5f48268e65cde0c5                
+[DOCKER]                              1617e9&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=5c5c2afd3a5f48268e65cde0c5                
+[DOCKER]                              1617e9&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=8671f428aa8b4f18b7b7b82caf                
+[DOCKER]                              a5e79b&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=8671f428aa8b4f18b7b7b82caf                
+[DOCKER]                              a5e79b&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=1cea9d2dae9c46e1baea2d55f2                
+[DOCKER]                              648e62&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:52] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=1cea9d2dae9c46e1baea2d55f2                
+[DOCKER]                              648e62&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=1cea9d2dae9c46e1baea2d55f2                
+[DOCKER]                              648e62&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=5740728d6ab34a618c3e59d4e5                
+[DOCKER]                              16cf6f&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=5740728d6ab34a618c3e59d4e5                
+[DOCKER]                              16cf6f&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=affee7610f7a49a9a4e5a7c8f8                
+[DOCKER]                              00af92&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=affee7610f7a49a9a4e5a7c8f8                
+[DOCKER]                              00af92&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=323a05708dca44d88056b63176                
+[DOCKER]                              9a56dd&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=323a05708dca44d88056b63176                
+[DOCKER]                              9a56dd&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=9cef7d30482c47c191338ccd80                
+[DOCKER]                              052972&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=9cef7d30482c47c191338ccd80                
+[DOCKER]                              052972&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=7feef638d30f4d78a35695c6b1                
+[DOCKER]                              5485fd&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=7feef638d30f4d78a35695c6b1                
+[DOCKER]                              5485fd&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=84eaa4d06d8244f3845f14d789                
+[DOCKER]                              dadb72&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:53] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=84eaa4d06d8244f3845f14d789                
+[DOCKER]                              dadb72&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:31:54] INFO     Dynamically registered  conversation_service.py:232
+[DOCKER]                              3 tools for                                        
+[DOCKER]                              conversation                                       
+[DOCKER]                              bb43fa5e-fc6e-450f-915b                            
+[DOCKER]                              -e1635d08b627:                                     
+[DOCKER]                              ['file_editor',                                    
+[DOCKER]                              'task_tracker',                                    
+[DOCKER]                              'terminal']                                        
+[DOCKER] [01/29/26 02:31:54] INFO     Created new conversation               state.py:302
+[DOCKER]                              bb43fa5e-fc6e-450f-915b-e1635d08b627               
+[DOCKER]                              State: {'id':                                      
+[DOCKER]                              UUID('bb43fa5e-fc6e-450f-915b-e1635d08             
+[DOCKER]                              b627'), 'workspace': {'working_dir':               
+[DOCKER]                              '/workspace', 'kind':                              
+[DOCKER]                              'LocalWorkspace'}, 'persistence_dir':              
+[DOCKER]                              'workspace/conversations/bb43fa5efc6e4             
+[DOCKER]                              50f915be1635d08b627',                              
+[DOCKER]                              'max_iterations': 100,                             
+[DOCKER]                              'stuck_detection': True,                           
+[DOCKER]                              'execution_status':                                
+[DOCKER]                              <ConversationExecutionStatus.IDLE:                 
+[DOCKER]                              'idle'>, 'confirmation_policy':                    
+[DOCKER]                              {'kind': 'NeverConfirm'},                          
+[DOCKER]                              'security_analyzer': None,                         
+[DOCKER]                              'activated_knowledge_skills': [],                  
+[DOCKER]                              'blocked_actions': {},                             
+[DOCKER]                              'blocked_messages': {}, 'stats':                   
+[DOCKER]                              {'usage_to_metrics': {}},                          
+[DOCKER]                              'secret_registry': {'secret_sources':              
+[DOCKER]                              {}}}                                               
+[DOCKER]                              Agent: {'llm': {'model':                           
+[DOCKER]                              'litellm_proxy/neulab/gpt-5-mini',                 
+[DOCKER]                              'api_key': SecretStr('**********'),                
+[DOCKER]                              'base_url': 'https://cmu.litellm.ai',              
+[DOCKER]                              'openrouter_site_url':                             
+[DOCKER]                              'https://docs.all-hands.dev/',                     
+[DOCKER]                              'openrouter_app_name': 'OpenHands',                
+[DOCKER]                              'num_retries': 5, 'retry_multiplier':              
+[DOCKER]                              8.0, 'retry_min_wait': 8,                          
+[DOCKER]                              'retry_max_wait': 64, 'timeout': 300,              
+[DOCKER]                              'max_message_chars': 30000,                        
+[DOCKER]                              'temperature': 0.0, 'top_p': 1.0,                  
+[DOCKER]                              'max_input_tokens': 272000,                        
+[DOCKER]                              'max_output_tokens': 128000, 'stream':             
+[DOCKER]                              False, 'drop_params': True,                        
+[DOCKER]                              'modify_params': True,                             
+[DOCKER]                              'disable_stop_word': False,                        
+[DOCKER]                              'caching_prompt': True,                            
+[DOCKER]                              'log_completions': False,                          
+[DOCKER]                              'log_completions_folder':                          
+[DOCKER]                              'logs/completions',                                
+[DOCKER]                              'native_tool_calling': True,                       
+[DOCKER]                              'reasoning_effort': 'high',                        
+[DOCKER]                              'enable_encrypted_reasoning': True,                
+[DOCKER]                              'prompt_cache_retention': '24h',                   
+[DOCKER]                              'extended_thinking_budget': 200000,                
+[DOCKER]                              'usage_id': 'default',                             
+[DOCKER]                              'litellm_extra_body': {}}, 'tools':                
+[DOCKER]                              [{'name': 'terminal', 'params': {}},               
+[DOCKER]                              {'name': 'file_editor', 'params': {}},             
+[DOCKER]                              {'name': 'task_tracker', 'params':                 
+[DOCKER]                              {}}], 'mcp_config': {},                            
+[DOCKER]                              'include_default_tools':                           
+[DOCKER]                              ['FinishTool', 'ThinkTool'],                       
+[DOCKER]                              'system_prompt_filename':                          
+[DOCKER]                              'system_prompt.j2',                                
+[DOCKER]                              'security_policy_filename':                        
+[DOCKER]                              'security_policy.j2',                              
+[DOCKER]                              'system_prompt_kwargs':                            
+[DOCKER]                              {'llm_security_analyzer': True},                   
+[DOCKER]                              'kind': 'Agent'}                                   
+[DOCKER] [01/29/26 02:31:54] INFO     TaskTrackerExecutor initialized   definition.py:161
+[DOCKER]                              with save_dir:                                     
+[DOCKER]                              workspace/conversations/bb43fa5ef                  
+[DOCKER]                              c6e450f915be1635d08b627                            
+[DOCKER] [01/29/26 02:31:54] INFO     Auto-detected: Using                 factory.py:120
+[DOCKER]                              SubprocessTerminal (tmux not                       
+[DOCKER]                              available)                                         
+[DOCKER] [01/29/26 02:31:54] INFO     FileEditor initialized with cwd:       editor.py:95
+[DOCKER]                              /workspace                                         
+[DOCKER] [01/29/26 02:31:54] INFO     Using shell:             subprocess_terminal.py:106
+[DOCKER]                              /usr/bin/bash                                      
+[DOCKER] [01/29/26 02:31:55] INFO     TerminalExecutor initialized with        impl.py:59
+[DOCKER]                              working_dir: /workspace, username: None,           
+[DOCKER]                              terminal_type: TerminalSession                     
+[DOCKER] [01/29/26 02:31:55] INFO     Loaded 3 tools from spec: ['terminal',  base.py:269
+[DOCKER]                              'file_editor', 'task_tracker']                     
+[DOCKER] [01/29/26 02:31:55] INFO     Confirmation policy set   local_conversation.py:454
+[DOCKER]                              to: kind='NeverConfirm'                            
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/conversations HTTP/1.1" 201                   
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627/events/search?                
+[DOCKER]                              limit=100 HTTP/1.1" 200                            
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627/events                        
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34804 - "POST            h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627/run HTTP/1.1"                 
+[DOCKER]                              200                                                
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34804 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:31:55] INFO     172.17.0.1:34818 - "WebSocket   wsproto_impl.py:257
+[DOCKER]                              /sockets/events/bb43fa5e-fc6e-4                    
+[DOCKER]                              50f-915b-e1635d08b627"                             
+[DOCKER]                              [accepted]                                         
+[DOCKER] [01/29/26 02:31:55] INFO     Event Websocket Connected:            sockets.py:54
+[DOCKER]                              bb43fa5e-fc6e-450f-915b-e1635d08b627               
+[DOCKER] [01/29/26 02:33:00] ERROR    error_sending_event:                 sockets.py:145
+[DOCKER]                              ActionEvent(id='9caa42a2...',                      
+[DOCKER]                              source='agent',                                    
+[DOCKER]                              timestamp='2026-01-29T02:32:56.75950               
+[DOCKER]                              5')                                                
+[DOCKER]                              ╭─ Traceback (most recent call las─╮               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/uvicorn/protocols/websoc │               
+[DOCKER]                              │ kets/wsproto_impl.py:329 in send │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   326 │   │   │   │   │   bytes_ │               
+[DOCKER]                              │   327 │   │   │   │   │   text_d │               
+[DOCKER]                              │   328 │   │   │   │   │   data = │               
+[DOCKER]                              │ ❱ 329 │   │   │   │   │   output │               
+[DOCKER]                              │       ignore                     │               
+[DOCKER]                              │   330 │   │   │   │   │   if not │               
+[DOCKER]                              │   331 │   │   │   │   │   │   se │               
+[DOCKER]                              │   332                            │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/wsproto/__init__.py:70   │               
+[DOCKER]                              │ in send                          │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │    67 │   │   │   data += self.h │               
+[DOCKER]                              │    68 │   │   │   self.connectio │               
+[DOCKER]                              │    69 │   │   else:              │               
+[DOCKER]                              │ ❱  70 │   │   │   data += self.c │               
+[DOCKER]                              │    71 │   │   return data        │               
+[DOCKER]                              │    72 │                          │               
+[DOCKER]                              │    73 │   def receive_data(self, │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/wsproto/connection.py:11 │               
+[DOCKER]                              │ 8 in send                        │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   115 │   │   │   │   self._stat │               
+[DOCKER]                              │   116 │   │   else:              │               
+[DOCKER]                              │   117 │   │   │   msg = f"Event  │               
+[DOCKER]                              │ ❱ 118 │   │   │   raise LocalPro │               
+[DOCKER]                              │   119 │   │   │   │   msg,       │               
+[DOCKER]                              │   120 │   │   │   )              │               
+[DOCKER]                              │   121 │   │   return data        │               
+[DOCKER]                              ╰──────────────────────────────────╯               
+[DOCKER]                              LocalProtocolError: Event                          
+[DOCKER]                              Message(data='{"id":"9caa42a2-cdcd-4               
+[DOCKER]                              a6d-a033-139070f84893","timestamp":"               
+[DOCKER]                              2026-01-29T02:32:56.759505","source"               
+[DOCKER]                              :"agent","thought":[{"cache_prompt":               
+[DOCKER]                              false,"type":"text","text":"I\'ll                  
+[DOCKER]                              check whether the file exists on                   
+[DOCKER]                              ownCloud                                           
+[DOCKER]                              now.","enable_truncation":true}],"re               
+[DOCKER]                              asoning_content":null,"thinking_bloc               
+[DOCKER]                              ks":[],"responses_reasoning_item":{"               
+[DOCKER]                              id":"rs_0cc66211ae460fd901697ac69cfa               
+[DOCKER]                              2c819c9ec1c70f0c45d3ab","summary":[]               
+[DOCKER]                              ,"content":null,"encrypted_content":               
+[DOCKER]                              "gAAAAABpesbYXvH_8a0Yw8VvzSNAVgWlMc2               
+[DOCKER]                              js-2-c5LMQ8csiKyV3TMUYIJGSvY4cIuiV5V               
+[DOCKER]                              -feqYElhuCJa2xHug7hEHM3DcR40EgHDnYZb               
+[DOCKER]                              heFMl-Iyz8BqhkGKzeN5jpsah1-Nm4insisM               
+[DOCKER]                              3zceUpsn6PS-P3OtKHQUVsnfcgNs6MBrMV01               
+[DOCKER]                              0cRuGa8yuUWhZxVXJITUIXmAnO6-65QjgJh-               
+[DOCKER]                              HdKayVFQSLTxN1pmoKJVt51edbMD1_OwIA9m               
+[DOCKER]                              TInoJdztTi9wtmX-RXIdjbOpPWrZYSewx21c               
+[DOCKER]                              GBXpaW13is4LPhJXDDDJolOX21r2kOp3DqHv               
+[DOCKER]                              Wkt5eG5RkyoK1i4Bq_DWJPiwYpQDqmN020BR               
+[DOCKER]                              g-ZGfm-mMPqAZutGwUryHDHzo9o1iQkTlR39               
+[DOCKER]                              Ul0B3u35Aw8zF7T7IqREi0jFZmlszQjdTcWu               
+[DOCKER]                              xGAqI4QSX6djUANRtAPTTJhd7w9A74BUkZbu               
+[DOCKER]                              RMbhw0x9b3K8J2V2o5Pm6ENhWpTytlnJz8IK               
+[DOCKER]                              Olt0ThV7eqB7IcZbRw8WNjN_F71njLdOaOze               
+[DOCKER]                              PhcquBAvIHcR2_Ovzp26FhkEkNNLHMT6yNNG               
+[DOCKER]                              xcIIIuI4KNRhqTzrOmabrD-e9w6BWHssoLwb               
+[DOCKER]                              Oy2xDvygHeFlLmEmDy7bH_XKadaQljB3ejN6               
+[DOCKER]                              c5bkjywAjE6KEeOXjI31JVDkicEfVlk4Ud8E               
+[DOCKER]                              7dwQi03gYVpGwo2Rq0ADPf3q_xite-UHIaLx               
+[DOCKER]                              ExuPDAPCoijYSowxgOirrP2NSOddwraDW5q3               
+[DOCKER]                              xc4mowmd0wfLBcpXn90ksRS7iXLNyu82rCue               
+[DOCKER]                              gCzLMlD0yY6eDCmupP-WDijMeZDbCCPM7krP               
+[DOCKER]                              ZAQde0nFPTfpXJZsyshhXy2gUZpmfhfbhzBE               
+[DOCKER]                              smINbLXjtz4UgD3LRXeRluhYWF2IuL9lIJwM               
+[DOCKER]                              vEjHGlqAl_hWkY1STPCZ6jrNuGpiG_aDBMLy               
+[DOCKER]                              o4fjJxxhG7eH8MkaRPsp91DY-nnoK50yCAGK               
+[DOCKER]                              MmIFCskJLdMN8TxBBhZ3iC520U2TNnO5isXg               
+[DOCKER]                              Pe5Sy3uc_J-eLJK_att8IODm-KrtVD-WByHo               
+[DOCKER]                              CiSIgmX_MgqClIshAcqyEWX1k2t_LiNkzRpw               
+[DOCKER]                              1wmPcngNKpOIQ2sd3q72HZQ1UAhBUXrfh3gQ               
+[DOCKER]                              nTNhnGFTIHKffhO4TF9OnP48I_kuKj4Ggp2I               
+[DOCKER]                              TVsKjo5-qz8YYMliy3dr8t_c2yIqtfffi15A               
+[DOCKER]                              FjqD5VSi7dbwicwRVotvJDc2gOEY-pQWJq3X               
+[DOCKER]                              DZAsPew6RPFUfH8FrjU3qnAeLeJ7sydETeDF               
+[DOCKER]                              pJBnsGK3RtD64M2rn2CFfSK4pPDaZprZeADM               
+[DOCKER]                              GxpF1RuprnTl8xyvYggKXCNV7Gk5M5OusODG               
+[DOCKER]                              iH54q2DZxrr6YTl77-Qyoye8gsaTbxELGp9G               
+[DOCKER]                              a4RjvtQDX_ykggxtG36shj7ctUDjja2zy0_p               
+[DOCKER]                              FSHMrf62ig5oXEPOEaA8QZP2Z-pOUsW2ThjP               
+[DOCKER]                              -RJjyS1Fr7Df6LBM1hoR0DZDm6JBGHZEP9vK               
+[DOCKER]                              i6rMyPeZrcYfz4EvEuNb4dYy_Z--zc1fvph0               
+[DOCKER]                              H6R2UUDPYXDf7LQJ3J8FB4teONzfWhm16HvT               
+[DOCKER]                              G7j0AjyVznQ5Je9E9Ch0C_5dEWupqQq4Lah1               
+[DOCKER]                              HCqmN741gKRxw7TKXoJ1LzOoayhEbZuVlKSF               
+[DOCKER]                              4h0gUwBoNvPDOcspS7So7rd2eVt1yrphuEIi               
+[DOCKER]                              ZnDl0Gpou_Fr2bOWh2yJWeGFGx1O4GW1otXh               
+[DOCKER]                              x0SibCIIwRs_cCrObDs3oloElbzXSQtLACNk               
+[DOCKER]                              8zVFDP79LcgtBV9WqpzjhSHwB1aGEKuvz05F               
+[DOCKER]                              Y80KlEo4F0L5YWq5q-HF2wnfSpyVL3Pm3dzX               
+[DOCKER]                              g7rakf04GaZi4GA5m-UPwUTJwcrDOwM1_HTU               
+[DOCKER]                              9hYFAYv5dgwXIlKBedsTZXZCoGd-zDz-xnIk               
+[DOCKER]                              17fO3es0sTUtchIniVnE5MH9Lghv2Rp_Dmbm               
+[DOCKER]                              8vi4AcWk77vt6et_RLhqLeqI7-kOY4Sfvma5               
+[DOCKER]                              W5o9Qpa38geHYQOvoQUjgu1R161VXcBggE1M               
+[DOCKER]                              SyaLb1JpohNdstzN3-bfQKL1X2S9-yp0ddsi               
+[DOCKER]                              AvMp2BU3UaRYQzUVbEjeIOdgKVfL8AxpY2XZ               
+[DOCKER]                              Lyz4r5gQHzNa_tlAhUzur1NEvYBdJhJMz9ML               
+[DOCKER]                              fDbVDiN2UnHyUzfgyLnEZ-xzTXkLSWth6ANB               
+[DOCKER]                              HeGazx_MTr7CtAs4rqHMN-P3IsQD4YrFpzFg               
+[DOCKER]                              yuETRoVmDEm-295ewfQBOOu3-4dE1OEF4tvr               
+[DOCKER]                              ZJbnkQe7p0FlcV8R7x1ugRYhsj9w1hWTYtun               
+[DOCKER]                              d_Pzi51Ti70CWIOO1F1aAj65pZD2qN4WtDK2               
+[DOCKER]                              uGKLFePVv7jaeXGagkspE8X785y2zPlNgTLx               
+[DOCKER]                              zrpk8iPIixembWzjgTQt7PdrVLezR30WLoZC               
+[DOCKER]                              8rrYC4ly9hYdPN1SqnXvVY22qgTYscfKYRlC               
+[DOCKER]                              1xPBZ7hoCPBQe4RqeYU1_IQlqF3FgzoSnBTc               
+[DOCKER]                              mryT7fRJWNL5uRE3JGtFTs28_1if6Avt630h               
+[DOCKER]                              KiWKnwqIL543mPyCpp8pbXOsuVP8Fb2RgxHj               
+[DOCKER]                              IViQbIpQVzchcv4AvAWtWbVcJ3Wbm_tI7zZG               
+[DOCKER]                              -1mz3pVPihxiVcrOSwCIU4gjANwqiMz2dDDp               
+[DOCKER]                              8okiaOT_frNFMUtq-Fwk04zK4EtFajqbkbBy               
+[DOCKER]                              0e-3OlGP0K-5urvVqX7OYmT1QTDjTUnD3xP-               
+[DOCKER]                              ONEw6MabkuAfEdN_6tlCL-MZU0iyrxV64BH1               
+[DOCKER]                              3V6wmXOacCNn7C1Fhcpu8wX2P1Fxk20GBLx4               
+[DOCKER]                              6bHT8MkoYnQ-PR-RS0zlo5liqM4M8M5gz1wn               
+[DOCKER]                              qHcChMO2AdtyX8MAyuVJixn6mfVIT50U_YoN               
+[DOCKER]                              jF_qUB5Y4JPUneJx-7qHDIHXSQuAv1cEuYJX               
+[DOCKER]                              bTSerFAkd6sV8A_jB7ofCiF-wYAz_WUFA4vm               
+[DOCKER]                              x3qyZCvlpWa-lZ8O3-lluGxJmHtUe9CmLj9r               
+[DOCKER]                              74oDHeDrLaJLv0NS44P5QQnPx1lUS1wecM45               
+[DOCKER]                              eu2prswk95X15VLfnKLxaitYJR3hvBbUSK9c               
+[DOCKER]                              hJq_mWc2j_bc8ClJv-2M0Ol67c4Krb7mut-L               
+[DOCKER]                              IbZaCC3HVy7pEtGNsdiaVCQZRh91UTpeaOJD               
+[DOCKER]                              12HylXdi2D2OZq8f-4lqZnDf2vaChIihd5ET               
+[DOCKER]                              pscvnKZvixYCwBoV0lrDSFP-YzZh3ZzOnRIs               
+[DOCKER]                              A2VYm9V53j12ItNitxMijyECNpNj7lRtStIr               
+[DOCKER]                              ZFIPDtPYhVQJdFpscyp0V6ZG3pSL0_E3_zpc               
+[DOCKER]                              8grX8WVMIMkCbsT7PEF3ptS5CTHeT72F2vaV               
+[DOCKER]                              6tBB1_IZR2NUqBrFK-WiZJlJwnr0ik4BlpQU               
+[DOCKER]                              6pH3UsL6Y475BPNFEaI7HDkSWvvxJOFWlEOg               
+[DOCKER]                              nEOrO021stEi9-pJrPNIte_6Nk8E1yfQ9cZF               
+[DOCKER]                              c4oNqHBqKqLygR6skbtQJasRpnV-CFvreGTd               
+[DOCKER]                              h6HrllEeZJxRJTxhAZn38_rhndaNKqRNRXGw               
+[DOCKER]                              Y5payrzHC0rIz07meqmb5AZQraxbsr9iF8Mz               
+[DOCKER]                              479tY1lb8YHb04bTAJdHsb30BRTGrah00Upo               
+[DOCKER]                              zQHWsQBC1PvOyiaw8XLzQstEm5d9lbdCgAf0               
+[DOCKER]                              wYEifQ3MrUGa2XcqascmRqJFjQNGTguaTnZ1               
+[DOCKER]                              1NHfMvcAS_t67BYIjuNFvHezWricUPIL1loH               
+[DOCKER]                              -UtGhtRVyf2TeaFSqlxrRQP13LIRjpeo6G3x               
+[DOCKER]                              Qq-TO-c9ZuqLoMTq2r-bSOMH9uitUhLlRM7S               
+[DOCKER]                              ChUUluIUAvce09wH48jBdUNYriLGy3l2TMCY               
+[DOCKER]                              b8IRthiMRsyVUzuI2J1whbYLvxkbhZbFG-mw               
+[DOCKER]                              tWxj-pkF2GUk7O-d_9zc8uUZgNvjgwKlmJzY               
+[DOCKER]                              Q_EZo03eH_TsBF8kf1gxkB9bspSIPsefdX06               
+[DOCKER]                              0tqkQ5isH3TKYXXXG7QbZsQDNm5Mz2NctrIr               
+[DOCKER]                              OmwsvxUKNy9upUC83aYu6Kh8tkGbUgsD6-3e               
+[DOCKER]                              N0TLUaI9o4MkIQ0fuC59xMxY7APVAjSAJxq1               
+[DOCKER]                              fC25WZfKlQ2Nj1m8lWhbJF5vwrc-2mw7TGya               
+[DOCKER]                              p1yhoIQV74QJENhwDKpuBcgsq0gdmC-R7IuR               
+[DOCKER]                              bFx6eejMqCR6DrvDIOCCKKCix6X5sZJFdPs8               
+[DOCKER]                              yxvVrjYC5dlPa0KMYHkvQmIOV4JN1fqAkMPi               
+[DOCKER]                              UoXq7Fc2couguC4p2GPYuzOrMf1IfTpdWJtc               
+[DOCKER]                              gQvmspk6rPBpxMgj5SF63bPkCDYOquupAwSK               
+[DOCKER]                              zgWKuHKS9xNdW8HpVLuq1aRY6mFZ3txhHCKd               
+[DOCKER]                              nWIxH8Od8fSQhJEks2WHkbbUCDuzOTTC6_In               
+[DOCKER]                              23N9ajUQvKcN9RxZX3XMX10o1wLxOR0jqhuo               
+[DOCKER]                              jF18lt6wNa7_vJgwQPnWWKn0Re2r60vAX8Hx               
+[DOCKER]                              GefeUg0l_g3PJ9n0hwZ5KpUVqOEMT1DU8iQs               
+[DOCKER]                              VgVoZVSFU9TPK-fcXXAHHC8EtQu5MW77nsPY               
+[DOCKER]                              RktoJBhKq5Hsgf35pspEDaksUHvFytxQbl7T               
+[DOCKER]                              Ex3HImyr165j8Gpa8_a6QVtsrqWvyPJvINmS               
+[DOCKER]                              QkDG5Bz2tQTIgE2pxK28YmGI8DcqR9Kzo-2Q               
+[DOCKER]                              PgKCDBOeAx0nNC3pPZKN4k9WASwGUPnfIMuf               
+[DOCKER]                              ZdTvyqbhrEF0C-gjVaEjfoD7hMCUUhdb7E8j               
+[DOCKER]                              7Kr1bRcKliZ3TtMyGrqGdGwN2pro3y3rKH0w               
+[DOCKER]                              jqlK-m_pQTsxtDn3U53tHWK-Ov9aehhY7m6E               
+[DOCKER]                              z9JlHP1lmxwYcbHhUremrBYDEBC5uOS7C750               
+[DOCKER]                              VEeEmym7vbZh_8FAtP5nE5_xWQGLdVQk1gHo               
+[DOCKER]                              475TOps1Ra41PD212fPC1qQ4RpHchKjSOKbK               
+[DOCKER]                              TpFVN0Yit8Mbg7TJvUSbeJyHN9k3k0bQ8D-X               
+[DOCKER]                              KJOMAPi-aSPC_ybct-KflXJJchtMAElm58b7               
+[DOCKER]                              OZDqwNXQPr8Kh0vHXnn7ivbwjvn9DH0WFQkS               
+[DOCKER]                              wVJnayjOcrlzF2tZE_eqqwTjJda-aGOXZ1FX               
+[DOCKER]                              pUqEzEzveWMSG4C1kJhIYduVpngAE0hXBOCX               
+[DOCKER]                              t-8GXwzm5MXI1kMWyi-whOxHHOhU3O4aREs7               
+[DOCKER]                              xdzUdDS_PoF1NFQUW2FFER86a8cORIjGUP7G               
+[DOCKER]                              sZ4-wed3ZpzrtetriOoOePYwWQLu7a5aRbYq               
+[DOCKER]                              6rz7cwbD__vN4LFKkfBjgApn8oaXbgbUGQjw               
+[DOCKER]                              IHEAXhv5Io5oYjMvA-BVOA7tBkHMeg6BpL2v               
+[DOCKER]                              s2o8_BTY-AMOzyPiYJ2a7erfs0KL_77ztfvg               
+[DOCKER]                              SOVr1hSog7oiQnu2So6Wul4zb6n1LK1ZjlQE               
+[DOCKER]                              PsgYijRcSQzdAWbjL6Hlk5vSVxaGOMT5vqaa               
+[DOCKER]                              D1cIuqOgZ84PAqKH5_y816TJTH0TQ4687P5b               
+[DOCKER]                              JZf7p1UbenY-rj2np_s-CAX7gxjxvNdqL8UQ               
+[DOCKER]                              8mWgKQEaxDzCw4LgFJFzpaiTjf8UbIb4wjUS               
+[DOCKER]                              jW5W928NDD80Vgb02RElTrdHNtnCt3u63II7               
+[DOCKER]                              4u3YIfrlAAedbnJc1yo10loLsg6dzFR5e1tb               
+[DOCKER]                              aAdLnZeeLT7K_ynGuey4pt0JZcwv5PSP7bG_               
+[DOCKER]                              a1wNkIXYi7Xl6EOHZG5EgpAze7QAQYelbIPc               
+[DOCKER]                              xADOx0LZGsyJpoi7wo_oFBPIlQDwFKb-JFwQ               
+[DOCKER]                              GMpOrLzHRy-hVsTIJsglXjOFjFrbcZ1b_nXD               
+[DOCKER]                              ZiwxdWV7dzgRdQpMrwraC6WSWG-5ArR5GVgo               
+[DOCKER]                              ajq-Cjg5J_Lm3VFqX4-Qw-jJPqEs0zkeIbFV               
+[DOCKER]                              1PgMSfo4lyzoXj4lUuMOHgQS0ne_Atosyg6C               
+[DOCKER]                              09k8pUNLGDlp9Ao3kDB9NqZjejvKZjkjZxM4               
+[DOCKER]                              pbPEQiGEvQOYb3rgHaxYeQFhEXBErA34Z3Lr               
+[DOCKER]                              5Gctj6Qf06Pwx6W-r8RIDx_-3uS5fXJRE9cL               
+[DOCKER]                              94aQGZuYrLcd1sS1d3BU-WIXy8GCKZ9Crgp8               
+[DOCKER]                              6yZ2e5GUJX09qFERq__CiANu63iEku3M_MJE               
+[DOCKER]                              042TJ6QydX8WZStfpVEQOE7tLhUTspCAQKVp               
+[DOCKER]                              WS0D-8ngPql4i5UHqLeq5hOtHALx2FkNMgXN               
+[DOCKER]                              5UGSZofzECtEb18nVbp6JNkK_dNkN0ubVATn               
+[DOCKER]                              plfouEV00emSjA5TGnNrN2YuGaC6rBid9IMg               
+[DOCKER]                              KJOBWn6SL2X7HI_YgiehxOlQ8rahAzmBowCV               
+[DOCKER]                              1z9oCcH4EE4Fwfwdh2V0l43877OU4_fUbNpb               
+[DOCKER]                              BXC4OlByUkWXQBUhbkUoKMHmjVmgMMZl0TaO               
+[DOCKER]                              Rep_lsClsXDfAflEsnHnVuAgcQMN1TsGcpVG               
+[DOCKER]                              74x5rhPYZZFpiNgGJ_zSjaVyjCRTV-H-yhVv               
+[DOCKER]                              yfT0Wg6HlrUq2uAvdUvfxVB_RVwqghuPp5U-               
+[DOCKER]                              pIEb2630dVYoSZVuOJEVuWeY-gUGTOq73v8T               
+[DOCKER]                              bjXbJJvKsG-d3wnJ-OsgVy41FwyCRxtvJQjx               
+[DOCKER]                              nD9xr1FOOrM9GeFQDdNp_ulVdjW_xZcDsGyn               
+[DOCKER]                              hwcEHEu1FXdqTph7Qzux0VfHo22JmH1cEbxV               
+[DOCKER]                              1tZ6wccFc-eQWeQ5rtOFhyZWIXjwj-VZWx_-               
+[DOCKER]                              9JJRkRjtFsfu28naSiQ3kd_ZG5yppg6y09t2               
+[DOCKER]                              hwakVBSymUW0kAq0QNHeMOhFcHZnr8JFaeMz               
+[DOCKER]                              Tc6WEvxYprJBUf-KNOQ1z6VzLl4YBBpMtemk               
+[DOCKER]                              fvT9K9IY1WfOLbzxbq74c_uVvN6vdp0u4aU4               
+[DOCKER]                              U40ukvAW9wPaB6Rqq-sRknnqJRTcsls0ls4w               
+[DOCKER]                              ucVHDpBXTsCuNIb3w5XyiQriYV2-NdTYvhqx               
+[DOCKER]                              Fr9FOKCrssC6j3AlvE2ODYWn1BtwtJso39LG               
+[DOCKER]                              A0SCqrvObIN73LGeBZej9twpuHpO6uzBh5IN               
+[DOCKER]                              f1ssNCCZKfzxwujS4F0w7ZFscvrD3MQlCrAC               
+[DOCKER]                              cj3VKCk6gJW3-Gc30eu3TbUV9Zg5IpBIkxEo               
+[DOCKER]                              nw-IOO-3A0j1j2Nq5F7bfyfeLHRW8OD-wTym               
+[DOCKER]                              RaB7zAspXzokvB_Il-QU4uTZiDDimgMbD9QT               
+[DOCKER]                              oI5UWOccAbgSBOali2GSj9NMstwashesoFRp               
+[DOCKER]                              u2ljCyg5moLpfZae5JiQW5eTInHydzOW7cIS               
+[DOCKER]                              gkRY8-EHEjI_yCtqHIFvvqKXly7JIpdr4vin               
+[DOCKER]                              zg9UYEkSnw6sfTuxTU_Xk6bwiaahe5pdpYKu               
+[DOCKER]                              2M7oOx0Zj09qG4qmSR5RAUlKKq-xc8BFu7gv               
+[DOCKER]                              JHsl3-Q5QNWhEWVb4QGqxzsXnWY7dqG7eqXB               
+[DOCKER]                              h7506kpL8uNNf4WiW_bctdUItBBM7hRW2PLi               
+[DOCKER]                              l7w0pIJzufhSzaKX00UvQqafthXUvheJPq4Q               
+[DOCKER]                              eEuIigy_ttkDVSI-6iR2rd7bx1XlTEirFebF               
+[DOCKER]                              951M9WEO0mCRkWab4qH8F2LcDcVlVy8IWNdo               
+[DOCKER]                              SOwKd_zEB4Sh2JVEYdVlwLdn82kBWBo-_khU               
+[DOCKER]                              A39h-lqFsfNd4M_SFik38Y134rX4KHeUVfQ4               
+[DOCKER]                              po4yjja055kzWa5yBLQHrbkM4gwFeV6fDJjV               
+[DOCKER]                              i9WFhHlLUr2Pk9VWTMyIJUtHSfvxo1TmfWaF               
+[DOCKER]                              k5-A6qNUx7xnibtIgn2zhOhtlEcNcdNDAPSX               
+[DOCKER]                              6qcGK9GHdSQXZVk1YpeU1eyqhP5j9aEiSXhO               
+[DOCKER]                              MfyMMbnjNQjFfwTxZXRv0c0VMVfa3iWl--6p               
+[DOCKER]                              wkO3PO_Oclmm8VbSKYd5eKuxbAeERYYuajAe               
+[DOCKER]                              W1e3hzoqLRA5E2XIl1QNrlgXAd2zXeLoHhuZ               
+[DOCKER]                              SnKYKf8vTH4TP-PP3fM_654QehVgT4cb1sEI               
+[DOCKER]                              O3935K4-OHv88mP8ze6dXDjK7RKWUt6oOe3r               
+[DOCKER]                              0jn1DIWK3AXlDp939_GgnFS_KuYvrgIznidt               
+[DOCKER]                              X5WNBnw997Ap3WEUJRS14M9WkGSe-w8a24P1               
+[DOCKER]                              zwXohm9VcsAWYBYE3UxmYxD-9Hxr_LmUYASX               
+[DOCKER]                              JxatVYCZ7Oegs78JO-smgEMTDJYuaVx9H09-               
+[DOCKER]                              nZbQwSNRisZpaSN-jfcATDkmpDcbH6cDJHA6               
+[DOCKER]                              6NHLEfMWDTg3plZal65Thph4R84JpI0dbUJI               
+[DOCKER]                              NkII3Gz2pTKvrgB-vsuSNiOa0fRgPtkfvf3x               
+[DOCKER]                              yJEqEJrxF1tScByHZboqg8R079NTOq-dkLOa               
+[DOCKER]                              daWSZLo4tDKlw8dxiVbcNBS-U2mPOBmZ3itQ               
+[DOCKER]                              QxfzENr8LvwBQBaeNyVR8dEwG1EcKYJRk9jE               
+[DOCKER]                              c3rDlmXWgj4RvUlAoqk9gyxvqR7bNMyHGkpy               
+[DOCKER]                              oPhSvKdA9r0uDwfHw4k3QqFyXTO9rVI_z0it               
+[DOCKER]                              hNNex7h0EMsQ7zXoXEwFk1nnFOVePYLkn2JT               
+[DOCKER]                              Uef9Cn0XbZPn--kXPJhuMr1oeh-6iyaBmLzx               
+[DOCKER]                              gar7hRC6xYnHgVfc9INqMXjfWq_gg2dedbxB               
+[DOCKER]                              ljQ4_Nd4N5sAH9KrmiLfQeb4A9zJSfk6Y9kw               
+[DOCKER]                              TaRK4U-i50JjiDUFrLqqiqrcFUNk_h0ACXT5               
+[DOCKER]                              DiXzZl0cy6D88eQ_d6WPWEPsIpRYTnikbOod               
+[DOCKER]                              v7825RsRT049VtQOCLophkHJGm8FZ5yiHlAA               
+[DOCKER]                              k_-GP1FTIdKrpKrZlLAA66JJ0xsHsPXlE6HM               
+[DOCKER]                              ykp4mtnzBb88Rh13lb70sZFshCljnAdZJ968               
+[DOCKER]                              dXkGog3XDPsD63G6IeGjF0HR2IKGl8FL7rOF               
+[DOCKER]                              b09Qja3IhDr5eWLGJ1TzU6rbsU1lVd-0W8rP               
+[DOCKER]                              xsCgAtsVcrkD1rwOqZHXATmqMKH5jcKwwVFE               
+[DOCKER]                              xuJ1GCI1t_QxUqNRYISq0O1-Ko8d75RlhhL9               
+[DOCKER]                              cz8Vx_96o7vg4GnlElHYD8pv6m__UxoTW1dC               
+[DOCKER]                              9DMD1M9LyVPJ2xhXhTodV6_2ZKwvTleKZDrZ               
+[DOCKER]                              wboahrBDQ8EWUh15M0QS8vq4XEq7vYMz2Eiy               
+[DOCKER]                              GfZMo4WJKprJ4z13J5HH4yE6GarHS_bunnbk               
+[DOCKER]                              ThA-rA5oSHwWzp9ErUfZFrsWqx16XA8qU7jP               
+[DOCKER]                              Oi3WXiqRlnOS4862CJT68DTNrU8nIq9MfXdl               
+[DOCKER]                              hbRQ4BTrOow2iG8qAx9Wd1Yy9uvwpgISVqz2               
+[DOCKER]                              fdMiBlm3Yrpa14NkCxO5nz6ExiuYQnhsgxhp               
+[DOCKER]                              2SQePC0yk8tGufs2lr0O6iT0JFFm8cMdgaul               
+[DOCKER]                              4Eyr9TcV4UBRlLoeuU7fzaZM0CVBg65lpjLl               
+[DOCKER]                              Urla0ub1-Xmc4yv_Hls1NjLkSAFQ1ziIBG10               
+[DOCKER]                              OcvyWfeeyxVFqDNNSAaqvVBmZ0vtCkTSKMJ-               
+[DOCKER]                              MkvENpZMUtQOZ_CU90n8K9xlnUheAlX09G_J               
+[DOCKER]                              H_3TWt9hv5dAwAoWeAqfg8uDxLX4luSd9MEI               
+[DOCKER]                              nUWjjXwMEy3EfL06h_lOZcay8HyY95eaYQVj               
+[DOCKER]                              Tm8nC_PmgAXiYI24Yg7fH7GpjuzFzFihJDBN               
+[DOCKER]                              c8h6ODOeLph4-ZRnmIy13eBGTG3bf9DlJgCr               
+[DOCKER]                              gTqYuepj1Upx_8crV6VPM6lTyvRE-0g_z1Nt               
+[DOCKER]                              b07GR_ju_xSfMqoaT9cEgZMjJlypnMxnU4jn               
+[DOCKER]                              UtqWKc41crg4tz4lP55hROzaQIIpCDddYS9S               
+[DOCKER]                              oK2o1jdijphfyz-YgsFah2gU6c1z8gs9b0Im               
+[DOCKER]                              G3lNRcEfTLZyfjfh4nXLdCOGj_4xOD8LpmrC               
+[DOCKER]                              hA5W2BLoTDToHRRn5cbPgpxwydCeEqqRXyTt               
+[DOCKER]                              E7cWiP_usLnY-MPqQil4iHGOWOzdu6xEhePU               
+[DOCKER]                              Hu5sQdpDXgPofYon2H-B56zNIFE7qjDxG8wG               
+[DOCKER]                              eLU9lQTKVkUcdS4-7oYO5LEX6jR68CowJscV               
+[DOCKER]                              mqTWkkrtBRVDmHep3d1wDfmWdgq51SGfVbUn               
+[DOCKER]                              odac0HFxlbrboLbHXTmCHLwqSRXdZjM6nmzi               
+[DOCKER]                              LemTpG4i3FgHHCe41VArXWUovN1VXDDae6Q6               
+[DOCKER]                              IMfV-qbPc_R8DVKGHho68EmccXmPpPveHuye               
+[DOCKER]                              l2qCucR2SIkEDKihejgUJYYVXE3zCvC3OxEi               
+[DOCKER]                              GtY6InzIrVUHn7TTVIXna0HXJkzk-CKcFg3u               
+[DOCKER]                              lVtXyF4GBE6cRfxDJieuShTTuHx1s7n3AVpN               
+[DOCKER]                              UtH-Dg-cExTfGHOiZqzrSeiafHZKhPcUGkph               
+[DOCKER]                              MlrERwCC3iSb0FlyIVm4tnPXSy5hTK1IukDP               
+[DOCKER]                              RiTBLrkEwyRrAamSOQnMcm-v-FOLnxWPp1L0               
+[DOCKER]                              9dS_DtDjNo8Hss7TpDvszqqCculbFxuGSlIu               
+[DOCKER]                              zRYh8TmUQSPwMfjVBQ8jzzyOB7XSTPToRhTF               
+[DOCKER]                              7O_S0-_CLI75r_q7AKho7DCz45Yaoxd2kIxd               
+[DOCKER]                              z666kWt42rN93ax1U4w6J6iE2-jM27N32fpr               
+[DOCKER]                              Ws0UsTkUpMHD4dVTiaT4eZZFDKsleV9NE8_-               
+[DOCKER]                              -Qk4d81N2-sC2HeSihBGD4qOpsYCWq6jNce1               
+[DOCKER]                              xxmGvbYduoJ4wuQFQ-JuFZ5__4gYHI4qh_Ty               
+[DOCKER]                              Jo2Y5oB2DR7Ydx3ucKolGgDAMLRzUe3jNFDx               
+[DOCKER]                              3yk7aDtSrYtYgTvkbbJbDxW_YDzn5Y6_u9pK               
+[DOCKER]                              Wtn_5Zm_BSAYwNikJQeMMNp3PGuZcHDp1pI6               
+[DOCKER]                              eX1x5IVpaXNHA4UNARcarsPyqGrR8PvNZybi               
+[DOCKER]                              Rgina5JqmK5IyB4GKaDrIEOh9vdnmjIwDUI2               
+[DOCKER]                              W5dWQZn3r1FU8hOoAM6ccCIbD-iS7R14WR3O               
+[DOCKER]                              4bwG0xWWGcbx3VBjLiRe55vhNGUJuVS1BgW1               
+[DOCKER]                              aC6F8sWk73-dHqs020bKfUTlazPwT5RFFCrR               
+[DOCKER]                              y13YBCZ_phLEPTN00xWtTCWLfnG_3rYD0v9k               
+[DOCKER]                              vRNSSw1FwAU7ZzivG3mP2-gdC16TvRITS3m2               
+[DOCKER]                              M1WyBAKUti1lewqzb6iuNdASgpf8svLg54xt               
+[DOCKER]                              WG22ocrkYVWle42Tg4shmivsyT8x6-Jmah-o               
+[DOCKER]                              6M4IxExqldhQWM1rn3Mgz_tiyWkILBpOgCly               
+[DOCKER]                              3-FklK5QxbAnNdjQZILajT4BNvTlTNTYeyRB               
+[DOCKER]                              HKcPUMq3xLdiMFnwrDSC5hJpjzJT8wgy0Fuq               
+[DOCKER]                              VnwMWZItgNCxXxKTM9tQkbHaqiWaDmsBJMNj               
+[DOCKER]                              AqIouBB8x7rD8yKNNNUYRZb3GUJNK1iFTPvS               
+[DOCKER]                              R4sruOoMU0SaQsUjpP9BfE48XhFto4cOy83I               
+[DOCKER]                              Js0IaNltHuEA1e2JHLgOg7Bg7xbhhbqefVDd               
+[DOCKER]                              RgvlJ6XLDUsrfk_Sjf96I1qrw7hRq8dhz7J9               
+[DOCKER]                              UGbLWOqAivyOXgfBg3dNh9_CrnlOEKib-iUm               
+[DOCKER]                              a5LSzhsvhRtwk0h644tzlynL8U4iD4yS3H-W               
+[DOCKER]                              hoiKgTmchL8_Q8aQXcz-4vBnwyiqC9worifL               
+[DOCKER]                              COtzYReF0px8eF1Wma_42J6NwIpyqnN1cL8v               
+[DOCKER]                              rJvz7HZRCTzVw0iTbQKJpchtsAAx1_YU4Ogf               
+[DOCKER]                              dRYNqH1y1MJR0xI7DJDt9ABO82wkqleVSjD_               
+[DOCKER]                              MSCLpj2byOHI3tDQ1OSer21uBN-ug-88Y40C               
+[DOCKER]                              Dtp3m9AE-4Z_Og4HMKoKO84Bb7eweIca32Y3               
+[DOCKER]                              UxNoEsT1WY_xD9TivX-A8oNze2NEC5aILD6x               
+[DOCKER]                              X56n9X0fukbAyRQtTBApvm9FxSIUXJimBbDz               
+[DOCKER]                              TG0VNap7-Xtnc4tDScxAer1zCVvsO2cdwKTS               
+[DOCKER]                              3Dr_R-o8cVW8w9iuh1g6fNxmfcUgpO_7JaAE               
+[DOCKER]                              v-TeL5rFvM1eXLoendzUnNW0AQyAdFH1p-zB               
+[DOCKER]                              -5D8hPTIepDYdDQrtYyTDFrLa-CVS1tMjCu0               
+[DOCKER]                              JmUe0sQiYaludQHLefqq3Zr5UdaswSiTAiQe               
+[DOCKER]                              wIbO84j-jeo-KuxHnA6sNIES3XBcBk_amQd1               
+[DOCKER]                              NzCoXVM7veD4UMiqafOcCavdCcmstu8Mro7J               
+[DOCKER]                              yJ1Mg_5GH8CKwYj7Irn2U2hFVFC65fPw-fiY               
+[DOCKER]                              YpwTdULpCvJXvH89ZHb9x8Y-YMbZ6xgjzDIY               
+[DOCKER]                              SPvh8SHvsvFTOGcZY0Uv9ewG1dMUjTZY1Z_4               
+[DOCKER]                              iAienYbtAq_a0aaKjlfiN0zlbQsBx41rK6v0               
+[DOCKER]                              rjgSS6tpTwCpoQo1wy1ooymvmXHf1nhCEY2R               
+[DOCKER]                              pbg6gwiFxC9zEKv1ld-HTszxIBDSeFwAxI9i               
+[DOCKER]                              IachJSqapmwQ-HmSli-wxTonpD1a2fuzPh3y               
+[DOCKER]                              RokmZ0shMN6drai16HayfhrDOF-Ty_IAtOQb               
+[DOCKER]                              orWMEQBYlWrWnYB_trjdQwsHw-eQlrSyqu8R               
+[DOCKER]                              tI6ev_uVbwKUehV6efA658QavRr0f2aSg7U2               
+[DOCKER]                              dCw_sxTWkCbsZYnO9gFoTqj9s03Y4k2mtU7T               
+[DOCKER]                              oXd5_Gy-rmZlG8DqRSdzkN7vX5jKVl24_iE7               
+[DOCKER]                              LQMESgCPK-O59dLGSdwbkNEmB7na-ge7SU51               
+[DOCKER]                              LeKEKcSWE0lfe5YaRd8LAowwPPXdAdJMZfzp               
+[DOCKER]                              SVQoH9NCmRe3MEbNFFWFKdME3YO1c6q4xbJA               
+[DOCKER]                              TxPROUUnAs9K3kZVqbN-LAgDGnsWb5Qaj510               
+[DOCKER]                              0nZ4zl29bv5sN7h2g_iiSxZqpi5ttYmWI_Nu               
+[DOCKER]                              PX6Mr8c8b69kZTQj20lgHZeiEjvtzEGOeke1               
+[DOCKER]                              TXvc0X02FK4-ecXfDiZzgIql9PvVp18Bbp0p               
+[DOCKER]                              2hqClx65P-OAEi4iMTgy6oUjK6ZXN4b3npLW               
+[DOCKER]                              7m7g5XiZHQshib_M4DDjj9CrmVkbSsfIFPaI               
+[DOCKER]                              gcIE6NyMQKNYPmPVP8S1DRyjwRUZx32KfC_q               
+[DOCKER]                              hdK7SIxi79qhtpd9gsByCJb-hJaongQHEs6C               
+[DOCKER]                              XxADwS8UMxfQDNUn_1SraA1BxCIFFsrS34Um               
+[DOCKER]                              vFWdadST8ogpCXmbCYhMw-_BJC8kHcqli7hO               
+[DOCKER]                              JL3sOqnFF3gxd7WBlbd2zoMfWtA83HWCedN8               
+[DOCKER]                              dPoPBzugDk-HG_miPgqQEXqIMEPqP7fg4d_S               
+[DOCKER]                              dScZTTcAbD_ppdc1WH-LTu_d1iqRWrPwNgk5               
+[DOCKER]                              gVAYi5oPJci8WaBH0pUcYRK9u6M7NpMFc6O8               
+[DOCKER]                              Q1ghy6POos0Bzby8x8SuuQHP8nlX0u8_waXM               
+[DOCKER]                              8g6uLEPZyW8psf34MqUj2vpH9-q68Eq5lwnx               
+[DOCKER]                              dOrZQep4j9pH4_WP19c3P1NDvgfSu3XnlX1J               
+[DOCKER]                              EE3gp6NqV31ITj-lW0MDWwRSV8-CFoYw1Jsw               
+[DOCKER]                              BXdMji3U3l8PbmjQxSU96ePWn8gGZBQlNrVj               
+[DOCKER]                              Br2CXo5QLPbBk6TrRWwM5U821x25FBGPNXLj               
+[DOCKER]                              LE5bvafxR_zLSgl4iYCALng6_rEoUdCS3KfC               
+[DOCKER]                              H6RyHImQeOdQj_CS3we47ULvqxTkRrYyJube               
+[DOCKER]                              0yIycpzkomUDARm7P7XQgNrHnfQlY3Jxbz7J               
+[DOCKER]                              0ZNynhcYZpu-x4d7sKUnGlCLQ2hhEj-a_RCE               
+[DOCKER]                              ndpFEtfem63E_9L36K4wZPoQW7v1zC-CXkjm               
+[DOCKER]                              R-FmFDoUIKZ_wusl-1vxOLIVDDn7merBtvYS               
+[DOCKER]                              i-ZwLlaWTUgLHXskyav8SXx7rUlZz2Lvmphm               
+[DOCKER]                              HNZHTkTqsmBpli0Xt250BHH--oCG_c5dcAFo               
+[DOCKER]                              6U34S4yuDLTO5ZyUD8uQxxd2jWioWBharyDI               
+[DOCKER]                              buvcEvA-xijjN8Ix5gLH7-0GxaghD1SvMAQE               
+[DOCKER]                              z-YGE5XIb0LZX-85EjrBPvwTaJ1fi6jTwj2k               
+[DOCKER]                              0RdlQRaFi3k40RknuVCFwskY2QKGtB6AQWIZ               
+[DOCKER]                              0MLKRRXxBeX8XHfuhBZfTGB-NLOfGXsTMMLI               
+[DOCKER]                              lEOd5yrnQ1s3H4kkNH9EkWJUZlJe4OVB8BYB               
+[DOCKER]                              9_Bb3KvvySHKNxZJwkDxI17MyOa3sid4PT0d               
+[DOCKER]                              pThJ0As654jqPrcLYpSc2ds7pDFoZWk3PB7A               
+[DOCKER]                              MklLY2mAg1BH-p4CkTO62s7p6hD_kasWLn0T               
+[DOCKER]                              lfblj2XU5Raya_e9P37V9h00T3wNi2lKbF47               
+[DOCKER]                              IUEX0XmdwAlnvUEZ_p81VUDO-n9QV3vSMOsU               
+[DOCKER]                              4Kvfnw38-mkzQQSKZfxz1QQHfaz-5XHjxw-_               
+[DOCKER]                              0b0HVtED65mc7eieaaG2-3b1-i_BYBkpBpRW               
+[DOCKER]                              7k5qChC7Za0QQ0m2vBbInTfb5Iz-CZi9W0NK               
+[DOCKER]                              AbSrUuJAskXwnKnn5UGpOpzi7Ppec95z_mwQ               
+[DOCKER]                              _I3JpKOpb7kHFqklAumj7N6SPzddwocz7y_o               
+[DOCKER]                              DrGpqZppmZOnmV2ZbHAGoC-jfPnDtnWav0ll               
+[DOCKER]                              PgiaIa6NKAOCg-rnWl3wGw30tj8dVVmKcbAV               
+[DOCKER]                              HqNcrEsh6g_cUQHauXSv9zV1cwsaC0Kh3M3V               
+[DOCKER]                              Z0T__uuGSZyBTzoVFZ56_-bj_ykIScy2VOg9               
+[DOCKER]                              ma7uMXV2mxdHpP2iIRBTIkoo5WS6mY2D_Q7i               
+[DOCKER]                              I6eeR_UqP5Qwhj5cGyZpaT-zwHC-dJb2r60Z               
+[DOCKER]                              UizP3wawY6ucEMpSbSyLGRFfAdyy2LjQ5yL6               
+[DOCKER]                              d5y5mgkGHVkBOv6Ya46OTWHkXISxnjOpaf5l               
+[DOCKER]                              RHbOnRUSQD3iuZyi8-yp-evA8nw6i17HB9Ft               
+[DOCKER]                              0ByvqeHf8DjUxx71_-G2yBtXVHH3Q81A_8xR               
+[DOCKER]                              ThowJJ-XVxCXG217wqDdfWAmL6Qpe0BN42aG               
+[DOCKER]                              nu0CcK5IYhvF5wnmTv5FePHANJ-zpGdneNs-               
+[DOCKER]                              oXaYoS3_wFfWAVmVLbIS5pDPcELuxXgJUsrZ               
+[DOCKER]                              -KktofzytQ44TfEQbP0vhorAaDhH_2XZEsz3               
+[DOCKER]                              jxN7WCwo8vdxYW_GRtq5yTZiB_oaqSZTvjDH               
+[DOCKER]                              vLWJ0VeVvc6xrUkgxjlC1VarYgNxhL6UFF-q               
+[DOCKER]                              l72tIHzqJgxTPcTRP_g0bU2Ngk7mQmLayOBJ               
+[DOCKER]                              znyxBO8_eWyuUQeSB5FPHh7pDdzkHAQm_wbJ               
+[DOCKER]                              mE54dknPp9MzM2jDAtSkcrMEqQ4N3YnPKaOI               
+[DOCKER]                              NV7ApSpCusVINZ06v_J2-iOVIwUKDqKpTrv0               
+[DOCKER]                              BnRBRDmVlukRezScoEE5gGZMP9XfiR1uUbwU               
+[DOCKER]                              j5kUflIlV8oLjjCQbiBkCVIgw-4-2p2blWd2               
+[DOCKER]                              MjnmDdFiUP7q0KghKLCkH0i_4uG1Sybtp3Cq               
+[DOCKER]                              frNeS1xWLDTrAQeehL7GJi5L6V0JAHx5PiRE               
+[DOCKER]                              WZiyr2ish_lA5LOxUI1q0dzZuSfPdB1jqJP8               
+[DOCKER]                              TFqUkxcv9Ft_Cko172-X6Pndfh8lqhyjskwB               
+[DOCKER]                              yk_IA60ubSXRFF0CwEhD4Xz0NhUKR_wqxbOV               
+[DOCKER]                              NpX3L1K24OJ45c3K-qqlhfHQCIM8g6IoWDfM               
+[DOCKER]                              S4AOjTUbA4yEsrA15i85pixD82cY0e_dcMUQ               
+[DOCKER]                              pgNdduhNMFq0jZYcVF5VUTotOgT70R47zqpl               
+[DOCKER]                              6r5_IWsRdxgXj6b3dfZhLp7M_Lq2Vmrsqejf               
+[DOCKER]                              Z_f_bu3uAH2xdGYOQSHvRYV3ursCPaIVmlIr               
+[DOCKER]                              h-sF_Nn0gQpfrw9NimlLb-WNXpdg5pNNDZql               
+[DOCKER]                              pIOEM2Xtcbqe9u3_q8_nVFJAfRb1XcnDo4Re               
+[DOCKER]                              CalwZjUi2lijvyYpRwiZvy8Z4_g-tuizIgGN               
+[DOCKER]                              VF1jRdnR7wWW2oJkRSLGXiOwqCjcJXb4m57k               
+[DOCKER]                              0FgTBLr8XAXKrP4Bu6zPefToWLK7n0MoThDy               
+[DOCKER]                              Wn0nKjFq8j4-buabNhoUq5n3fpBnxS0DyIcW               
+[DOCKER]                              6KNr5WKvAuzf5i-6DIlgRWRBLpQCtKe2Fxik               
+[DOCKER]                              A0M_xjQruSVQ9dtvUHP2WPccq7H3EiEd6WvZ               
+[DOCKER]                              3NtY3iFuOBHjIIfNZ1GvpPCBlTKywk5FF0PC               
+[DOCKER]                              -O_S_K-ToDhdmAZRZEwvqIcOJIc5siEfPVvO               
+[DOCKER]                              G_jafOUtyBfA7mc0FDEhW_G2tGMN8cbs_un0               
+[DOCKER]                              aiyy1Q7HbIxWTa4iGCr5ZvyICdxY4KbPlChS               
+[DOCKER]                              3pkaqC4FcTWuKj81kfUdvsy_31aYqb0J9tcv               
+[DOCKER]                              uzVkHSPs49zUzY6ti-g0WlVpFrTrmMyscsMj               
+[DOCKER]                              pzkFAj3iXcrTkvaIbFQocILh0i2kcPvy5Iyt               
+[DOCKER]                              O_5q5lt0txi2zmVb7dLMYKA8WFdPmrgsO1Op               
+[DOCKER]                              OgWVRqmaq6Cn7o9Xwwe32FYUiI_-6kXD7GCY               
+[DOCKER]                              DSfE0HisdGhCB7fi0xskgiBi45zXM6l-oPFQ               
+[DOCKER]                              L5hd5Zkv05s-ArZOH0kggVn0_AQtUQtpW0zG               
+[DOCKER]                              F-cx6FkPGCfTpVPfObePptanFgjieCp5jv28               
+[DOCKER]                              Hgsy0yAvVCXR98IP8gBqPS4lNdKaEgWAU0KS               
+[DOCKER]                              B9N3CX_lGiSDnnbMsEJZhoZT3xoE6GzkCv0f               
+[DOCKER]                              t_ALmO_aUN65VkcJC6gOW0g0mtz65qKOSpsp               
+[DOCKER]                              IdNcJ-xQJ1IVN361EiGkcjAomBt0sV5Cj-g-               
+[DOCKER]                              UfbUfhnJ4sTdvZ4piiQ-7HMfhTpT9iWGITjv               
+[DOCKER]                              MmgotKSV9JDzuWVVfDSu3igfCAJ8MCYQ1eA7               
+[DOCKER]                              SkjXTuxyMl-a8WF3f2r0TwjsK4xMuLKJtJdK               
+[DOCKER]                              kipSAqY1BoJ5757Y5CEmmjAJ1oQ0XsGDpgeq               
+[DOCKER]                              _K2l0UNTXYamdE01Z7qaS3Dsj8M0emRpPlXS               
+[DOCKER]                              oFV8ilYyAbZnisII47hHpNDkq6-GMH1F6Rfv               
+[DOCKER]                              NpjLH-NudNL39I16h9-JnSp0yZmetZF5Vl7v               
+[DOCKER]                              5FjpWKEwY28HVUpqO3nwqyqRUyz3ZXlF9ynd               
+[DOCKER]                              5GhgchrcbO1k7vxnDXHHBOD1kDynOgH5Y5sX               
+[DOCKER]                              fPLMO8T2T7HudKm-8PLkJ-U-dvoHbn5FssNJ               
+[DOCKER]                              yaQgLU_4geQ2yA6XWGDvEXxNBdUNT9ZSA6kL               
+[DOCKER]                              ZdO6kLm-7Qs9WK-qyLS05dMDKmkt9KVNo17S               
+[DOCKER]                              dxERh2JR_EqrhtBiFga_VlS3p9PROOSk1wFY               
+[DOCKER]                              0W3WFlJEfnu3d2oAD9NecCTtzgkI_V131q3G               
+[DOCKER]                              cyGgXuPxxTv44E_NQOo35JbqUDrX7MYBSav5               
+[DOCKER]                              1Pc2fs-yWE3uSazg1xmmRrpud-RC_3e6N2f2               
+[DOCKER]                              aQZAd18--YW31ZnUbL_DlrumCUHNukRTWPUj               
+[DOCKER]                              7mXTAiPSVCoyIHcFom7_SPEMwmBlygPDelYX               
+[DOCKER]                              EOQZ5hOlm6bempJx5rLpTcFG2oghyDIB1wR2               
+[DOCKER]                              m9jb1nZx0ftkwIbzD8pi2-cK9dcrog3Es27o               
+[DOCKER]                              Q5H8KUECqRK-pzk01yowTDXVzu-zrD6CbkC6               
+[DOCKER]                              YyW9ePsDVSiBlYxRJ7P6CojtNS09Gkcd9cGd               
+[DOCKER]                              65JwEtlWsIU_CBvW5qF2aiTWzPimCKJp2RrQ               
+[DOCKER]                              aVPhUfUfaJT6W2bugf3KQCin0klCaujb38M4               
+[DOCKER]                              aA4S9HDgEgOv73AmMDCPvhHeUmMKbvbDJXOm               
+[DOCKER]                              R9m3bIueVJnZWK2SbBr3G9rG9ucA5L45qO_w               
+[DOCKER]                              VgyrcTWGFOpQ5QXfAbuM09OA2j5TjaoI_azB               
+[DOCKER]                              wM6eGs1aFAhv7DFWXzy9AFQbnmB047u2wK-I               
+[DOCKER]                              YunicQasfANX49VJyyNhd-cGZ44JJ4V7nOnN               
+[DOCKER]                              1yzk1_FU1lr5Msw-1jzc_BTbw6lvTr3jUVUD               
+[DOCKER]                              gY8juy92G2KHpm5FBZmRI6yLoazPpmQnCGs6               
+[DOCKER]                              nS18oHXmvDy6tHUpnfvks37CgEnYtXbiQR3I               
+[DOCKER]                              vhWu8CIl40hP8hvQ2ivXGfTOsOCfGiY3oj3W               
+[DOCKER]                              cfZcIjsf9EpD6A9TZqnFlO1Ay8kf6dly6oiZ               
+[DOCKER]                              rwIWmy5uPigFFlNhymxUM6Aeq3578llhSsp3               
+[DOCKER]                              dUKtRQtf5tw7n90fKB544b5WO9LpUd_qDKzv               
+[DOCKER]                              cblg78E2MdcOGY4BHCYstyYnSXTbvuQR74sV               
+[DOCKER]                              1ao5NSxiGOIEh3fIRoVrK7NRqqWCM1XfeaTK               
+[DOCKER]                              EyAM84hDMQCuEOR3khAr3ungcPUgnP0Eyeot               
+[DOCKER]                              o4lTbk3eSBh4KlKYbFj_s-kdHNMC4tcQxwyy               
+[DOCKER]                              3bwggWeN-hBn9TVza8gXt7_sJbSDkZ8FZ9hR               
+[DOCKER]                              PbpJXEj-MtwbIUoCZbYxfVTqS8jF4DhX-CNE               
+[DOCKER]                              SqKMZ9ivbhiHnPBao5NPyk_6m3tG-QwHtLPL               
+[DOCKER]                              iBUZrjDLlIPJXZIpg-YoYGVAXs7iAIiolAOB               
+[DOCKER]                              UMc4YisRqa0SFJrnxcBDDnfftHe200XSSiWR               
+[DOCKER]                              ryCOz0l29ASs5KwHtjBziAethfOikT8UcFgN               
+[DOCKER]                              kCdqaWKgt_cUptRZrjbqa8bHBx3ZCkobbrZw               
+[DOCKER]                              g9X9NzTv6B7f07w7FtfaMV2I_xbZRZJDH_2e               
+[DOCKER]                              ILgB5DzJMB3Zj869ZyquVoTxzniW1dG251dn               
+[DOCKER]                              VW0n0jVH078gHWvaLQ29Z9sm4bt6urLHNns9               
+[DOCKER]                              AsgN1uXbNBrD82-gD3woM0exr8rutfgWQkW6               
+[DOCKER]                              4ecBhUNpKRSPOZsl6aXjbTSPSL0VAw2vqxhn               
+[DOCKER]                              KfeqGqcMwlJEpQdUJdrEY9SwaBfCQ2eNW1Q9               
+[DOCKER]                              En1FRNzqW2DbeBBQToZuQQ-bwIbwQFSEEmSa               
+[DOCKER]                              6_gwwI71YAmP2b0jUXIb2y76uYYSv0-FQ8sG               
+[DOCKER]                              AXg2NFE70ljfTsmqqTu6haWAdN5JPUKw0LA1               
+[DOCKER]                              0YDomePxd6iw15EuZ9B1N5cVkYtmL9RWEuY6               
+[DOCKER]                              PhBZJW6qgj0_KnpjnlwqEEtzAr3WFDkhwg3G               
+[DOCKER]                              N7kxIJ8SCx-z09DSGqtg9da4HMihs__oVc3K               
+[DOCKER]                              gZnHfarWKVyRQXzEAxFsEtQOFPlmPQpPrOIJ               
+[DOCKER]                              NZeNzZOQjySyFXKBMBr1LyeiidvCqBkLgn8g               
+[DOCKER]                              ETRZSZWTdG_Iwlrputp8CdZaYJSuOAktYDqd               
+[DOCKER]                              R2vHcOhikS8Tt8nc=","status":null},"a               
+[DOCKER]                              ction":{"command":"python3 -                       
+[DOCKER]                              <<\'PY\'\\nimport                                  
+[DOCKER]                              sys\\nsys.path.insert(0,                           
+[DOCKER]                              \'/utils\')\\nfrom common import                   
+[DOCKER]                              check_file_in_owncloud_directory\\nr               
+[DOCKER]                              es =                                               
+[DOCKER]                              check_file_in_owncloud_directory(\'T               
+[DOCKER]                              AC_financials.csv\',                               
+[DOCKER]                              \'/Documents/Financials\')\\nprint(r               
+[DOCKER]                              es)\\nPY\\n","is_input":false,"timeo               
+[DOCKER]                              ut":120000.0,"reset":false,"kind":"T               
+[DOCKER]                              erminalAction"},"tool_name":"termina               
+[DOCKER]                              l","tool_call_id":"call_ZNtrbH2fSD1A               
+[DOCKER]                              zA4VmvShGswR","tool_call":{"id":"cal               
+[DOCKER]                              l_ZNtrbH2fSD1AzA4VmvShGswR","name":"               
+[DOCKER]                              terminal","arguments":"{\\"command\\               
+[DOCKER]                              ":\\"python3 - <<\'PY\'\\\\nimport                 
+[DOCKER]                              sys\\\\nsys.path.insert(0,                         
+[DOCKER]                              \'/utils\')\\\\nfrom common import                 
+[DOCKER]                              check_file_in_owncloud_directory\\\\               
+[DOCKER]                              nres =                                             
+[DOCKER]                              check_file_in_owncloud_directory(\'T               
+[DOCKER]                              AC_financials.csv\',                               
+[DOCKER]                              \'/Documents/Financials\')\\\\nprint               
+[DOCKER]                              (res)\\\\nPY\\\\n\\",\\"timeout\\":                
+[DOCKER]                              120000,\\"security_risk\\":\\"MEDIUM               
+[DOCKER]                              \\",\\"summary\\":\\"Check ownCloud                
+[DOCKER]                              for TAC_financials.csv                             
+[DOCKER]                              existence\\"}","origin":"responses"}               
+[DOCKER]                              ,"llm_response_id":"resp_bGl0ZWxsbTp               
+[DOCKER]                              jdXN0b21fbGxtX3Byb3ZpZGVyOmxpdGVsbG1               
+[DOCKER]                              fcHJveHk7bW9kZWxfaWQ6Tm9uZTtyZXNwb25               
+[DOCKER]                              zZV9pZDpyZXNwX2JHbDBaV3hzYlRwamRYTjB               
+[DOCKER]                              iMjFmYkd4dFgzQnliM1pwWkdWeU9tOXdaVzV               
+[DOCKER]                              oYVR0dGIyUmxiRjlwWkRveU16ZzROV1EzTmk               
+[DOCKER]                              wek56bGtMVFJsWkdRdE9HSmlOeTFqWkRZM1p               
+[DOCKER]                              XTTFPR00zWm1ZN2NtVnpjRzl1YzJWZmFXUTZ               
+[DOCKER]                              jbVZ6Y0Y4d1kyTTJOakl4TVdGbE5EWXdabVE               
+[DOCKER]                              1TURFMk9UZGhZelk1WWpZeE9EQTRNVGxqT0R               
+[DOCKER]                              NNE1tRmpNalk0WkRZNVlXSXlaZz09","secu               
+[DOCKER]                              rity_risk":"MEDIUM","summary":"Check               
+[DOCKER]                               ownCloud for TAC_financials.csv                   
+[DOCKER]                              existence","kind":"ActionEvent"}',                 
+[DOCKER]                              frame_finished=True,                               
+[DOCKER]                              message_finished=True) cannot be                   
+[DOCKER]                              sent in state                                      
+[DOCKER]                              ConnectionState.CLOSED.                            
+[DOCKER]                                                                                 
+[DOCKER]                              The above exception was the direct                 
+[DOCKER]                              cause of the following exception:                  
+[DOCKER]                                                                                 
+[DOCKER]                              ╭─ Traceback (most recent call las─╮               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/websockets.py: │               
+[DOCKER]                              │ 86 in send                       │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │    83 │   │   │   if message_typ │               
+[DOCKER]                              │    84 │   │   │   │   self.appli │               
+[DOCKER]                              │    85 │   │   │   try:           │               
+[DOCKER]                              │ ❱  86 │   │   │   │   await self │               
+[DOCKER]                              │    87 │   │   │   except OSError │               
+[DOCKER]                              │    88 │   │   │   │   self.appli │               
+[DOCKER]                              │    89 │   │   │   │   raise WebS │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/_exception_han │               
+[DOCKER]                              │ dler.py:39 in sender             │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   36 │   │   │                   │               
+[DOCKER]                              │   37 │   │   │   if message["typ │               
+[DOCKER]                              │   38 │   │   │   │   response_st │               
+[DOCKER]                              │ ❱ 39 │   │   │   await send(mess │               
+[DOCKER]                              │   40 │   │                       │               
+[DOCKER]                              │   41 │   │   try:                │               
+[DOCKER]                              │   42 │   │   │   await app(scope │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/uvicorn/protocols/websoc │               
+[DOCKER]                              │ kets/wsproto_impl.py:348 in send │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   345 │   │   │   │   │   msg =  │               
+[DOCKER]                              │       but got '%s'."             │               
+[DOCKER]                              │   346 │   │   │   │   │   raise  │               
+[DOCKER]                              │   347 │   │   │   except LocalPr │               
+[DOCKER]                              │ ❱ 348 │   │   │   │   raise Clie │               
+[DOCKER]                              │   349 │   │   elif self.response │               
+[DOCKER]                              │   350 │   │   │   if message_typ │               
+[DOCKER]                              │   351 │   │   │   │   message =  │               
+[DOCKER]                              ╰──────────────────────────────────╯               
+[DOCKER]                              ClientDisconnected                                 
+[DOCKER]                                                                                 
+[DOCKER]                              During handling of the above                       
+[DOCKER]                              exception, another exception                       
+[DOCKER]                              occurred:                                          
+[DOCKER]                                                                                 
+[DOCKER]                              ╭─ Traceback (most recent call las─╮               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/openhands/agent_server/s │               
+[DOCKER]                              │ ockets.py:143 in _send_event     │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   140 async def _send_event(even │               
+[DOCKER]                              │   141 │   try:                   │               
+[DOCKER]                              │   142 │   │   dumped = event.mod │               
+[DOCKER]                              │ ❱ 143 │   │   await websocket.se │               
+[DOCKER]                              │   144 │   except Exception:      │               
+[DOCKER]                              │   145 │   │   logger.exception(" │               
+[DOCKER]                              │   146                            │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/websockets.py: │               
+[DOCKER]                              │ 176 in send_json                 │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   173 │   │   │   raise RuntimeE │               
+[DOCKER]                              │   174 │   │   text = json.dumps( │               
+[DOCKER]                              │   175 │   │   if mode == "text": │               
+[DOCKER]                              │ ❱ 176 │   │   │   await self.sen │               
+[DOCKER]                              │   177 │   │   else:              │               
+[DOCKER]                              │   178 │   │   │   await self.sen │               
+[DOCKER]                              │   179                            │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/websockets.py: │               
+[DOCKER]                              │ 89 in send                       │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │    86 │   │   │   │   await self │               
+[DOCKER]                              │    87 │   │   │   except OSError │               
+[DOCKER]                              │    88 │   │   │   │   self.appli │               
+[DOCKER]                              │ ❱  89 │   │   │   │   raise WebS │               
+[DOCKER]                              │    90 │   │   elif self.applicat │               
+[DOCKER]                              │    91 │   │   │   message_type = │               
+[DOCKER]                              │    92 │   │   │   if message_typ │               
+[DOCKER]                              ╰──────────────────────────────────╯               
+[DOCKER]                              WebSocketDisconnect                                
+[DOCKER] [01/29/26 02:33:01] ERROR    error_sending_event:                 sockets.py:145
+[DOCKER]                              ObservationEvent(id='2fbd0409...',                 
+[DOCKER]                              source='environment',                              
+[DOCKER]                              timestamp='2026-01-29T02:33:00.87652               
+[DOCKER]                              7')                                                
+[DOCKER]                              ╭─ Traceback (most recent call las─╮               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/openhands/agent_server/s │               
+[DOCKER]                              │ ockets.py:143 in _send_event     │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   140 async def _send_event(even │               
+[DOCKER]                              │   141 │   try:                   │               
+[DOCKER]                              │   142 │   │   dumped = event.mod │               
+[DOCKER]                              │ ❱ 143 │   │   await websocket.se │               
+[DOCKER]                              │   144 │   except Exception:      │               
+[DOCKER]                              │   145 │   │   logger.exception(" │               
+[DOCKER]                              │   146                            │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/websockets.py: │               
+[DOCKER]                              │ 176 in send_json                 │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │   173 │   │   │   raise RuntimeE │               
+[DOCKER]                              │   174 │   │   text = json.dumps( │               
+[DOCKER]                              │   175 │   │   if mode == "text": │               
+[DOCKER]                              │ ❱ 176 │   │   │   await self.sen │               
+[DOCKER]                              │   177 │   │   else:              │               
+[DOCKER]                              │   178 │   │   │   await self.sen │               
+[DOCKER]                              │   179                            │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │ /usr/local/lib/python3.12/site-p │               
+[DOCKER]                              │ ackages/starlette/websockets.py: │               
+[DOCKER]                              │ 98 in send                       │               
+[DOCKER]                              │                                  │               
+[DOCKER]                              │    95 │   │   │   │   self.appli │               
+[DOCKER]                              │    96 │   │   │   await self._se │               
+[DOCKER]                              │    97 │   │   else:              │               
+[DOCKER]                              │ ❱  98 │   │   │   raise RuntimeE │               
+[DOCKER]                              │    99 │                          │               
+[DOCKER]                              │   100 │   async def accept(      │               
+[DOCKER]                              │   101 │   │   self,              │               
+[DOCKER]                              ╰──────────────────────────────────╯               
+[DOCKER]                              RuntimeError: Cannot call "send"                   
+[DOCKER]                              once a close message has been sent.                
+[DOCKER] [01/29/26 02:33:01] INFO     Event websocket disconnected:         sockets.py:80
+[DOCKER]                              bb43fa5e-fc6e-450f-915b-e1635d08b627               
+[DOCKER] [01/29/26 02:33:01] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:02] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:03] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:04] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:05] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:06] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:11] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:12] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:13] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:14] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:15] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:16] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:17] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:18] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:19] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:20] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:21] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:22] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:23] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:24] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:25] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:26] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:27] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:28] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:29] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:30] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:31] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:32] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:33] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:34] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:35] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:36] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:37] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:38] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:39] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:40] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:41] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:42] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:43] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:44] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:45] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:46] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:47] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:48] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:49] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:50] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:51] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:52] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:53] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:54] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:55] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:56] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:57] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:58] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:33:59] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:00] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:01] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:02] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:03] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:04] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:05] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:06] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:11] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:12] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:13] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:14] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:15] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:16] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:17] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:18] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:19] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:20] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:21] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:22] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:23] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:24] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:25] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:26] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:27] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:28] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:29] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:30] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:31] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:32] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:33] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:34] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:35] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:36] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:37] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:38] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:39] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:40] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:41] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:42] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:43] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:44] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:45] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:46] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:47] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:48] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:49] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:50] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:51] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:52] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:53] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:54] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:55] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:56] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:57] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:58] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:34:59] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:00] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:01] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:03] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:04] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:05] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:06] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/conversations/bb43fa5e-fc6e-45                
+[DOCKER]                              0f-915b-e1635d08b627 HTTP/1.1" 200                 
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=584ddfd8e4e5462d8a8142f952                
+[DOCKER]                              9609bb&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=584ddfd8e4e5462d8a8142f952                
+[DOCKER]                              9609bb&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=dae82775a70e4b9b94da065415                
+[DOCKER]                              b45e37&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=dae82775a70e4b9b94da065415                
+[DOCKER]                              b45e37&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=de6303575adf46b4bd7202bfcf                
+[DOCKER]                              5c245f&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=de6303575adf46b4bd7202bfcf                
+[DOCKER]                              5c245f&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:07] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:08] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:09] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=e79a1c41101641e68a2803957b                
+[DOCKER]                              c8ebdf&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "POST            h11_impl.py:480
+[DOCKER]                              /api/bash/start_bash_command                       
+[DOCKER]                              HTTP/1.1" 200                                      
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=ef3d72eadddd489394b13317d2                
+[DOCKER]                              6a5465&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+[DOCKER] [01/29/26 02:35:10] INFO     172.17.0.1:44194 - "GET             h11_impl.py:480
+[DOCKER]                              /api/bash/bash_events/search?comman                
+[DOCKER]                              d_id__eq=ef3d72eadddd489394b13317d2                
+[DOCKER]                              6a5465&sort_order=TIMESTAMP&limit=1                
+[DOCKER]                              00 HTTP/1.1" 200                                   
+4278ec73bcbc7892def30a8e8187038628968d45710b1a4c00ff9947a9c380bb
