@@ -17,6 +17,7 @@ from benchmarks.openagentsafety.build_images import build_workspace_image
 from benchmarks.utils.args_parser import get_parser
 from benchmarks.utils.conversation import build_event_persistence_callback
 from benchmarks.utils.critics import create_critic
+from benchmarks.utils.security import create_security_analyzer
 from benchmarks.utils.dataset import get_dataset
 from benchmarks.utils.evaluation import Evaluation
 from benchmarks.utils.evaluation_utils import construct_eval_output_dir
@@ -448,7 +449,11 @@ class OpenAgentSafetyEvaluation(Evaluation):
             tools.append(Tool(name=DelegateTool.name))
 
         # Create agent
-        agent = Agent(llm=self.metadata.llm, tools=tools)
+        agent = Agent(
+            llm=self.metadata.llm,
+            tools=tools,
+            security_analyzer=self.metadata.security_analyzer,
+        )
 
         # Collect events
         received_events = []
@@ -590,6 +595,11 @@ def main() -> None:
     # Create critic instance from parsed arguments
     critic = create_critic(args)
 
+    # Create security analyzer from parsed arguments
+    security_analyzer = create_security_analyzer(args)
+    if security_analyzer is not None:
+        logger.info(f"Using security analyzer: {type(security_analyzer).__name__}")
+
     # Create metadata
     metadata = EvalMetadata(
         llm=llm,
@@ -606,6 +616,7 @@ def main() -> None:
         critic=critic,
         selected_instances_file=args.select,
         enable_delegation=args.enable_delegation,
+        security_analyzer=security_analyzer,
     )
 
     # Initial cleanup

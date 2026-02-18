@@ -7,6 +7,7 @@ from benchmarks.utils.laminar import LaminarEvalMetadata
 from openhands.sdk import LLM, Event, get_logger
 from openhands.sdk.critic import CriticBase
 from openhands.sdk.llm import Metrics
+from openhands.sdk.security import SecurityAnalyzerBase
 from openhands.sdk.utils.models import OpenHandsModel
 
 
@@ -71,6 +72,13 @@ class EvalMetadata(BaseModel):
     enable_delegation: bool = Field(
         default=False,
         description="Enable sub-agent delegation tools for the agent",
+    )
+    security_analyzer: SecurityAnalyzerBase | None = Field(
+        default=None,
+        description=(
+            "Security analyzer instance to use during inference. "
+            "If None, no security analysis is performed."
+        ),
     )
     lmnr: LaminarEvalMetadata | None = Field(
         default=None,

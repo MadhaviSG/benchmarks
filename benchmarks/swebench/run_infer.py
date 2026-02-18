@@ -19,6 +19,7 @@ from benchmarks.utils.constants import EVAL_AGENT_SERVER_IMAGE
 from benchmarks.utils.conversation import build_event_persistence_callback
 from benchmarks.utils.critics import create_critic
 from benchmarks.utils.dataset import get_dataset
+from benchmarks.utils.security import create_security_analyzer
 from benchmarks.utils.evaluation import Evaluation
 from benchmarks.utils.evaluation_utils import (
     construct_eval_output_dir,
@@ -239,12 +240,7 @@ class SWEBenchEvaluation(Evaluation):
             llm=self.metadata.llm,
             tools=tools,
             system_prompt_kwargs={"cli_mode": True},
-            # TODO: we can enable condenser and security analyzer later
-            # and have them configurable via EvalMetadata
-            # condenser=get_default_condenser(
-            #     llm=self.metadata.llm.model_copy(update={"service_id": "condenser"})
-            # ),
-            # security_analyzer=LLMSecurityAnalyzer(),
+            security_analyzer=self.metadata.security_analyzer,
         )
 
         assert isinstance(workspace, RemoteWorkspace)
@@ -371,6 +367,11 @@ def main() -> None:
     critic = create_critic(args)
     logger.info(f"Using critic: {type(critic).__name__}")
 
+    # Create security analyzer from parsed arguments
+    security_analyzer = create_security_analyzer(args)
+    if security_analyzer is not None:
+        logger.info(f"Using security analyzer: {type(security_analyzer).__name__}")
+
     metadata = EvalMetadata(
         llm=llm,
         dataset=args.dataset,
@@ -387,6 +388,7 @@ def main() -> None:
         max_retries=args.max_retries,
         workspace_type=args.workspace,
         enable_delegation=args.enable_delegation,
+        security_analyzer=security_analyzer,
     )
 
     # Run orchestrator with a simple JSONL writer

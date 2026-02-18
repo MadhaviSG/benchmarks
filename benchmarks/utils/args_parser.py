@@ -9,6 +9,7 @@ to match the evaluation repository configuration.
 import argparse
 
 from benchmarks.utils.critics import add_critic_args
+from benchmarks.utils.security import add_security_analyzer_args
 
 
 def get_parser(add_llm_config: bool = True) -> argparse.ArgumentParser:
@@ -72,6 +73,9 @@ def get_parser(add_llm_config: bool = True) -> argparse.ArgumentParser:
 
     # Add critic arguments (no default)
     add_critic_args(parser)
+
+    # Add security analyzer arguments
+    add_security_analyzer_args(parser)
 
     parser.add_argument(
         "--select",
