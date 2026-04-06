@@ -110,18 +110,15 @@ def convert_to_swebench_format(input_file: str, output_file: str) -> None:
         f"{error_count} errors"
     )
 
-    if converted_count == 0:
-        raise ValueError("No valid entries were converted")
-
 
 def run_swebench_evaluation(
     predictions_file: str,
     run_id: str,
-    dataset: str,
-    workers: int,
-    split: str,
-    modal: bool,
-    timeout: int,
+    dataset: str = EVAL_DEFAULTS["dataset"],
+    workers: int = EVAL_DEFAULTS["workers"],
+    split: str = EVAL_DEFAULTS["split"],
+    modal: bool = EVAL_DEFAULTS["modal"],
+    timeout: int = EVAL_DEFAULTS["timeout"],
 ) -> None:
     """
     Run SWE-Bench evaluation on the predictions file.
@@ -143,12 +140,8 @@ def run_swebench_evaluation(
         predictions_dir = predictions_path.parent
         predictions_filename = predictions_path.name
 
-        # Run SWE-Bench evaluation using global python (not UV environment)
-        # since swebench is installed globally
         cmd = [
-            "uv",
-            "run",
-            "python",
+            sys.executable,
             "-m",
             "swebench.harness.run_evaluation",
             "--dataset_name",

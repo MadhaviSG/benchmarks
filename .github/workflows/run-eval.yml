@@ -14,20 +14,16 @@ on:
           - swtbench
           - commit0
           - swebenchmultimodal
+          - terminalbench
       sdk_ref:
         description: SDK commit/ref to evaluate
         required: true
         default: main
       eval_limit:
-        description: Number of instances to run
+        description: Number of instances to run (any positive integer)
         required: false
         default: '1'
-        type: choice
-        options:
-          - '1'
-          - '50'
-          - '200'
-          - '500'
+        type: string
       model_ids:
         description: Comma-separated model IDs to evaluate. Must be keys of MODELS in resolve_model_config.py. Defaults to first model in that dict.
         required: false
@@ -84,9 +80,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Validate eval_limit
+        run: |
+          if ! [[ "${{ github.event.inputs.eval_limit }}" =~ ^[1-9][0-9]*$ ]]; then
+            echo "Error: eval_limit must be a positive integer, got: ${{ github.event.inputs.eval_limit }}"
+            exit 1
+          fi
+
       - name: Dispatch run-eval workflow in software-agent-sdk
         env:
-          PAT_TOKEN: ${{ secrets.ALLHANDS_BOT_GITHUB_PAT }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
           SDK_REPO: OpenHands/software-agent-sdk
           SDK_WORKFLOW: run-eval.yml
           SDK_WORKFLOW_REF: main
@@ -106,7 +109,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$PAT_TOKEN" ]; then
-            echo "Missing ALLHANDS_BOT_GITHUB_PAT secret" >&2
+            echo "Missing PAT_TOKEN secret" >&2
             exit 1
           fi
 
