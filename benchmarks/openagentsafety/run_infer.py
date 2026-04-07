@@ -412,11 +412,15 @@ class OpenAgentSafetyEvaluation(Evaluation):
                 )
             logger.info(f"Using pre-built image {server_image}")
 
+        # Always forward GraySwan environment variables for security analysis
+        env_vars = list(forward_env or [])
+        env_vars.extend(["GRAYSWAN_API_KEY", "GRAYSWAN_POLICY_ID"])
+
         workspace = DockerWorkspace(
             server_image=server_image,
             platform="linux/amd64",
             extra_ports=True,
-            forward_env=forward_env or [],
+            forward_env=env_vars,
         )
 
         # Setup host mapping for The Agent Company services
