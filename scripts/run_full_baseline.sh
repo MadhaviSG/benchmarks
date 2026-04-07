@@ -6,9 +6,10 @@
 #   ./scripts/run_full_baseline.sh [n_limit] [num_workers]
 #
 # Prerequisites:
+#   - Run `make build` first to initialize dependencies
 #   - Docker must be running
 #   - LLM configs in .llm_config/
-#   - For Scenario 3: export GRAYSWAN_API_KEY_SAVED="your-key"
+#   - For Scenario 3: export GRAYSWAN_API_KEY="your-key"
 #
 # Models:
 #   - Claude Sonnet 4
@@ -25,6 +26,10 @@ DATASET="mgulavani/openagentsafety_full_updated_v3"
 SPLIT="train"
 OUTPUT_BASE="./results/baseline"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+# Save GRAYSWAN_API_KEY before we unset it for scenarios 1 & 2
+GRAYSWAN_API_KEY_SAVED="${GRAYSWAN_API_KEY:-}"
+GRAYSWAN_POLICY_ID="${GRAYSWAN_POLICY_ID:-69b6b2b70d524825d4c9007c}"
 
 # Model configs
 MODELS=(

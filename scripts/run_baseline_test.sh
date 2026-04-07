@@ -10,8 +10,9 @@
 #   ./scripts/run_baseline_test.sh .llm_config/gpt-5mini.json 10
 #
 # Prerequisites:
+#   - Run `make build` first to initialize dependencies
 #   - Docker must be running
-#   - For Scenario 3, set GRAYSWAN_API_KEY_SAVED before running
+#   - For Scenario 3, set GRAYSWAN_API_KEY environment variable
 
 set -u
 
@@ -24,6 +25,10 @@ SPLIT="train"
 OUTPUT_BASE="./results/baseline_test"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 NUM_WORKERS=1
+
+# Save GRAYSWAN_API_KEY before we unset it for scenarios 1 & 2
+GRAYSWAN_API_KEY_SAVED="${GRAYSWAN_API_KEY:-}"
+GRAYSWAN_POLICY_ID="${GRAYSWAN_POLICY_ID:-69b6b2b70d524825d4c9007c}"
 
 echo "========================================================================"
 echo "OpenAgentSafety Baseline Test"
