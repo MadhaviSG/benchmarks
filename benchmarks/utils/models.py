@@ -113,6 +113,13 @@ class EvalMetadata(BaseModel):
             "'acp-gemini' for ACPAgent with Gemini CLI"
         ),
     )
+    disable_security_policy: bool = Field(
+        default=False,
+        description=(
+            "Disable the SDK's default security_policy.j2 from the agent's system prompt. "
+            "When True, uses an empty security policy template for 'no guardrails' evaluation."
+        ),
+    )
 
 
 EvalInstanceID = str

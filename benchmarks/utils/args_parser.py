@@ -128,6 +128,15 @@ def get_parser(add_llm_config: bool = True) -> argparse.ArgumentParser:
         type=int,
         help="Number of initial events to always keep when condensing",
     )
+    parser.add_argument(
+        "--disable-security-policy",
+        action="store_true",
+        default=False,
+        help=(
+            "Disable the SDK's default security_policy.j2 from the agent's system prompt. "
+            "Use for 'no guardrails' baseline evaluation."
+        ),
+    )
     return parser
 
 
