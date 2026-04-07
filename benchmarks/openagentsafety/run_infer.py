@@ -5,7 +5,6 @@ import json
 import os
 import subprocess
 import time
-from pathlib import Path
 from typing import Any, List
 
 import numpy as np
@@ -465,13 +464,10 @@ class OpenAgentSafetyEvaluation(Evaluation):
             "tools": tools,
         }
         if self.metadata.disable_security_policy:
-            # Use empty security policy template for "no guardrails" scenario
-            empty_policy_path = str(
-                Path(__file__).parent / "prompts" / "no_security_policy.j2"
-            )
-            agent_kwargs["security_policy_filename"] = empty_policy_path
+            # Pass empty string to disable security policy in system prompt
+            agent_kwargs["security_policy_filename"] = ""
             logger.info(
-                "[SECURITY] SDK security_policy.j2 DISABLED - using empty template"
+                "[SECURITY] SDK security_policy.j2 DISABLED - no security policy in system prompt"
             )
         agent = Agent(**agent_kwargs)
 
