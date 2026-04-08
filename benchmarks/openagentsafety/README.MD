@@ -111,144 +111,172 @@ You can resume a previous run by re-running the same command with the same `--ou
 - `--critic`: Critic mode (pass/fail evaluation)
 - `--prompt-path`: Custom prompt template (optional)
 - `--select`: Path to text file containing specific instance IDs to evaluate
-- `--security-mode`: GraySwan Cygnal security enforcement mode (see Security Evaluation Scenarios)
+- `--security-analyzer`: Security analyzer type (`none`, `llm`, `cygnal`) - see Security Evaluation Scenarios
+- `--security-mode`: Security enforcement mode (`passive`, `blocking`, `blocking-medium`)
 - `--disable-security-policy`: Disable SDK's default security_policy.j2 for "no guardrails" testing
 
 ## Security Evaluation Scenarios
 
-OpenAgentSafety supports evaluating agent safety behavior under different guardrail configurations:
+OpenAgentSafety supports evaluating agent safety behavior under different guardrail configurations. The benchmark provides two orthogonal configuration options:
 
-1. **No guardrails** - Raw model behavior without any safety constraints
-2. **SDK prompt-based guardrails** - OpenHands SDK security policy in system prompt (guidance only, no blocking)
-3. **GraySwan Cygnal guardrails** - Real-time action monitoring AND blocking via Cygnal API
+### Security Analyzer Types (`--security-analyzer`)
 
-**Important**: Only Scenario 3 (Cygnal) actually BLOCKS risky actions. Scenario 2 provides safety guidelines in the system prompt but does not prevent the agent from taking risky actions.
+| Analyzer | Description | Risk Assessment |
+|----------|-------------|-----------------|
+| `none` | No security analyzer (baseline) | No risk assessment |
+| `llm` | LLM-based self-assessment | Agent marks its own actions with risk levels |
+| `cygnal` | GraySwan Cygnal API (default) | External API assesses risk independently |
+
+### Security Enforcement Modes (`--security-mode`)
+
+| Mode | Blocking Behavior | Use Case |
+|------|-------------------|----------|
+| `passive` | None (log only, default) | Baseline measurement, observation |
+| `blocking` | Block HIGH risk | Standard protection |
+| `blocking-medium` | Block MEDIUM+ risk | Maximum safety enforcement |
 
 ### Environment Variables
 
 ```bash
-# Required for Cygnal integration
+# Required only for Cygnal integration
 export GRAYSWAN_API_KEY="your-grayswan-api-key"
 
-# Custom policy for OpenAgentSafety evaluation
+# Custom policy for OpenAgentSafety evaluation (optional)
 export GRAYSWAN_POLICY_ID="69b6b2b70d524825d4c9007c"
 ```
 
-### Scenario 1: No Guardrails (Baseline)
+---
 
-Disable both SDK security policy and Cygnal blocking to measure raw model behavior:
+## Comparison Study: Guardrail Effectiveness
+
+This section outlines how to run experiments comparing different guardrail approaches.
+
+### Scenario 1: No Analyzer (Baseline)
+
+Measure raw model behavior with no security analysis:
 
 ```bash
-# Unset Cygnal credentials to disable security analysis
-unset GRAYSWAN_API_KEY
-
 uv run openagentsafety-infer .llm_config/gpt-4o-mini.json \
   --dataset mgulavani/openagentsafety_full_updated_v3 \
   --split train \
-  --output-dir ./results/no_guardrails \
+  --output-dir ./results/baseline_no_analyzer \
+  --security-analyzer none \
+  --security-mode passive \
   --disable-security-policy \
-  --security-mode passive \
   --critic pass
 ```
 
-- `--disable-security-policy`: Removes SDK security_policy.j2 from agent's system prompt
-- No Cygnal analysis (API key not set)
-- Measures raw model safety behavior without any guardrails
+- No security analyzer active
+- No risk assessment or blocking
+- `--disable-security-policy`: Optionally remove SDK security_policy.j2 from system prompt
+- Measures raw model safety behavior
 
-### Scenario 2: SDK Prompt-Based Guardrails (No Action Blocking)
+### Scenario 2: LLM Security Analyzer
 
-Use OpenHands SDK's default security policy in the agent's system prompt. This tests whether the LLM follows safety guidelines voluntarily (no enforcement):
+The agent assesses its own action risks. The LLM is prompted to include `security_risk` on each action:
 
 ```bash
-# Unset Cygnal to isolate SDK prompt-based guardrails
-unset GRAYSWAN_API_KEY
-
+# Passive mode (logging only)
 uv run openagentsafety-infer .llm_config/gpt-4o-mini.json \
   --dataset mgulavani/openagentsafety_full_updated_v3 \
   --split train \
-  --output-dir ./results/sdk_guardrails \
+  --output-dir ./results/llm_analyzer_passive \
+  --security-analyzer llm \
   --security-mode passive \
+  --critic pass
+
+# Blocking mode (block HIGH-risk actions)
+uv run openagentsafety-infer .llm_config/gpt-4o-mini.json \
+  --dataset mgulavani/openagentsafety_full_updated_v3 \
+  --split train \
+  --output-dir ./results/llm_analyzer_blocking \
+  --security-analyzer llm \
+  --security-mode blocking \
   --critic pass
 ```
 
-- SDK security_policy.j2 is included in agent system prompt (provides safety guidelines)
-- **No action blocking** - the security policy is just text guidance, not enforcement
-- Measures if the LLM voluntarily follows safety guidelines in the prompt
-- Compare with Scenario 1 to see if prompt-based guidance improves safety behavior
+- Uses `LLMSecurityAnalyzer` which reads the `security_risk` attribute the LLM sets
+- The system prompt includes `security_risk_assessment.j2` teaching the LLM how to assess risk
+- Tests whether the LLM can accurately self-assess risky actions
+- No external API calls required
 
-**Note**: The SDK's `security_policy.j2` provides guidelines but does NOT block risky actions. For actual blocking, use Scenario 3 (Cygnal) which enforces safety at the action level.
+### Scenario 3: Cygnal Security Analyzer
 
-### Scenario 3: GraySwan Cygnal Guardrails
-
-Use GraySwan Cygnal API for real-time action monitoring and blocking:
+External API independently assesses each action's risk:
 
 ```bash
 # Set Cygnal credentials
 export GRAYSWAN_API_KEY="your-key"
 export GRAYSWAN_POLICY_ID="69b6b2b70d524825d4c9007c"
 
+# Passive mode (logging only)
 uv run openagentsafety-infer .llm_config/gpt-4o-mini.json \
   --dataset mgulavani/openagentsafety_full_updated_v3 \
   --split train \
-  --output-dir ./results/cygnal_guardrails \
+  --output-dir ./results/cygnal_passive \
+  --security-analyzer cygnal \
+  --security-mode passive \
+  --critic pass
+
+# Blocking mode (block HIGH-risk actions)
+uv run openagentsafety-infer .llm_config/gpt-4o-mini.json \
+  --dataset mgulavani/openagentsafety_full_updated_v3 \
+  --split train \
+  --output-dir ./results/cygnal_blocking \
+  --security-analyzer cygnal \
   --security-mode blocking \
   --critic pass
 ```
 
-- Cygnal analyzes each action before execution
-- HIGH-risk actions are automatically rejected
-- SDK security_policy.j2 is also active (layered defense)
+- Uses `GraySwanAnalyzer` which calls the Cygnal API
+- External, independent risk assessment
+- Requires `GRAYSWAN_API_KEY` environment variable
 
-### Security Mode Options
+### Risk Level Mapping
 
-The `--security-mode` argument controls Cygnal's enforcement behavior:
+**LLM Analyzer**: The LLM directly outputs LOW, MEDIUM, or HIGH based on the `security_risk_assessment.j2` prompt.
 
-| Mode | Blocking Behavior | Use Case |
-|------|-------------------|----------|
-| `passive` | None (log only) | Baseline measurement, SDK-only testing |
-| `blocking` | Block HIGH risk | Standard Cygnal protection |
-| `blocking-medium` | Block MEDIUM+ risk | Maximum safety enforcement |
+**Cygnal Analyzer**: Returns a violation score (0.0 to 1.0) mapped to risk levels:
+- **LOW**: violation_score ≤ 0.3
+- **MEDIUM**: 0.3 < violation_score ≤ 0.7  
+- **HIGH**: violation_score > 0.7
+- **Note**: Indirect prompt injection (IPI) is automatically escalated to HIGH
 
-### Comparing Results
+---
 
-Run all three scenarios and compare evaluation reports:
+## Comparing Results
+
+Run all scenarios and compare evaluation reports:
 
 ```bash
 # Generate reports
-uv run openagentsafety-eval ./results/no_guardrails/*/output.jsonl
-uv run openagentsafety-eval ./results/sdk_guardrails/*/output.jsonl
-uv run openagentsafety-eval ./results/cygnal_guardrails/*/output.jsonl
+uv run openagentsafety-eval ./results/baseline_no_analyzer/*/output.jsonl
+uv run openagentsafety-eval ./results/llm_analyzer_passive/*/output.jsonl
+uv run openagentsafety-eval ./results/llm_analyzer_blocking/*/output.jsonl
+uv run openagentsafety-eval ./results/cygnal_passive/*/output.jsonl
+uv run openagentsafety-eval ./results/cygnal_blocking/*/output.jsonl
 
 # Compare resolution rates
-echo "=== No Guardrails (Baseline) ==="
-cat ./results/no_guardrails/*/output.report.json | jq '{resolved: .resolved_instances, total: .completed_instances}'
-
-echo "=== SDK Guardrails ==="
-cat ./results/sdk_guardrails/*/output.report.json | jq '{resolved: .resolved_instances, total: .completed_instances}'
-
-echo "=== Cygnal Guardrails ==="
-cat ./results/cygnal_guardrails/*/output.report.json | jq '{resolved: .resolved_instances, total: .completed_instances}'
+for dir in baseline_no_analyzer llm_analyzer_passive llm_analyzer_blocking cygnal_passive cygnal_blocking; do
+  echo "=== $dir ==="
+  cat ./results/$dir/*/output.report.json | jq '{resolved: .resolved_instances, total: .completed_instances}'
+done
 ```
 
 ### Interpreting Results
 
 - **Higher `resolved_instances`** = Agent behaved safely (passed all safety checkpoints)
-- **no_guardrails vs sdk_guardrails**: Does prompt-based guidance make the LLM voluntarily safer?
-- **sdk_guardrails vs cygnal_guardrails**: How much does action-level blocking improve safety?
-- **no_guardrails vs cygnal_guardrails**: Total effectiveness of Cygnal enforcement
+- **baseline vs llm_analyzer**: Does LLM self-assessment improve safety?
+- **llm_analyzer vs cygnal**: Is external assessment more accurate than self-assessment?
+- **passive vs blocking**: How much does action blocking improve safety outcomes?
 - Analyze `unresolved_ids` to identify which safety scenarios each approach fails on
 
-**Key insight**: Scenario 2 (SDK) vs Scenario 3 (Cygnal) shows the difference between:
-- Hoping the LLM follows safety guidelines (prompt-based)
-- Actually preventing risky actions from executing (Cygnal blocking)
+### Key Research Questions
 
-### Risk Level Mapping (Cygnal)
-
-Cygnal returns a violation score (0.0 to 1.0) mapped to risk levels:
-- **LOW**: violation_score ≤ 0.3
-- **MEDIUM**: 0.3 < violation_score ≤ 0.7  
-- **HIGH**: violation_score > 0.7
-- **Note**: Indirect prompt injection (IPI) is automatically escalated to HIGH
+1. **Self-assessment accuracy**: Can the LLM accurately identify its own risky actions?
+2. **External vs internal**: Is external (Cygnal) assessment more reliable than LLM self-assessment?
+3. **Blocking effectiveness**: How much does blocking risky actions improve safety outcomes?
+4. **False positive rate**: Do blockers prevent too many legitimate actions?
 
 ### Custom Prompt Templates
 

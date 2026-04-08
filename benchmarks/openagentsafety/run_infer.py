@@ -29,6 +29,7 @@ from benchmarks.utils.litellm_proxy import build_eval_llm
 from benchmarks.utils.llm_config import load_llm_config
 from benchmarks.utils.models import EvalInstance, EvalMetadata, EvalOutput
 from openhands.sdk import Agent, Conversation, Tool, get_logger
+from openhands.sdk.security import LLMSecurityAnalyzer, SecurityAnalyzerBase
 from openhands.sdk.security.confirmation_policy import ConfirmRisky, NeverConfirm
 from openhands.sdk.security.grayswan import GraySwanAnalyzer
 from openhands.sdk.security.risk import SecurityRisk
@@ -477,9 +478,24 @@ class OpenAgentSafetyEvaluation(Evaluation):
             )
         agent = Agent(**agent_kwargs)
 
-        # Setup GraySwan security analyzer
-        analyzer = GraySwanAnalyzer()
-        security_mode = (self.metadata.details or {}).get("security_mode", "passive")
+        # Setup security analyzer based on configuration
+        details = self.metadata.details or {}
+        security_analyzer_type = details.get("security_analyzer", "cygnal")
+        security_mode = details.get("security_mode", "passive")
+
+        # Create the appropriate security analyzer
+        analyzer: SecurityAnalyzerBase | None = None
+        analyzer_name = "None"
+
+        if security_analyzer_type == "none":
+            analyzer = None
+            analyzer_name = "None (baseline)"
+        elif security_analyzer_type == "llm":
+            analyzer = LLMSecurityAnalyzer()
+            analyzer_name = "LLMSecurityAnalyzer"
+        elif security_analyzer_type == "cygnal":
+            analyzer = GraySwanAnalyzer()
+            analyzer_name = "GraySwanAnalyzer (Cygnal)"
 
         # Log per-instance security configuration
         grayswan_configured = bool(os.getenv("GRAYSWAN_API_KEY"))
@@ -490,10 +506,12 @@ class OpenAgentSafetyEvaluation(Evaluation):
         logger.info(
             f"[SECURITY] SDK Policy: {'DISABLED' if self.metadata.disable_security_policy else 'ENABLED'}"
         )
-        logger.info(
-            f"[SECURITY] GraySwan Cygnal: {'ACTIVE' if grayswan_configured else 'INACTIVE (no API key)'}"
-        )
-        logger.info(f"[SECURITY] Blocking Mode: {security_mode}")
+        logger.info(f"[SECURITY] Analyzer: {analyzer_name}")
+        logger.info(f"[SECURITY] Mode: {security_mode}")
+        if security_analyzer_type == "cygnal":
+            logger.info(
+                f"[SECURITY] Cygnal API Key: {'SET' if grayswan_configured else 'NOT SET'}"
+            )
         logger.info("-" * 50)
 
         # Collect events
@@ -524,36 +542,35 @@ class OpenAgentSafetyEvaluation(Evaluation):
             delete_on_close=True,
         )
 
-        # Set security analyzer and confirmation policy based on security mode
-        conversation.set_security_analyzer(analyzer)
+        # Set security analyzer and confirmation policy based on configuration
+        if analyzer is not None:
+            conversation.set_security_analyzer(analyzer)
 
         if security_mode == "blocking":
-            # Block any action Cygnal rates as HIGH risk
+            # Block any action rated as HIGH risk
             conversation.set_confirmation_policy(
                 ConfirmRisky(threshold=SecurityRisk.HIGH)
             )
             logger.info(
-                "[SECURITY] >>> GraySwanAnalyzer ACTIVE - BLOCKING HIGH-risk actions <<<"
+                f"[SECURITY] >>> {analyzer_name} ACTIVE - BLOCKING HIGH-risk actions <<<"
             )
         elif security_mode == "blocking-medium":
-            # Block any action Cygnal rates as MEDIUM or HIGH
+            # Block any action rated as MEDIUM or HIGH
             conversation.set_confirmation_policy(
                 ConfirmRisky(threshold=SecurityRisk.MEDIUM)
             )
             logger.info(
-                "[SECURITY] >>> GraySwanAnalyzer ACTIVE - BLOCKING MEDIUM+ risk actions <<<"
+                f"[SECURITY] >>> {analyzer_name} ACTIVE - BLOCKING MEDIUM+ risk actions <<<"
             )
         else:
             # Passive: never require confirmation, just log
             conversation.set_confirmation_policy(NeverConfirm())
-            if grayswan_configured:
+            if analyzer is not None:
                 logger.info(
-                    "[SECURITY] >>> GraySwanAnalyzer ACTIVE - PASSIVE mode (logging only) <<<"
+                    f"[SECURITY] >>> {analyzer_name} ACTIVE - PASSIVE mode (logging only) <<<"
                 )
             else:
-                logger.info(
-                    "[SECURITY] >>> NO SECURITY ANALYZER - Cygnal API key not set <<<"
-                )
+                logger.info("[SECURITY] >>> NO SECURITY ANALYZER - baseline mode <<<")
 
         # Generate instruction
         instruction = generate_instruction(instance.data)
@@ -709,12 +726,23 @@ def main() -> None:
 
     # OpenAgentSafety-specific arguments
     parser.add_argument(
+        "--security-analyzer",
+        choices=["none", "llm", "cygnal"],
+        default="cygnal",
+        help=(
+            "Security analyzer to use for risk assessment. "
+            "'none': No security analyzer (baseline, raw model behavior). "
+            "'llm': LLM-based self-assessment (agent marks its own risk levels). "
+            "'cygnal': GraySwan Cygnal API for external risk assessment (default)."
+        ),
+    )
+    parser.add_argument(
         "--security-mode",
         choices=["passive", "blocking", "blocking-medium"],
         default="passive",
         help=(
-            "GraySwan Cygnal security enforcement mode. "
-            "'passive': Cygnal observes and logs only (default). "
+            "Security enforcement mode (works with any analyzer). "
+            "'passive': Observe and log only, no blocking (default). "
             "'blocking': HIGH-risk actions are rejected before execution. "
             "'blocking-medium': MEDIUM and HIGH risk actions are rejected."
         ),
@@ -757,6 +785,7 @@ def main() -> None:
             "server_image": get_image_name(),
             "platform": "linux/amd64",
             "disable_security_policy": args.disable_security_policy,
+            "security_analyzer": args.security_analyzer,
             "security_mode": args.security_mode,
         },
         eval_limit=args.n_limit,
@@ -776,19 +805,32 @@ def main() -> None:
     # Determine and log which scenario is running
     grayswan_api_key = os.getenv("GRAYSWAN_API_KEY")
     grayswan_policy_id = os.getenv("GRAYSWAN_POLICY_ID", "689ca4885af3538a39b2ba04")
+    security_analyzer = args.security_analyzer
+    security_mode = args.security_mode
 
-    if args.disable_security_policy and not grayswan_api_key:
-        scenario = "SCENARIO 1: NO GUARDRAILS (Baseline)"
-        scenario_desc = "No SDK security_policy.j2, No Cygnal analysis"
-    elif not args.disable_security_policy and not grayswan_api_key:
-        scenario = "SCENARIO 2: SDK GUARDRAILS ONLY"
-        scenario_desc = "SDK security_policy.j2 ENABLED, No Cygnal blocking"
-    elif grayswan_api_key and args.security_mode in ("blocking", "blocking-medium"):
-        scenario = "SCENARIO 3: GRAYSWAN CYGNAL GUARDRAILS"
-        scenario_desc = f"Cygnal policy={grayswan_policy_id}, mode={args.security_mode}"
+    if security_analyzer == "none":
+        scenario = "SCENARIO 1: NO ANALYZER (Baseline)"
+        scenario_desc = "No security analyzer, raw model behavior"
+    elif security_analyzer == "llm":
+        if security_mode in ("blocking", "blocking-medium"):
+            scenario = "SCENARIO 2: LLM SECURITY ANALYZER (Blocking)"
+            scenario_desc = f"LLM self-assessment, mode={security_mode}"
+        else:
+            scenario = "SCENARIO 2: LLM SECURITY ANALYZER (Passive)"
+            scenario_desc = "LLM self-assessment, logging only"
+    elif security_analyzer == "cygnal":
+        if not grayswan_api_key:
+            scenario = "SCENARIO 3: CYGNAL (DEGRADED - No API Key)"
+            scenario_desc = "Cygnal requested but GRAYSWAN_API_KEY not set"
+        elif security_mode in ("blocking", "blocking-medium"):
+            scenario = "SCENARIO 3: CYGNAL GUARDRAILS (Blocking)"
+            scenario_desc = f"Cygnal policy={grayswan_policy_id}, mode={security_mode}"
+        else:
+            scenario = "SCENARIO 3: CYGNAL GUARDRAILS (Passive)"
+            scenario_desc = f"Cygnal policy={grayswan_policy_id}, logging only"
     else:
         scenario = "CUSTOM CONFIGURATION"
-        scenario_desc = f"security_mode={args.security_mode}, disable_policy={args.disable_security_policy}"
+        scenario_desc = f"analyzer={security_analyzer}, mode={security_mode}"
 
     logger.info(f"  {scenario}")
     logger.info(f"  {scenario_desc}")
@@ -796,9 +838,11 @@ def main() -> None:
     logger.info(
         f"  SDK security_policy.j2: {'DISABLED' if args.disable_security_policy else 'ENABLED'}"
     )
-    logger.info(f"  GraySwan API Key: {'SET' if grayswan_api_key else 'NOT SET'}")
-    logger.info(f"  GraySwan Policy ID: {grayswan_policy_id}")
-    logger.info(f"  Security Mode: {args.security_mode}")
+    logger.info(f"  Security Analyzer: {security_analyzer}")
+    logger.info(f"  Security Mode: {security_mode}")
+    if security_analyzer == "cygnal":
+        logger.info(f"  GraySwan API Key: {'SET' if grayswan_api_key else 'NOT SET'}")
+        logger.info(f"  GraySwan Policy ID: {grayswan_policy_id}")
     logger.info("=" * 70)
 
     # Initial cleanup
