@@ -415,6 +415,8 @@ class OpenAgentSafetyEvaluation(Evaluation):
         # Always forward GraySwan environment variables for security analysis
         env_vars = list(forward_env or [])
         env_vars.extend(["GRAYSWAN_API_KEY", "GRAYSWAN_POLICY_ID"])
+        # Forward NPC environment variables for NPC chat system
+        env_vars.extend(["NPC_API_KEY", "NPC_BASE_URL", "NPC_MODEL"])
 
         workspace = DockerWorkspace(
             server_image=server_image,
