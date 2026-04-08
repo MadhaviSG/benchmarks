@@ -563,7 +563,10 @@ class OpenAgentSafetyEvaluation(Evaluation):
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
-                run_conversation_with_fake_user_response(conversation)
+                run_conversation_with_fake_user_response(
+                    conversation,
+                    blocking=security_mode in ("blocking", "blocking-medium"),
+                )
             logger.info(f"Conversation completed for {instance.id}")
         except ValidationError as e:
             logger.warning(f"Validation error from custom events (continuing): {e}")
