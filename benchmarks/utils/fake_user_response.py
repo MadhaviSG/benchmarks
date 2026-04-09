@@ -11,10 +11,14 @@ a fake user response to keep the agent working on the task.
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
 from openhands.sdk import get_logger
-from openhands.sdk.conversation.state import ConversationExecutionStatus
+from openhands.sdk.conversation.state import (
+    ConversationExecutionStatus,
+    ConversationState,
+)
 from openhands.sdk.event import ActionEvent, Event, MessageEvent
 from openhands.sdk.tool.builtins.finish import FinishAction
 
@@ -23,6 +27,101 @@ if TYPE_CHECKING:
     from openhands.sdk.conversation import BaseConversation, RemoteConversation
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class BlockedActionInfo:
+    """Information about a blocked action for logging and reporting."""
+
+    action_id: str
+    tool_name: str
+    tool_call_id: str
+    agent_predicted_risk: str
+    analyzer_risk: str | None
+    violation_score: float | None
+    reason: str
+    action_summary: str | None
+    action_args: dict | None
+
+
+def _get_pending_actions_info(
+    conversation: "BaseConversation",
+) -> list[BlockedActionInfo]:
+    """Extract detailed information about pending (blocked) actions.
+
+    Args:
+        conversation: The conversation instance.
+
+    Returns:
+        List of BlockedActionInfo objects with details about each pending action.
+    """
+    pending_actions = ConversationState.get_unmatched_actions(
+        list(conversation.state.events)
+    )
+    blocked_info = []
+
+    for action_event in pending_actions:
+        # Extract action arguments if available
+        action_args = None
+        if action_event.action is not None:
+            try:
+                action_args = action_event.action.model_dump()
+            except Exception:
+                action_args = {"raw": str(action_event.action)}
+
+        info = BlockedActionInfo(
+            action_id=action_event.id,
+            tool_name=action_event.tool_name,
+            tool_call_id=action_event.tool_call_id,
+            agent_predicted_risk=action_event.security_risk.name,
+            analyzer_risk=None,  # Will be set by the analyzer if available
+            violation_score=None,
+            reason="HIGH risk action blocked by security analyzer",
+            action_summary=action_event.summary,
+            action_args=action_args,
+        )
+        blocked_info.append(info)
+
+    return blocked_info
+
+
+def _log_blocked_action_details(
+    blocked_actions: list[BlockedActionInfo],
+    analyzer_name: str = "security analyzer",
+) -> None:
+    """Log detailed information about blocked actions.
+
+    Args:
+        blocked_actions: List of BlockedActionInfo objects.
+        analyzer_name: Name of the security analyzer for logging.
+    """
+    logger.info("=" * 70)
+    logger.info("[SECURITY BLOCK] Action(s) blocked by %s", analyzer_name)
+    logger.info("=" * 70)
+
+    for i, action in enumerate(blocked_actions, 1):
+        logger.info("-" * 70)
+        logger.info("Blocked Action #%d:", i)
+        logger.info("  Tool Name: %s", action.tool_name)
+        logger.info("  Action ID: %s", action.action_id)
+        logger.info("  Tool Call ID: %s", action.tool_call_id)
+        logger.info("  Agent's Risk Assessment: %s", action.agent_predicted_risk)
+        if action.analyzer_risk:
+            logger.info("  Analyzer Risk Assessment: %s", action.analyzer_risk)
+        if action.violation_score is not None:
+            logger.info("  Violation Score: %.2f", action.violation_score)
+        logger.info("  Reason: %s", action.reason)
+        if action.action_summary:
+            logger.info("  Summary: %s", action.action_summary)
+        if action.action_args:
+            # Truncate long arguments for readability
+            args_str = str(action.action_args)
+            if len(args_str) > 500:
+                args_str = args_str[:500] + "..."
+            logger.info("  Arguments: %s", args_str)
+
+    logger.info("=" * 70)
+
 
 # Type alias for fake user response function
 FakeUserResponseFn = Callable[["BaseConversation"], str]
@@ -121,7 +220,9 @@ def run_conversation_with_fake_user_response(
     fake_user_response_fn: FakeUserResponseFn = fake_user_response,
     max_fake_responses: int = 10,
     blocking: bool = False,
-) -> None:
+    stop_on_block: bool = True,
+    analyzer_name: str = "security analyzer",
+) -> dict:
     """Run a conversation with automatic fake user responses.
 
     This function runs the conversation and automatically sends fake user responses
@@ -132,6 +233,7 @@ def run_conversation_with_fake_user_response(
     - The agent calls the finish tool
     - The maximum number of fake responses is reached
     - The conversation enters an error or stuck state
+    - (If stop_on_block=True) An action is blocked by the security analyzer
 
     Args:
         conversation: The conversation instance to run.
@@ -143,10 +245,29 @@ def run_conversation_with_fake_user_response(
             security confirmation (WAITING_FOR_CONFIRMATION status) instead
             of halting the conversation. The agent will be told the action
             was blocked and can choose an alternative approach.
+        stop_on_block: If True (default), stop the evaluation immediately after
+            blocking an action and log detailed information. If False, let the
+            agent continue after rejection.
+        analyzer_name: Name of the security analyzer for logging purposes.
+
+    Returns:
+        A dictionary with evaluation result info:
+        - 'completed': bool - whether agent finished normally
+        - 'blocked': bool - whether an action was blocked
+        - 'blocked_actions': list - details of blocked actions (if any)
+        - 'fake_responses_sent': int - number of fake responses sent
+        - 'final_status': str - final execution status
     """
     run_timeout = int(os.getenv("CONVERSATION_TIMEOUT", "3600"))
 
     fake_response_count = 0
+    result = {
+        "completed": False,
+        "blocked": False,
+        "blocked_actions": [],
+        "fake_responses_sent": 0,
+        "final_status": "unknown",
+    }
 
     while True:
         # Run the conversation
@@ -154,17 +275,49 @@ def run_conversation_with_fake_user_response(
 
         # Check the execution status
         status = conversation.state.execution_status
+        result["final_status"] = status.value
 
         # In blocking mode, a HIGH-risk action paused for confirmation is
         # automatically rejected so the agent can try a safer approach.
         if blocking and status == ConversationExecutionStatus.WAITING_FOR_CONFIRMATION:
+            # Get detailed information about blocked actions BEFORE rejecting
+            blocked_actions = _get_pending_actions_info(conversation)
+
+            # Log detailed information about the blocked action(s)
+            _log_blocked_action_details(blocked_actions, analyzer_name)
+
+            # Reject the pending actions
+            rejection_reason = (
+                f"Action blocked by {analyzer_name}: risk level exceeds threshold"
+            )
+            conversation.reject_pending_actions(reason=rejection_reason)
+
+            result["blocked"] = True
+            result["blocked_actions"] = [
+                {
+                    "tool_name": a.tool_name,
+                    "action_id": a.action_id,
+                    "agent_risk": a.agent_predicted_risk,
+                    "summary": a.action_summary,
+                    "reason": rejection_reason,
+                }
+                for a in blocked_actions
+            ]
+
+            if stop_on_block:
+                logger.info(
+                    "[SECURITY] Stopping evaluation after blocking HIGH-risk action"
+                )
+                logger.info(
+                    "[SECURITY] This is expected behavior for security guardrail testing"
+                )
+                result["fake_responses_sent"] = fake_response_count
+                return result
+
+            # If not stopping, continue the loop so agent can try alternative
             logger.info(
-                "Blocking mode: rejecting HIGH-risk action (WAITING_FOR_CONFIRMATION)"
+                "[SECURITY] Action blocked, allowing agent to continue with alternatives"
             )
-            conversation.reject_pending_actions(
-                reason="Action blocked by Cygnal security analyzer: risk level too high"
-            )
-            # Resume the run loop so the agent can react to the rejection
             continue
 
         # If not finished, we're done (error, stuck, paused, etc.)
@@ -183,6 +336,7 @@ def run_conversation_with_fake_user_response(
                 "Agent finished with FinishAction after %d fake responses",
                 fake_response_count,
             )
+            result["completed"] = True
             break
 
         # Check if agent sent a message (needs fake response)
@@ -218,6 +372,8 @@ def run_conversation_with_fake_user_response(
         conversation.send_message(fake_response)
         fake_response_count += 1
 
+    result["fake_responses_sent"] = fake_response_count
     logger.info(
         "Conversation completed. Total fake responses sent: %d", fake_response_count
     )
+    return result

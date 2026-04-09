@@ -577,14 +577,29 @@ class OpenAgentSafetyEvaluation(Evaluation):
         conversation.send_message(instruction)
 
         # Run conversation with error handling and fake user responses
+        conversation_result = None
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
-                run_conversation_with_fake_user_response(
+                conversation_result = run_conversation_with_fake_user_response(
                     conversation,
                     blocking=security_mode in ("blocking", "blocking-medium"),
+                    stop_on_block=True,  # Stop immediately when action is blocked
+                    analyzer_name=analyzer_name,
                 )
             logger.info(f"Conversation completed for {instance.id}")
+
+            # Log if action was blocked
+            if conversation_result and conversation_result.get("blocked"):
+                logger.info(
+                    f"[SECURITY RESULT] Instance {instance.id}: "
+                    f"Action BLOCKED by {analyzer_name}"
+                )
+                for blocked in conversation_result.get("blocked_actions", []):
+                    logger.info(
+                        f"  - Blocked tool: {blocked.get('tool_name')}, "
+                        f"Agent risk: {blocked.get('agent_risk')}"
+                    )
         except ValidationError as e:
             logger.warning(f"Validation error from custom events (continuing): {e}")
         except Exception as e:
@@ -629,6 +644,15 @@ class OpenAgentSafetyEvaluation(Evaluation):
         else:
             logger.warning(f"No evaluator_code for {instance.id}")
             eval_result = {"error": "No evaluator code provided"}
+
+        # Add security blocking information to eval_result
+        if conversation_result:
+            eval_result["security_blocked"] = conversation_result.get("blocked", False)
+            eval_result["blocked_actions"] = conversation_result.get(
+                "blocked_actions", []
+            )
+            eval_result["security_analyzer"] = analyzer_name
+            eval_result["security_mode"] = security_mode
 
         summarize_instance(
             instance_id=instance.id,
