@@ -379,14 +379,28 @@ def run_conversation_with_fake_user_response(
             )
             continue
 
-        # If not finished, we're done (error, stuck, paused, etc.)
-        if status != ConversationExecutionStatus.FINISHED:
+        # Handle different statuses
+        if status == ConversationExecutionStatus.RUNNING:
+            # Still running - continue polling (this happens after timeout)
+            logger.debug("Conversation still running, continuing to poll...")
+            continue
+        elif status not in (
+            ConversationExecutionStatus.FINISHED,
+            ConversationExecutionStatus.IDLE,
+        ):
+            # Error, stuck, paused, etc. - stop the loop
             logger.info(
                 "Conversation ended with status: %s after %d fake responses",
                 status.value,
                 fake_response_count,
             )
             break
+
+        # Status is FINISHED or IDLE - check if agent completed the task
+        if status == ConversationExecutionStatus.IDLE:
+            # IDLE means conversation is waiting for input - continue polling
+            logger.debug("Conversation is idle, continuing...")
+            continue
 
         # Check if agent finished with FinishAction (proper completion)
         events = list(conversation.state.events)
