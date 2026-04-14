@@ -11,6 +11,7 @@ a fake user response to keep the agent working on the task.
 from __future__ import annotations
 
 import os
+import time
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
@@ -258,7 +259,11 @@ def run_conversation_with_fake_user_response(
         - 'fake_responses_sent': int - number of fake responses sent
         - 'final_status': str - final execution status
     """
-    run_timeout = int(os.getenv("CONVERSATION_TIMEOUT", "3600"))
+    # Use shorter run timeout when blocking to detect blocked actions faster
+    # The SDK may not properly transition to WAITING_FOR_CONFIRMATION in some cases
+    default_timeout = 60 if blocking else 3600
+    run_timeout = int(os.getenv("CONVERSATION_TIMEOUT", str(default_timeout)))
+    max_total_time = int(os.getenv("MAX_CONVERSATION_TIME", "3600"))
 
     fake_response_count = 0
     result = {
@@ -269,50 +274,104 @@ def run_conversation_with_fake_user_response(
         "final_status": "unknown",
     }
 
+    start_time = time.time()
+
     while True:
-        # Run the conversation
-        conversation.run(timeout=run_timeout)
+        # Check for total time limit
+        elapsed = time.time() - start_time
+        if elapsed > max_total_time:
+            logger.warning(
+                "Conversation exceeded max time limit of %d seconds", max_total_time
+            )
+            result["final_status"] = "timeout"
+            break
+
+        # Run the conversation with timeout
+        try:
+            conversation.run(timeout=run_timeout)
+        except Exception as e:
+            # Handle timeout or other errors
+            error_msg = str(e)
+            if "timed out" in error_msg.lower():
+                logger.info("Run timeout reached, checking state...")
+            else:
+                raise
 
         # Check the execution status
         status = conversation.state.execution_status
         result["final_status"] = status.value
 
-        # In blocking mode, a HIGH-risk action paused for confirmation is
-        # automatically rejected so the agent can try a safer approach.
-        if blocking and status == ConversationExecutionStatus.WAITING_FOR_CONFIRMATION:
+        # In blocking mode, check for blocked actions in multiple ways:
+        # 1. Status is WAITING_FOR_CONFIRMATION (standard flow)
+        # 2. State has blocked_actions (hook-based blocking)
+        # 3. Pending actions exist (actions waiting for confirmation)
+        blocked_detected = False
+        pending_actions: list[BlockedActionInfo] = []
+
+        if blocking:
+            # Check standard confirmation waiting status
+            is_waiting = status == ConversationExecutionStatus.WAITING_FOR_CONFIRMATION
+
+            # Also check if there are pending actions (may indicate blocked state)
+            pending_actions = _get_pending_actions_info(conversation)
+            has_pending = len(pending_actions) > 0
+
+            # Check state's blocked_actions dict (may not exist on RemoteState)
+            state_blocked_actions = getattr(conversation.state, "blocked_actions", {})
+            state_blocked = len(state_blocked_actions) > 0
+
+            if is_waiting or has_pending or state_blocked:
+                logger.info(
+                    "[SECURITY] Detected blocked state: waiting=%s, pending=%d, state_blocked=%d",
+                    is_waiting,
+                    len(pending_actions),
+                    len(state_blocked_actions),
+                )
+                blocked_detected = True
+
+        # Handle blocked actions - either via WAITING_FOR_CONFIRMATION or pending actions
+        if blocking and (
+            status == ConversationExecutionStatus.WAITING_FOR_CONFIRMATION
+            or (blocked_detected and len(pending_actions) > 0)
+        ):
             # Get detailed information about blocked actions BEFORE rejecting
-            blocked_actions = _get_pending_actions_info(conversation)
+            if not pending_actions:
+                pending_actions = _get_pending_actions_info(conversation)
 
-            # Log detailed information about the blocked action(s)
-            _log_blocked_action_details(blocked_actions, analyzer_name)
+            if pending_actions:
+                # Log detailed information about the blocked action(s)
+                _log_blocked_action_details(pending_actions, analyzer_name)
 
-            # Reject the pending actions
-            rejection_reason = (
-                f"Action blocked by {analyzer_name}: risk level exceeds threshold"
-            )
-            conversation.reject_pending_actions(reason=rejection_reason)
-
-            result["blocked"] = True
-            result["blocked_actions"] = [
-                {
-                    "tool_name": a.tool_name,
-                    "action_id": a.action_id,
-                    "agent_risk": a.agent_predicted_risk,
-                    "summary": a.action_summary,
-                    "reason": rejection_reason,
-                }
-                for a in blocked_actions
-            ]
-
-            if stop_on_block:
-                logger.info(
-                    "[SECURITY] Stopping evaluation after blocking HIGH-risk action"
+                # Reject the pending actions
+                rejection_reason = (
+                    f"Action blocked by {analyzer_name}: risk level exceeds threshold"
                 )
-                logger.info(
-                    "[SECURITY] This is expected behavior for security guardrail testing"
-                )
-                result["fake_responses_sent"] = fake_response_count
-                return result
+                try:
+                    conversation.reject_pending_actions(reason=rejection_reason)
+                except Exception as e:
+                    logger.warning("Failed to reject pending actions: %s", e)
+
+                result["blocked"] = True
+                result["blocked_actions"] = [
+                    {
+                        "tool_name": a.tool_name,
+                        "action_id": a.action_id,
+                        "agent_risk": a.agent_predicted_risk,
+                        "summary": a.action_summary,
+                        "reason": rejection_reason,
+                    }
+                    for a in pending_actions
+                ]
+
+                if stop_on_block:
+                    logger.info(
+                        "[SECURITY] Stopping evaluation after blocking HIGH-risk action"
+                    )
+                    logger.info(
+                        "[SECURITY] This is expected behavior for security guardrail testing"
+                    )
+                    result["fake_responses_sent"] = fake_response_count
+                    return result
 
             # If not stopping, continue the loop so agent can try alternative
             logger.info(
