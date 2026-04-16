@@ -47,14 +47,21 @@ def load_results(jsonl_path: str) -> list[dict]:
     return records
 
 
-def analyze_model(records: list[dict], model_name: str = "Model") -> dict:
+def analyze_model(
+    records: list[dict], model_name: str = "Model", expected_total: int = 359
+) -> dict:
     """Analyze results for a single model."""
+    completed = len(records)
+    # Errors are instances that didn't make it to output.jsonl
+    errors = expected_total - completed
+
     stats = {
         "model": model_name,
-        "total": len(records),
+        "total": completed,  # Completed evaluations
+        "expected_total": expected_total,
         "blocked": 0,
         "not_blocked": 0,
-        "errors": 0,
+        "errors": errors,  # Missing from output.jsonl
         "agent_risk_when_blocked": Counter(),
         "blocked_tools": Counter(),
         "instance_results": {},
@@ -63,12 +70,6 @@ def analyze_model(records: list[dict], model_name: str = "Model") -> dict:
     for r in records:
         instance_id = r.get("instance_id", "unknown")
         test_result = r.get("test_result", {})
-        error = r.get("error")
-
-        if error:
-            stats["errors"] += 1
-            stats["instance_results"][instance_id] = "error"
-            continue
 
         security_blocked = test_result.get("security_blocked", False)
         blocked_actions = test_result.get("blocked_actions", [])
@@ -87,16 +88,15 @@ def analyze_model(records: list[dict], model_name: str = "Model") -> dict:
             stats["not_blocked"] += 1
             stats["instance_results"][instance_id] = "not_blocked"
 
-    # Calculate percentages
-    total_valid = stats["total"] - stats["errors"]
-    if total_valid > 0:
-        stats["block_rate"] = stats["blocked"] / total_valid * 100
-        stats["pass_through_rate"] = stats["not_blocked"] / total_valid * 100
+    # Calculate percentages based on completed evaluations
+    if completed > 0:
+        stats["block_rate"] = stats["blocked"] / completed * 100
+        stats["pass_through_rate"] = stats["not_blocked"] / completed * 100
     else:
         stats["block_rate"] = 0
         stats["pass_through_rate"] = 0
 
-    stats["error_rate"] = stats["errors"] / stats["total"] * 100 if stats["total"] > 0 else 0
+    stats["error_rate"] = errors / expected_total * 100 if expected_total > 0 else 0
 
     return stats
 
@@ -106,10 +106,11 @@ def print_summary(stats: dict):
     print(f"\n{'=' * 60}")
     print(f"Model: {stats['model']}")
     print(f"{'=' * 60}")
-    print(f"Total instances:     {stats['total']}")
+    print(f"Expected instances:  {stats['expected_total']}")
+    print(f"Completed:           {stats['total']}")
     print(f"Blocked by Cygnal:   {stats['blocked']} ({stats['block_rate']:.1f}%)")
     print(f"Not blocked:         {stats['not_blocked']} ({stats['pass_through_rate']:.1f}%)")
-    print(f"Errors:              {stats['errors']} ({stats['error_rate']:.1f}%)")
+    print(f"Errors/Missing:      {stats['errors']} ({stats['error_rate']:.1f}%)")
     print()
 
     if stats["agent_risk_when_blocked"]:
@@ -184,13 +185,16 @@ def create_visualizations(all_stats: list[dict], output_path: str):
     blocked = [s["blocked"] for s in all_stats]
     not_blocked = [s["not_blocked"] for s in all_stats]
     errors = [s["errors"] for s in all_stats]
+    expected_total = all_stats[0]["expected_total"] if all_stats else 359
 
     x = np.arange(n_models)
     width = 0.6
 
-    ax1.bar(x, blocked, width, label="Blocked", color="#e74c3c")
-    ax1.bar(x, not_blocked, width, bottom=blocked, label="Not Blocked", color="#2ecc71")
-    ax1.bar(
+    bars_blocked = ax1.bar(x, blocked, width, label="Blocked", color="#e74c3c")
+    bars_not_blocked = ax1.bar(
+        x, not_blocked, width, bottom=blocked, label="Not Blocked", color="#2ecc71"
+    )
+    bars_errors = ax1.bar(
         x,
         errors,
         width,
@@ -199,11 +203,28 @@ def create_visualizations(all_stats: list[dict], output_path: str):
         color="#95a5a6",
     )
 
+    # Add error count labels on gray bars
+    for i, (bar, err_count) in enumerate(zip(bars_errors, errors)):
+        if err_count > 0:
+            # Position label in the middle of the gray bar
+            bar_bottom = blocked[i] + not_blocked[i]
+            bar_center = bar_bottom + err_count / 2
+            ax1.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar_center,
+                str(err_count),
+                ha="center",
+                va="center",
+                fontsize=10,
+                fontweight="bold",
+                color="white",
+            )
+
     ax1.set_ylabel("Number of Instances")
-    ax1.set_title("Evaluation Outcomes by Model")
+    ax1.set_title(f"Evaluation Outcomes by Model (n={expected_total})")
     ax1.set_xticks(x)
     ax1.set_xticklabels(models, rotation=15, ha="right")
-    ax1.legend()
+    ax1.legend(loc="upper right")
 
     # 2. Block rate comparison
     ax2 = axes[0, 1]
@@ -293,14 +314,15 @@ def export_csv(all_stats: list[dict], output_path: str):
     csv_path = output_path.replace(".png", ".csv")
     with open(csv_path, "w") as f:
         # Header
-        f.write("Model,Total,Blocked,Not Blocked,Errors,Block Rate %,")
+        f.write("Model,Expected,Completed,Blocked,Not Blocked,Errors,Block Rate %,Error Rate %,")
         f.write("Agent LOW when blocked,Agent MEDIUM when blocked,Agent HIGH when blocked\n")
 
         for stats in all_stats:
             risks = stats["agent_risk_when_blocked"]
             f.write(
-                f"{stats['model']},{stats['total']},{stats['blocked']},"
-                f"{stats['not_blocked']},{stats['errors']},{stats['block_rate']:.1f},"
+                f"{stats['model']},{stats['expected_total']},{stats['total']},"
+                f"{stats['blocked']},{stats['not_blocked']},{stats['errors']},"
+                f"{stats['block_rate']:.1f},{stats['error_rate']:.1f},"
                 f"{risks.get('LOW', 0)},{risks.get('MEDIUM', 0)},{risks.get('HIGH', 0)}\n"
             )
 
@@ -353,13 +375,22 @@ Examples:
         action="store_true",
         help="Also export results to CSV",
     )
+    parser.add_argument(
+        "--expected-total",
+        "-n",
+        type=int,
+        default=359,
+        help="Expected total number of instances (default: 359)",
+    )
 
     args = parser.parse_args()
 
     # Single model mode
     if args.jsonl_path and not args.model:
         records = load_results(args.jsonl_path)
-        stats = analyze_model(records, Path(args.jsonl_path).parent.name)
+        stats = analyze_model(
+            records, Path(args.jsonl_path).parent.name, expected_total=args.expected_total
+        )
         print_summary(stats)
         return
 
@@ -372,7 +403,7 @@ Examples:
     for model_name, jsonl_path in args.model:
         print(f"Loading {model_name} from {jsonl_path}...")
         records = load_results(jsonl_path)
-        stats = analyze_model(records, model_name)
+        stats = analyze_model(records, model_name, expected_total=args.expected_total)
         all_stats.append(stats)
         print_summary(stats)
 
