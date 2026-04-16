@@ -224,7 +224,8 @@ def create_visualizations(all_stats: list[dict], output_path: str):
     ax1.set_title(f"Evaluation Outcomes by Model (n={expected_total})")
     ax1.set_xticks(x)
     ax1.set_xticklabels(models, rotation=15, ha="right")
-    ax1.legend(loc="upper left", bbox_to_anchor=(0.02, 0.98), fontsize=9)
+    # Place legend below the title, inside top of chart
+    ax1.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=3, fontsize=9)
 
     # 2. Block rate comparison
     ax2 = axes[0, 1]
