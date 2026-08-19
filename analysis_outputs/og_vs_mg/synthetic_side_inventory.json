@@ -1,0 +1,133 @@
+{
+  "synthetic_tasks": {
+    "n_tasks": 75,
+    "n_v4": 15,
+    "n_v5": 60,
+    "task_paths": [
+      "analysis_outputs/hf_cache/v4_train.jsonl",
+      "analysis_outputs/v5_generated_tasks/v5_train.jsonl"
+    ]
+  },
+  "combined_synthetic_pairs": {
+    "pair_paths": [
+      "analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+      "analysis_outputs/v5_synthetic_pairs/safety_trajectories_v5_synthetic.jsonl"
+    ],
+    "parts": [
+      {
+        "present": true,
+        "tag": "v4",
+        "path": "analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+        "n": 30,
+        "n_instance_ids": 15,
+        "labels": {
+          "unsafe": 15,
+          "safe": 15
+        },
+        "models": {
+          "constructed": 30
+        },
+        "agent_actions": {
+          "n": 30,
+          "mean": 8,
+          "median": 8,
+          "p25": 8,
+          "p75": 8,
+          "min": 8,
+          "max": 9
+        },
+        "mean_pairwise_jaccard_problem_statements": 0.746
+      },
+      {
+        "present": true,
+        "tag": "v5",
+        "path": "analysis_outputs/v5_synthetic_pairs/safety_trajectories_v5_synthetic.jsonl",
+        "n": 120,
+        "n_instance_ids": 60,
+        "labels": {
+          "unsafe": 60,
+          "safe": 60
+        },
+        "models": {
+          "constructed": 120
+        },
+        "agent_actions": {
+          "n": 120,
+          "mean": 12.7,
+          "median": 12,
+          "p25": 10,
+          "p75": 16,
+          "min": 8,
+          "max": 18
+        },
+        "mean_pairwise_jaccard_problem_statements": 0.2913
+      }
+    ],
+    "n_trajectories": 150,
+    "n_v4": 30,
+    "n_v5": 120,
+    "n_tasks_v4": 15,
+    "n_tasks_v5": 60,
+    "labels": {
+      "unsafe": 75,
+      "safe": 75
+    },
+    "agent_actions": {
+      "n": 150,
+      "mean": 11.7,
+      "median": 11,
+      "p25": 8.8,
+      "p75": 15,
+      "min": 8,
+      "max": 18
+    },
+    "outcome_mechanism_v5_only": {
+      "Computer security compromise | A": 4,
+      "Computer security compromise | B": 2,
+      "Computer security compromise | C": 2,
+      "Computer security compromise | D": 4,
+      "Computer security compromise | E": 4,
+      "Financial loss | A": 6,
+      "Financial loss | B": 4,
+      "Financial loss | C": 4,
+      "Financial loss | D": 4,
+      "Financial loss | E": 6,
+      "Harmful decision-making | A": 6,
+      "Harmful decision-making | D": 4,
+      "Harmful decision-making | E": 4,
+      "Legal violations | A": 4,
+      "Legal violations | B": 6,
+      "Legal violations | C": 6,
+      "Legal violations | D": 4,
+      "Legal violations | E": 4,
+      "Privacy breach | A": 4,
+      "Privacy breach | B": 4,
+      "Privacy breach | C": 4,
+      "Privacy breach | D": 2,
+      "Spreading malicious content | A": 4,
+      "Spreading malicious content | B": 2,
+      "Spreading malicious content | D": 2,
+      "Spreading malicious content | E": 4,
+      "Unsafe code execution | A": 2,
+      "Unsafe code execution | B": 2,
+      "Unsafe code execution | C": 4,
+      "Unsafe code execution | D": 4,
+      "Unsafe code execution | E": 4
+    },
+    "note": "deterministic safe/unsafe pairs by design \u2014 contrastive training data, not model rollouts; exclude from unsafe-rate comparisons vs og baselines"
+  },
+  "v4_synthetic_pairs": {
+    "present": true,
+    "source_file": "analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+    "n": 30,
+    "labels": {
+      "unsafe": 15,
+      "safe": 15
+    },
+    "models": {
+      "constructed": 30
+    },
+    "n_instance_ids": 15,
+    "note": "deterministic template constructions; the 50/50 safe/unsafe split is by design, so these are EXCLUDED from every mg rate and length figure"
+  }
+}

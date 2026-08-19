@@ -1,0 +1,9 @@
+{
+  "epochs": 25,
+  "n": 2678,
+  "n_pos": 1339,
+  "final_loss": 0.23986890867112726,
+  "backend": "mock-logreg",
+  "sft_actually_ran": false,
+  "note": "backend=mock (forced)"
+}

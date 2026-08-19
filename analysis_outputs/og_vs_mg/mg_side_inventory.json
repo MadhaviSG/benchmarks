@@ -1,0 +1,509 @@
+{
+  "pool": {
+    "source_file": "benchmarks/results_safety_comparison/safety_trajectories.jsonl",
+    "n_rows_total": 579,
+    "by_dataset": {
+      "v3": 554,
+      "v4": 25
+    },
+    "v3": {
+      "n": 554,
+      "by_model": {
+        "Claude Sonnet 4.5": 302,
+        "GPT-5 mini": 130,
+        "DeepSeek V3": 50,
+        "Gemini 2.5 Pro": 72
+      },
+      "llm_label_values": {
+        "0": 270,
+        "2": 284
+      },
+      "per_model": {
+        "Claude Sonnet 4.5": {
+          "n_rows": 302,
+          "n_unique_instance_ids": 289,
+          "provenance_by_exact_action_count": [
+            [
+              "baseline_no_analyzer_claude",
+              229
+            ],
+            [
+              "baseline_no_analyzer_claude+llm_blocking_test_claude",
+              31
+            ],
+            [
+              "baseline_no_analyzer_claude+llm_blocking_test_claude+cygnal_test_claude",
+              15
+            ],
+            [
+              "llm_blocking_test_claude",
+              13
+            ],
+            [
+              "baseline_no_analyzer_claude+cygnal_test_claude",
+              7
+            ],
+            [
+              "cygnal_test_claude",
+              4
+            ],
+            [
+              "no match",
+              2
+            ],
+            [
+              "llm_blocking_test_claude+cygnal_test_claude",
+              1
+            ]
+          ],
+          "unambiguous_subsets": {
+            "baseline_no_analyzer_claude": {
+              "n": 229,
+              "n_judge_unsafe": 126,
+              "judge_unsafe_pct": 55.0,
+              "ci95": [
+                48.5,
+                61.3
+              ],
+              "agent_actions": {
+                "n": 229,
+                "mean": 20.4,
+                "median": 14,
+                "p25": 9,
+                "p75": 27,
+                "min": 1,
+                "max": 110
+              },
+              "run_n_records": 302,
+              "coverage_pct": 75.8
+            },
+            "llm_blocking_test_claude": {
+              "n": 13,
+              "n_judge_unsafe": 1,
+              "judge_unsafe_pct": 7.7,
+              "ci95": [
+                1.4,
+                33.3
+              ],
+              "agent_actions": {
+                "n": 13,
+                "mean": 9.2,
+                "median": 8,
+                "p25": 4.5,
+                "p75": 14,
+                "min": 1,
+                "max": 18
+              },
+              "run_n_records": 336,
+              "coverage_pct": 3.9
+            },
+            "cygnal_test_claude": {
+              "n": 4,
+              "n_judge_unsafe": 0,
+              "judge_unsafe_pct": 0.0,
+              "ci95": [
+                0.0,
+                49.0
+              ],
+              "agent_actions": {
+                "n": 4,
+                "mean": 4.8,
+                "median": 4.5,
+                "p25": 2.5,
+                "p75": 7.2,
+                "min": 2,
+                "max": 8
+              },
+              "run_n_records": 341,
+              "coverage_pct": 1.2
+            }
+          }
+        },
+        "GPT-5 mini": {
+          "n_rows": 130,
+          "n_unique_instance_ids": 125,
+          "provenance_by_exact_action_count": [
+            [
+              "baseline_no_analyzer_gpt",
+              98
+            ],
+            [
+              "cygnal_test_gpt",
+              11
+            ],
+            [
+              "llm_blocking_test_gpt",
+              7
+            ],
+            [
+              "no match",
+              5
+            ],
+            [
+              "baseline_no_analyzer_gpt+llm_blocking_test_gpt",
+              4
+            ],
+            [
+              "baseline_no_analyzer_gpt+cygnal_test_gpt",
+              3
+            ],
+            [
+              "llm_blocking_test_gpt+cygnal_test_gpt",
+              1
+            ],
+            [
+              "baseline_no_analyzer_gpt+llm_blocking_test_gpt+cygnal_test_gpt",
+              1
+            ]
+          ],
+          "unambiguous_subsets": {
+            "baseline_no_analyzer_gpt": {
+              "n": 98,
+              "n_judge_unsafe": 61,
+              "judge_unsafe_pct": 62.2,
+              "ci95": [
+                52.4,
+                71.2
+              ],
+              "agent_actions": {
+                "n": 98,
+                "mean": 17.6,
+                "median": 13.5,
+                "p25": 8,
+                "p75": 24,
+                "min": 1,
+                "max": 76
+              },
+              "run_n_records": 318,
+              "coverage_pct": 30.8
+            },
+            "llm_blocking_test_gpt": {
+              "n": 7,
+              "n_judge_unsafe": 1,
+              "judge_unsafe_pct": 14.3,
+              "ci95": [
+                2.6,
+                51.3
+              ],
+              "agent_actions": {
+                "n": 7,
+                "mean": 9,
+                "median": 5,
+                "p25": 2,
+                "p75": 11,
+                "min": 1,
+                "max": 31
+              },
+              "run_n_records": 321,
+              "coverage_pct": 2.2
+            },
+            "cygnal_test_gpt": {
+              "n": 11,
+              "n_judge_unsafe": 1,
+              "judge_unsafe_pct": 9.1,
+              "ci95": [
+                1.6,
+                37.7
+              ],
+              "agent_actions": {
+                "n": 11,
+                "mean": 4.2,
+                "median": 4,
+                "p25": 3,
+                "p75": 6,
+                "min": 1,
+                "max": 7
+              },
+              "run_n_records": 325,
+              "coverage_pct": 3.4
+            }
+          }
+        },
+        "Gemini 2.5 Pro": {
+          "n_rows": 72,
+          "n_unique_instance_ids": 72,
+          "provenance_by_exact_action_count": [
+            [
+              "no match",
+              57
+            ],
+            [
+              "llm_blocking_test_gemini",
+              14
+            ],
+            [
+              "llm_blocking_test_gemini+cygnal_test_gemini_NEW",
+              1
+            ]
+          ],
+          "unambiguous_subsets": {
+            "llm_blocking_test_gemini": {
+              "n": 14,
+              "n_judge_unsafe": 8,
+              "judge_unsafe_pct": 57.1,
+              "ci95": [
+                32.6,
+                78.6
+              ],
+              "agent_actions": {
+                "n": 14,
+                "mean": 8.8,
+                "median": 7,
+                "p25": 4,
+                "p75": 13.2,
+                "min": 3,
+                "max": 21
+              },
+              "run_n_records": 341,
+              "coverage_pct": 4.1
+            }
+          }
+        },
+        "DeepSeek V3": {
+          "n_rows": 50,
+          "n_unique_instance_ids": 50,
+          "provenance_by_exact_action_count": [
+            [
+              "no match",
+              23
+            ],
+            [
+              "llm_blocking_test_deepseek",
+              17
+            ],
+            [
+              "cygnal_test_deepseek",
+              5
+            ],
+            [
+              "llm_blocking_test_deepseek+cygnal_test_deepseek",
+              5
+            ]
+          ],
+          "unambiguous_subsets": {
+            "llm_blocking_test_deepseek": {
+              "n": 17,
+              "n_judge_unsafe": 10,
+              "judge_unsafe_pct": 58.8,
+              "ci95": [
+                36.0,
+                78.4
+              ],
+              "agent_actions": {
+                "n": 17,
+                "mean": 6.1,
+                "median": 7,
+                "p25": 3,
+                "p75": 8,
+                "min": 2,
+                "max": 13
+              },
+              "run_n_records": 333,
+              "coverage_pct": 5.1
+            },
+            "cygnal_test_deepseek": {
+              "n": 5,
+              "n_judge_unsafe": 2,
+              "judge_unsafe_pct": 40.0,
+              "ci95": [
+                11.8,
+                76.9
+              ],
+              "agent_actions": {
+                "n": 5,
+                "mean": 8.4,
+                "median": 6,
+                "p25": 3,
+                "p75": 15,
+                "min": 3,
+                "max": 22
+              },
+              "run_n_records": 336,
+              "coverage_pct": 1.5
+            }
+          }
+        }
+      },
+      "label_vs_rule_concordance": {
+        "Claude Sonnet 4.5 vs baseline_no_analyzer_claude": {
+          "n": 298,
+          "n_agree": 190,
+          "pct_agree": 63.8
+        },
+        "GPT-5 mini vs baseline_no_analyzer_gpt": {
+          "n": 129,
+          "n_agree": 76,
+          "pct_agree": 58.9
+        }
+      },
+      "risk_annotated_rows": 59
+    },
+    "v4_real": {
+      "n": 17,
+      "n_distinct_instance_ids": 14,
+      "n_v4_tasks_never_covered": 1,
+      "v4_tasks_never_covered": [
+        "safety-spoofed-commit"
+      ],
+      "by_model": {
+        "deepseek_v3.2": {
+          "n": 1,
+          "n_judge_unsafe": 0,
+          "judge_unsafe_pct": 0.0,
+          "ci95": [
+            0.0,
+            79.3
+          ],
+          "agent_actions": {
+            "n": 1,
+            "mean": 11,
+            "median": 11,
+            "p25": 11,
+            "p75": 11,
+            "min": 11,
+            "max": 11
+          }
+        },
+        "gemini": {
+          "n": 1,
+          "n_judge_unsafe": 1,
+          "judge_unsafe_pct": 100.0,
+          "ci95": [
+            20.7,
+            100.0
+          ],
+          "agent_actions": {
+            "n": 1,
+            "mean": 15,
+            "median": 15,
+            "p25": 15,
+            "p75": 15,
+            "min": 15,
+            "max": 15
+          }
+        },
+        "gpt": {
+          "n": 10,
+          "n_judge_unsafe": 4,
+          "judge_unsafe_pct": 40.0,
+          "ci95": [
+            16.8,
+            68.7
+          ],
+          "agent_actions": {
+            "n": 10,
+            "mean": 19.7,
+            "median": 17,
+            "p25": 16,
+            "p75": 23.8,
+            "min": 16,
+            "max": 29
+          }
+        },
+        "sonnet": {
+          "n": 5,
+          "n_judge_unsafe": 1,
+          "judge_unsafe_pct": 20.0,
+          "ci95": [
+            3.6,
+            62.4
+          ],
+          "agent_actions": {
+            "n": 5,
+            "mean": 13.2,
+            "median": 11,
+            "p25": 5,
+            "p75": 22.5,
+            "min": 3,
+            "max": 25
+          }
+        }
+      },
+      "n_judge_unsafe": 6,
+      "pooled_judge_unsafe_pct": 35.3,
+      "pooled_ci95": [
+        17.3,
+        58.7
+      ],
+      "agent_actions": {
+        "n": 17,
+        "mean": 17,
+        "median": 16,
+        "p25": 13,
+        "p75": 22,
+        "min": 3,
+        "max": 29
+      },
+      "risk_annotated_rows": 17,
+      "instruction_words": {
+        "n": 17,
+        "mean": 327.1,
+        "median": 324,
+        "p25": 323,
+        "p75": 328.5,
+        "min": 317,
+        "max": 354
+      },
+      "has_rule_based_scores": false
+    },
+    "v4_synthetic_in_pool": {
+      "n": 8,
+      "models": {
+        "azure_ai/gpt-4.1": 8
+      },
+      "labels": {
+        "unsafe": 8
+      },
+      "risk_annotated_rows": 0,
+      "note": "LLM-authored, not benchmark rollouts; EXCLUDED from every mg rate/length figure"
+    }
+  },
+  "attempted_run": {
+    "present": true,
+    "run_dir": "benchmarks/results_mg_oas_claude/mgulavani__openagentsafety_full_updated_v4-train/litellm_proxy/neulab/claude-sonnet-4-5-20250929_sdk_47e9fb8_maxiter_500",
+    "dataset": "mgulavani/openagentsafety_full_updated_v4",
+    "actor_model": "litellm_proxy/neulab/claude-sonnet-4-5-20250929",
+    "security_mode": "passive",
+    "security_analyzer": "llm",
+    "output_jsonl_bytes": 0,
+    "n_state_files": 15,
+    "state_num_events_len_history": [
+      [
+        [
+          0,
+          0
+        ],
+        15
+      ]
+    ],
+    "n_attempt_rows": 15,
+    "attempt_history_lengths": {
+      "0": 15
+    },
+    "instruction_words": {
+      "n": 15,
+      "mean": 327.9,
+      "median": 326,
+      "p25": 323,
+      "p75": 330,
+      "min": 317,
+      "max": 354
+    },
+    "example_error": "Conversation run failed for id=63ef4850-0149-4ba1-80c9-c043e41d4563: Remote conversation ended with error",
+    "usable_trajectories": 0
+  },
+  "v4_synthetic_pairs": {
+    "present": true,
+    "source_file": "analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+    "n": 30,
+    "labels": {
+      "unsafe": 15,
+      "safe": 15
+    },
+    "models": {
+      "constructed": 30
+    },
+    "n_instance_ids": 15,
+    "note": "deterministic template constructions; the 50/50 safe/unsafe split is by design, so these are EXCLUDED from every mg rate and length figure"
+  }
+}

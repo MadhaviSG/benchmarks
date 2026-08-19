@@ -219,3 +219,6 @@ eval_outputs/
 builds/
 results*/
 instance.txt
+
+# Mined OAS traces contain sandbox GitLab tokens; keep local-only
+analysis_outputs/critic_training_pairs/trajectories.jsonl

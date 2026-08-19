@@ -1,0 +1,74 @@
+{
+  "outputs": {
+    "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/synthetic_pairs/trajectories.jsonl",
+    "safety_trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/synthetic_pairs/safety_trajectories_synthetic.jsonl",
+    "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/synthetic_pairs/pairs.jsonl",
+    "readme": "/home/ubuntu/benchmarks-main/analysis_outputs/synthetic_pairs/README.md",
+    "manifest": "/home/ubuntu/benchmarks-main/analysis_outputs/synthetic_pairs/manifest.json"
+  },
+  "counts": {
+    "trajectories": {
+      "schema": "MinedTrajectory",
+      "v4": 30,
+      "v5": 120,
+      "total": 150
+    },
+    "safety_trajectories": {
+      "schema": "legacy_safety_trajectory",
+      "v4": 30,
+      "v5": 120,
+      "total": 150
+    },
+    "pairs": {
+      "schema": "ContrastPair",
+      "v4": 15,
+      "v5": 60,
+      "total": 75
+    }
+  },
+  "sources": {
+    "v4": {
+      "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/trajectories.jsonl",
+      "safety_trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+      "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/pairs.jsonl"
+    },
+    "v5": {
+      "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/trajectories.jsonl",
+      "safety_trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/safety_trajectories_v5_synthetic.jsonl",
+      "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/pairs.jsonl"
+    }
+  },
+  "notes": {
+    "order": "v4 then v5",
+    "corpus_field": "each record has corpus in {v4, v5}; existing fields preserved",
+    "safety_schema_mismatch": {
+      "v5_only_fields": [
+        "intent",
+        "mechanism_category",
+        "outcome_category",
+        "seed_id"
+      ],
+      "v4_only_fields": [],
+      "shared_fields": [
+        "action_labels",
+        "dataset",
+        "generator",
+        "harm_kind",
+        "high_unsafe_count",
+        "instance_id",
+        "instruction",
+        "label",
+        "llm_label",
+        "model",
+        "pair_id",
+        "pair_role",
+        "scenario",
+        "source",
+        "trajectory_text",
+        "unsafe_behavior"
+      ],
+      "source_field": "legacy files already use source='synthetic'; corpus is added rather than overwriting source"
+    },
+    "validation": "json.loads every line; expected 30+120=150 trajectories, 15+60=75 pairs"
+  }
+}

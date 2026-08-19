@@ -1,0 +1,146 @@
+{
+  "deepseekv3-results_llm_judge.json": {
+    "path": "llm-as-judge/deepseekv3-results_llm_judge.json",
+    "mtime": "2026-04-01",
+    "n_instances": 326,
+    "label_distribution": {
+      "-1": 271,
+      "0": 23,
+      "1": 5,
+      "2": 23,
+      "error/unparsed": 4
+    },
+    "in_v3": 326,
+    "in_v4": 0,
+    "judge_unsafe_label2_pct_of_parsed": 7.1,
+    "best_rule_vector_match": [
+      [
+        86.5,
+        "cygnal_test_gpt",
+        269,
+        311
+      ],
+      [
+        85.5,
+        "cygnal_test_claude",
+        278,
+        325
+      ],
+      [
+        83.3,
+        "baseline_no_analyzer_claude",
+        239,
+        287
+      ]
+    ],
+    "matches_a_surviving_run": false
+  },
+  "gemini2.5pro-results_llm_judge.json": {
+    "path": "llm-as-judge/gemini2.5pro-results_llm_judge.json",
+    "mtime": "2026-04-01",
+    "n_instances": 305,
+    "label_distribution": {
+      "-1": 54,
+      "0": 85,
+      "1": 22,
+      "2": 134,
+      "error/unparsed": 10
+    },
+    "in_v3": 305,
+    "in_v4": 0,
+    "judge_unsafe_label2_pct_of_parsed": 45.4,
+    "best_rule_vector_match": [
+      [
+        82.6,
+        "llm_blocking_test_claude",
+        247,
+        299
+      ],
+      [
+        82.4,
+        "baseline_no_analyzer_claude",
+        224,
+        272
+      ],
+      [
+        82.1,
+        "cygnal_test_gpt",
+        238,
+        290
+      ]
+    ],
+    "matches_a_surviving_run": false
+  },
+  "gpt5mini-results_llm_judge.json": {
+    "path": "llm-as-judge/gpt5mini-results_llm_judge.json",
+    "mtime": "2026-04-01",
+    "n_instances": 271,
+    "label_distribution": {
+      "-1": 119,
+      "0": 71,
+      "1": 10,
+      "2": 62,
+      "error/unparsed": 9
+    },
+    "in_v3": 271,
+    "in_v4": 0,
+    "judge_unsafe_label2_pct_of_parsed": 23.7,
+    "best_rule_vector_match": [
+      [
+        87.6,
+        "cygnal_test_gpt",
+        227,
+        259
+      ],
+      [
+        87.2,
+        "llm_blocking_test_claude",
+        231,
+        265
+      ],
+      [
+        85.7,
+        "llm_blocking_test_gpt",
+        221,
+        258
+      ]
+    ],
+    "matches_a_surviving_run": false
+  },
+  "sonnet4.5-results_llm_judge.json": {
+    "path": "llm-as-judge/sonnet4.5-results_llm_judge.json",
+    "mtime": "2026-04-01",
+    "n_instances": 308,
+    "label_distribution": {
+      "-1": 175,
+      "0": 67,
+      "1": 10,
+      "2": 46,
+      "error/unparsed": 10
+    },
+    "in_v3": 308,
+    "in_v4": 0,
+    "judge_unsafe_label2_pct_of_parsed": 15.4,
+    "best_rule_vector_match": [
+      [
+        90.4,
+        "baseline_no_analyzer_claude",
+        245,
+        271
+      ],
+      [
+        88.1,
+        "llm_blocking_test_claude",
+        266,
+        302
+      ],
+      [
+        82.6,
+        "llm_blocking_test_gpt",
+        237,
+        287
+      ]
+    ],
+    "matches_a_surviving_run": false
+  }
+}

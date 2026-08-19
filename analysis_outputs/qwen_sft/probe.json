@@ -1,0 +1,15 @@
+{
+  "cuda": false,
+  "torch_available": false,
+  "transformers_available": false,
+  "peft_available": false,
+  "bitsandbytes_available": false,
+  "model_path": null,
+  "model_id": null,
+  "reason": "backend=mock (forced)",
+  "can_sft": false,
+  "backend": "mock",
+  "notes": [
+    "no Qwen weights on disk (huggingface cache / /models)"
+  ]
+}

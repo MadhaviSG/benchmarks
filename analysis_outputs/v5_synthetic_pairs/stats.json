@@ -1,0 +1,143 @@
+{
+  "n_tasks": 60,
+  "n_pairs": 60,
+  "n_trajectories": 120,
+  "mean_pairwise_jaccard_problem_statements": 0.0768,
+  "instruction_words": {
+    "n": 60,
+    "median": 122.0,
+    "mean": 117.4,
+    "min": 69,
+    "max": 172
+  },
+  "grader_kinds": {
+    "file_contains": 32,
+    "csv_check": 7,
+    "rocketchat_message": 6,
+    "gitlab_commit_diff": 5,
+    "dir_file_count": 3,
+    "owncloud_file": 2,
+    "plane_issue": 2,
+    "file_absent": 1,
+    "gitlab_member": 1,
+    "gitlab_visibility": 1
+  },
+  "services": {
+    "filesystem-only": 35,
+    "rocketchat": 11,
+    "gitlab": 9,
+    "owncloud": 4,
+    "plane": 2
+  },
+  "intents": {
+    "benign": 38,
+    "adversarial_user": 12,
+    "benign_user_adversarial_npc": 10
+  },
+  "harm_kinds": {
+    "commission": 59,
+    "omission": 1
+  },
+  "gradeability": {
+    "state_change": 59,
+    "artifact_mediated_weak": 1
+  },
+  "npc_turns": {
+    "2": 26,
+    "0": 21,
+    "3": 13
+  },
+  "replay": {
+    "n_ok": 60,
+    "n_failed": 0,
+    "failures": []
+  },
+  "leakage": {
+    "n_pairs": 60,
+    "length_identical_within_pair": true,
+    "action_counts": {
+      "median": 12.0,
+      "mean": 12.67,
+      "min": 8,
+      "max": 18,
+      "distinct_values": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    },
+    "tool_mix_harmful": {
+      "terminal": 721,
+      "file_editor": 39
+    },
+    "tool_mix_safe": {
+      "terminal": 705,
+      "file_editor": 55
+    },
+    "actor_identical": true,
+    "most_label_discriminative_tokens_after_divergence": [
+      {
+        "token": "not",
+        "safe_minus_harmful_pairs": 29
+      },
+      {
+        "token": "should",
+        "safe_minus_harmful_pairs": 25
+      },
+      {
+        "token": "that",
+        "safe_minus_harmful_pairs": 22
+      },
+      {
+        "token": "only",
+        "safe_minus_harmful_pairs": 19
+      },
+      {
+        "token": "was",
+        "safe_minus_harmful_pairs": 17
+      },
+      {
+        "token": "route",
+        "safe_minus_harmful_pairs": 17
+      },
+      {
+        "token": "printf",
+        "safe_minus_harmful_pairs": 16
+      },
+      {
+        "token": "cannot",
+        "safe_minus_harmful_pairs": 15
+      },
+      {
+        "token": "than",
+        "safe_minus_harmful_pairs": 14
+      },
+      {
+        "token": "next",
+        "safe_minus_harmful_pairs": 13
+      },
+      {
+        "token": "fileeditoraction",
+        "safe_minus_harmful_pairs": 13
+      },
+      {
+        "token": "successfully",
+        "safe_minus_harmful_pairs": 13
+      }
+    ]
+  },
+  "outputs": {
+    "tasks": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_generated_tasks/v5_train.jsonl",
+    "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/trajectories.jsonl",
+    "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/pairs.jsonl",
+    "legacy": "/home/ubuntu/benchmarks-main/analysis_outputs/v5_synthetic_pairs/safety_trajectories_v5_synthetic.jsonl"
+  }
+}

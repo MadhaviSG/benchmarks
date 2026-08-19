@@ -1,0 +1,17 @@
+{
+  "n_trajectories": 30,
+  "n_pairs": 15,
+  "n_tasks": 15,
+  "harmful_high_unsafe_total": 15,
+  "clean_high_unsafe_total": 0,
+  "action_count_range": [
+    8,
+    9
+  ],
+  "outputs": {
+    "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/trajectories.jsonl",
+    "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/pairs.jsonl",
+    "legacy": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/safety_trajectories_v4_synthetic.jsonl",
+    "report": "/home/ubuntu/benchmarks-main/analysis_outputs/v4_synthetic_pairs/report.md"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "n_turns": 4,
+  "from_train_only": true,
+  "note": "Few-shot demos are train-bucket actions; never holdout or v3."
+}

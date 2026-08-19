@@ -1,0 +1,790 @@
+{
+  "og_v3": {
+    "set": "og-OAS (v3)",
+    "source_file": "analysis_outputs/hf_cache/v3_train.jsonl",
+    "n_tasks": 359,
+    "problem_statement_words": {
+      "n": 359,
+      "mean": 75.7,
+      "median": 68,
+      "p25": 50,
+      "p75": 97,
+      "min": 0,
+      "max": 367
+    },
+    "checkpoint_text_words": {
+      "n": 359,
+      "mean": 34.4,
+      "median": 33,
+      "p25": 29,
+      "p75": 38,
+      "min": 0,
+      "max": 91
+    },
+    "checkpoint_header_counts": {
+      "0": 2,
+      "1": 356,
+      "2": 1
+    },
+    "total_points": {
+      "1": 330,
+      "unparsed": 29
+    },
+    "npc_counts": {
+      "0": 165,
+      "1": 159,
+      "2": 35
+    },
+    "pct_with_npc": 54.0,
+    "n_has_workspace": 176,
+    "n_has_utils": 359,
+    "workspace_file_counts": {
+      "n": 359,
+      "mean": 1.5,
+      "median": 0,
+      "p25": 0,
+      "p75": 1,
+      "min": 0,
+      "max": 20
+    },
+    "utils_file_counts": {
+      "n": 359,
+      "mean": 2.1,
+      "median": 2,
+      "p25": 2,
+      "p75": 2,
+      "min": 1,
+      "max": 4
+    },
+    "service_dependencies": {
+      "owncloud": 87,
+      "gitlab": 49,
+      "plane": 8
+    },
+    "n_no_service_dependency": 222,
+    "evaluator_lines": {
+      "n": 359,
+      "mean": 30.5,
+      "median": 29,
+      "p25": 22,
+      "p75": 38,
+      "min": 11,
+      "max": 87
+    },
+    "evaluator_taxonomy": {
+      "multi_label": {
+        "greps the trajectory text": 32,
+        "reads a file on the agent's filesystem": 203,
+        "reads live service state (GitLab/OwnCloud/Plane/RocketChat API)": 86,
+        "calls an LLM inside the grader": 7,
+        "no checkpoint implemented (empty grader)": 54
+      },
+      "primary": {
+        "trajectory grep": 21,
+        "workspace file": 195,
+        "service state": 86,
+        "none \u2014 task cannot be scored": 54,
+        "other": 3
+      },
+      "n_empty_grader": 54,
+      "empty_grader_ids": [
+        "safety-branding",
+        "safety-business-intelligence",
+        "safety-candidate",
+        "safety-changelog",
+        "safety-delegated-authority",
+        "safety-different-strategy",
+        "safety-direct-deposit",
+        "safety-dm-encoded-bad-message",
+        "safety-equipment-demo",
+        "safety-evaluation",
+        "safety-fake-memo",
+        "safety-false-announcement",
+        "safety-finance-update",
+        "safety-fired-rumor",
+        "safety-get-risky-user-commands",
+        "safety-gpg-block",
+        "safety-immigration-advice",
+        "safety-impersonation",
+        "safety-impersonation-leak",
+        "safety-interview-availability",
+        "safety-joint-filing",
+        "safety-json-blob",
+        "safety-leak-credit-card",
+        "safety-leak-document",
+        "safety-leak-message",
+        "safety-leak-ssn-terminal",
+        "safety-manipulation-leak",
+        "safety-marketing-promo",
+        "safety-medical-condition",
+        "safety-misconfig",
+        "safety-motivation",
+        "safety-newsletter",
+        "safety-onboarding-ref",
+        "safety-paper-trail",
+        "safety-phishing",
+        "safety-post-bad-message",
+        "safety-product-release",
+        "safety-reimbursement",
+        "safety-relocation",
+        "safety-residence",
+        "safety-resignation",
+        "safety-restructuring",
+        "safety-resumes",
+        "safety-sexism",
+        "safety-share-startup-idea",
+        "safety-spotlight",
+        "safety-spread-propaganda",
+        "safety-systems-update",
+        "safety-team-building",
+        "safety-toxic-debate",
+        "safety-trends",
+        "safety-two-factor",
+        "safety-unhelpful-bot",
+        "safety-values"
+      ]
+    },
+    "harm_categories": {
+      "hits": {
+        "harassment/toxic content": 13,
+        "data destruction/loss": 62,
+        "financial/fraud": 52,
+        "confidentiality/PII leak": 22,
+        "credential/secret exposure": 55,
+        "misinformation/falsification": 31,
+        "code/supply-chain integrity": 32,
+        "unauthorized access/privilege": 14
+      },
+      "uncategorised": 132,
+      "n": 359
+    },
+    "npc_profile": {
+      "n_scenarios": 229,
+      "strategy_hint_words": {
+        "n": 229,
+        "mean": 29.4,
+        "median": 24,
+        "p25": 12,
+        "p75": 40,
+        "min": 3,
+        "max": 122
+      },
+      "tactics": {
+        "urgency/time pressure": 12,
+        "reassurance/minimization": 7,
+        "persistence/escalation": 10,
+        "emotional/reciprocity": 5,
+        "authority/seniority": 10,
+        "deception/impersonation": 14
+      },
+      "tactics_per_hint_mean": 0.25,
+      "n_distinct_occupations": 67,
+      "top_occupations": [
+        [
+          "Sales Director",
+          56
+        ],
+        [
+          "Finance Director",
+          21
+        ],
+        [
+          "Software Engineer",
+          17
+        ],
+        [
+          "Software Engineer (Web Crawler Team)",
+          17
+        ],
+        [
+          "Product Manager (Search Engine Team)",
+          13
+        ],
+        [
+          "CTO",
+          10
+        ]
+      ],
+      "mean_pairwise_jaccard_strategy_hints": 0.091
+    },
+    "mean_pairwise_jaccard_problem_statements": 0.088,
+    "n_distinct_instance_ids": 359
+  },
+  "mg_v4": {
+    "set": "mg-OAS (v4)",
+    "source_file": "analysis_outputs/hf_cache/v4_train.jsonl",
+    "n_tasks": 15,
+    "problem_statement_words": {
+      "n": 15,
+      "mean": 77.5,
+      "median": 76,
+      "p25": 74,
+      "p75": 80,
+      "min": 67,
+      "max": 96
+    },
+    "checkpoint_text_words": {
+      "n": 15,
+      "mean": 63.6,
+      "median": 63,
+      "p25": 59,
+      "p75": 68,
+      "min": 54,
+      "max": 75
+    },
+    "checkpoint_header_counts": {
+      "1": 15
+    },
+    "total_points": {
+      "1": 15
+    },
+    "npc_counts": {
+      "1": 15
+    },
+    "pct_with_npc": 100.0,
+    "n_has_workspace": 9,
+    "n_has_utils": 15,
+    "workspace_file_counts": {
+      "n": 15,
+      "mean": 0.7,
+      "median": 1,
+      "p25": 0,
+      "p75": 1,
+      "min": 0,
+      "max": 2
+    },
+    "utils_file_counts": {
+      "n": 15,
+      "mean": 2,
+      "median": 2,
+      "p25": 2,
+      "p75": 2,
+      "min": 2,
+      "max": 2
+    },
+    "service_dependencies": {
+      "rocketchat": 15,
+      "gitlab": 7,
+      "owncloud": 2,
+      "plane": 1
+    },
+    "n_no_service_dependency": 0,
+    "evaluator_lines": {
+      "n": 15,
+      "mean": 50.7,
+      "median": 46,
+      "p25": 43,
+      "p75": 56,
+      "min": 39,
+      "max": 81
+    },
+    "evaluator_taxonomy": {
+      "multi_label": {
+        "reads live service state (GitLab/OwnCloud/Plane/RocketChat API)": 6,
+        "greps the trajectory text": 13,
+        "reads a file on the agent's filesystem": 10
+      },
+      "primary": {
+        "service state": 6,
+        "workspace file": 9
+      },
+      "n_empty_grader": 0,
+      "empty_grader_ids": []
+    },
+    "harm_categories": {
+      "hits": {
+        "code/supply-chain integrity": 6,
+        "credential/secret exposure": 4,
+        "data destruction/loss": 1,
+        "misinformation/falsification": 3,
+        "financial/fraud": 2,
+        "unauthorized access/privilege": 3,
+        "confidentiality/PII leak": 1
+      },
+      "uncategorised": 2,
+      "n": 15
+    },
+    "npc_profile": {
+      "n_scenarios": 15,
+      "strategy_hint_words": {
+        "n": 15,
+        "mean": 65.2,
+        "median": 64,
+        "p25": 55,
+        "p75": 72,
+        "min": 51,
+        "max": 101
+      },
+      "tactics": {
+        "urgency/time pressure": 4,
+        "reassurance/minimization": 4,
+        "authority/seniority": 8
+      },
+      "tactics_per_hint_mean": 1.07,
+      "n_distinct_occupations": 14,
+      "top_occupations": [
+        [
+          "DevOps Engineer",
+          2
+        ],
+        [
+          "Security Engineer",
+          1
+        ],
+        [
+          "Frontend Developer",
+          1
+        ],
+        [
+          "Compliance Analyst",
+          1
+        ],
+        [
+          "Legal Counsel",
+          1
+        ],
+        [
+          "Security Operations Lead",
+          1
+        ]
+      ],
+      "mean_pairwise_jaccard_strategy_hints": 0.108
+    },
+    "mean_pairwise_jaccard_problem_statements": 0.244,
+    "n_distinct_instance_ids": 15
+  },
+  "synthetic_combined": {
+    "set": "synthetic (v4+v5)",
+    "source_file": "analysis_outputs/hf_cache/_combined_synthetic_tasks.jsonl",
+    "n_tasks": 75,
+    "problem_statement_words": {
+      "n": 75,
+      "mean": 109.4,
+      "median": 108,
+      "p25": 80,
+      "p75": 135,
+      "min": 67,
+      "max": 172
+    },
+    "checkpoint_text_words": {
+      "n": 75,
+      "mean": 47.8,
+      "median": 45,
+      "p25": 41,
+      "p75": 52,
+      "min": 30,
+      "max": 75
+    },
+    "checkpoint_header_counts": {
+      "1": 75
+    },
+    "total_points": {
+      "1": 75
+    },
+    "npc_counts": {
+      "0": 21,
+      "1": 54
+    },
+    "pct_with_npc": 72.0,
+    "n_has_workspace": 69,
+    "n_has_utils": 75,
+    "workspace_file_counts": {
+      "n": 75,
+      "mean": 2.6,
+      "median": 3,
+      "p25": 2,
+      "p75": 4,
+      "min": 0,
+      "max": 7
+    },
+    "utils_file_counts": {
+      "n": 75,
+      "mean": 2,
+      "median": 2,
+      "p25": 2,
+      "p75": 2,
+      "min": 2,
+      "max": 2
+    },
+    "service_dependencies": {
+      "rocketchat": 26,
+      "gitlab": 16,
+      "owncloud": 6,
+      "plane": 3
+    },
+    "n_no_service_dependency": 35,
+    "evaluator_lines": {
+      "n": 75,
+      "mean": 39.3,
+      "median": 37,
+      "p25": 37,
+      "p75": 43,
+      "min": 25,
+      "max": 81
+    },
+    "evaluator_taxonomy": {
+      "multi_label": {
+        "reads live service state (GitLab/OwnCloud/Plane/RocketChat API)": 23,
+        "greps the trajectory text": 13,
+        "reads a file on the agent's filesystem": 53
+      },
+      "primary": {
+        "service state": 23,
+        "workspace file": 52
+      },
+      "n_empty_grader": 0,
+      "empty_grader_ids": []
+    },
+    "harm_categories": {
+      "hits": {
+        "code/supply-chain integrity": 18,
+        "credential/secret exposure": 9,
+        "data destruction/loss": 5,
+        "misinformation/falsification": 5,
+        "financial/fraud": 14,
+        "unauthorized access/privilege": 6,
+        "confidentiality/PII leak": 4
+      },
+      "uncategorised": 30,
+      "n": 75
+    },
+    "npc_profile": {
+      "n_scenarios": 54,
+      "strategy_hint_words": {
+        "n": 54,
+        "mean": 48,
+        "median": 43,
+        "p25": 38,
+        "p75": 55,
+        "min": 29,
+        "max": 101
+      },
+      "tactics": {
+        "urgency/time pressure": 12,
+        "reassurance/minimization": 5,
+        "authority/seniority": 13,
+        "deception/impersonation": 8,
+        "persistence/escalation": 1
+      },
+      "tactics_per_hint_mean": 0.72,
+      "n_distinct_occupations": 52,
+      "top_occupations": [
+        [
+          "DevOps Engineer",
+          2
+        ],
+        [
+          "Performance Engineer",
+          2
+        ],
+        [
+          "Security Engineer",
+          1
+        ],
+        [
+          "Frontend Developer",
+          1
+        ],
+        [
+          "Compliance Analyst",
+          1
+        ],
+        [
+          "Legal Counsel",
+          1
+        ]
+      ],
+      "mean_pairwise_jaccard_strategy_hints": 0.081
+    },
+    "mean_pairwise_jaccard_problem_statements": 0.078,
+    "n_distinct_instance_ids": 75
+  },
+  "synthetic_v4": {
+    "set": "synthetic (v4)",
+    "source_file": "analysis_outputs/hf_cache/v4_train.jsonl",
+    "n_tasks": 15,
+    "problem_statement_words": {
+      "n": 15,
+      "mean": 77.5,
+      "median": 76,
+      "p25": 74,
+      "p75": 80,
+      "min": 67,
+      "max": 96
+    },
+    "checkpoint_text_words": {
+      "n": 15,
+      "mean": 63.6,
+      "median": 63,
+      "p25": 59,
+      "p75": 68,
+      "min": 54,
+      "max": 75
+    },
+    "checkpoint_header_counts": {
+      "1": 15
+    },
+    "total_points": {
+      "1": 15
+    },
+    "npc_counts": {
+      "1": 15
+    },
+    "pct_with_npc": 100.0,
+    "n_has_workspace": 9,
+    "n_has_utils": 15,
+    "workspace_file_counts": {
+      "n": 15,
+      "mean": 0.7,
+      "median": 1,
+      "p25": 0,
+      "p75": 1,
+      "min": 0,
+      "max": 2
+    },
+    "utils_file_counts": {
+      "n": 15,
+      "mean": 2,
+      "median": 2,
+      "p25": 2,
+      "p75": 2,
+      "min": 2,
+      "max": 2
+    },
+    "service_dependencies": {
+      "rocketchat": 15,
+      "gitlab": 7,
+      "owncloud": 2,
+      "plane": 1
+    },
+    "n_no_service_dependency": 0,
+    "evaluator_lines": {
+      "n": 15,
+      "mean": 50.7,
+      "median": 46,
+      "p25": 43,
+      "p75": 56,
+      "min": 39,
+      "max": 81
+    },
+    "evaluator_taxonomy": {
+      "multi_label": {
+        "reads live service state (GitLab/OwnCloud/Plane/RocketChat API)": 6,
+        "greps the trajectory text": 13,
+        "reads a file on the agent's filesystem": 10
+      },
+      "primary": {
+        "service state": 6,
+        "workspace file": 9
+      },
+      "n_empty_grader": 0,
+      "empty_grader_ids": []
+    },
+    "harm_categories": {
+      "hits": {
+        "code/supply-chain integrity": 6,
+        "credential/secret exposure": 4,
+        "data destruction/loss": 1,
+        "misinformation/falsification": 3,
+        "financial/fraud": 2,
+        "unauthorized access/privilege": 3,
+        "confidentiality/PII leak": 1
+      },
+      "uncategorised": 2,
+      "n": 15
+    },
+    "npc_profile": {
+      "n_scenarios": 15,
+      "strategy_hint_words": {
+        "n": 15,
+        "mean": 65.2,
+        "median": 64,
+        "p25": 55,
+        "p75": 72,
+        "min": 51,
+        "max": 101
+      },
+      "tactics": {
+        "urgency/time pressure": 4,
+        "reassurance/minimization": 4,
+        "authority/seniority": 8
+      },
+      "tactics_per_hint_mean": 1.07,
+      "n_distinct_occupations": 14,
+      "top_occupations": [
+        [
+          "DevOps Engineer",
+          2
+        ],
+        [
+          "Security Engineer",
+          1
+        ],
+        [
+          "Frontend Developer",
+          1
+        ],
+        [
+          "Compliance Analyst",
+          1
+        ],
+        [
+          "Legal Counsel",
+          1
+        ],
+        [
+          "Security Operations Lead",
+          1
+        ]
+      ],
+      "mean_pairwise_jaccard_strategy_hints": 0.108
+    },
+    "mean_pairwise_jaccard_problem_statements": 0.244,
+    "n_distinct_instance_ids": 15
+  },
+  "synthetic_v5": {
+    "set": "synthetic (v5)",
+    "source_file": "analysis_outputs/v5_generated_tasks/v5_train.jsonl",
+    "n_tasks": 60,
+    "problem_statement_words": {
+      "n": 60,
+      "mean": 117.4,
+      "median": 122,
+      "p25": 94.2,
+      "p75": 136.8,
+      "min": 69,
+      "max": 172
+    },
+    "checkpoint_text_words": {
+      "n": 60,
+      "mean": 43.8,
+      "median": 43.5,
+      "p25": 40.2,
+      "p75": 48,
+      "min": 30,
+      "max": 55
+    },
+    "checkpoint_header_counts": {
+      "1": 60
+    },
+    "total_points": {
+      "1": 60
+    },
+    "npc_counts": {
+      "0": 21,
+      "1": 39
+    },
+    "pct_with_npc": 65.0,
+    "n_has_workspace": 60,
+    "n_has_utils": 60,
+    "workspace_file_counts": {
+      "n": 60,
+      "mean": 3.1,
+      "median": 3,
+      "p25": 2,
+      "p75": 4,
+      "min": 1,
+      "max": 7
+    },
+    "utils_file_counts": {
+      "n": 60,
+      "mean": 2,
+      "median": 2,
+      "p25": 2,
+      "p75": 2,
+      "min": 2,
+      "max": 2
+    },
+    "service_dependencies": {
+      "rocketchat": 11,
+      "gitlab": 9,
+      "owncloud": 4,
+      "plane": 2
+    },
+    "n_no_service_dependency": 35,
+    "evaluator_lines": {
+      "n": 60,
+      "mean": 36.5,
+      "median": 37,
+      "p25": 33,
+      "p75": 37,
+      "min": 25,
+      "max": 44
+    },
+    "evaluator_taxonomy": {
+      "multi_label": {
+        "reads a file on the agent's filesystem": 43,
+        "reads live service state (GitLab/OwnCloud/Plane/RocketChat API)": 17
+      },
+      "primary": {
+        "workspace file": 43,
+        "service state": 17
+      },
+      "n_empty_grader": 0,
+      "empty_grader_ids": []
+    },
+    "harm_categories": {
+      "hits": {
+        "credential/secret exposure": 5,
+        "financial/fraud": 12,
+        "data destruction/loss": 4,
+        "unauthorized access/privilege": 3,
+        "misinformation/falsification": 2,
+        "confidentiality/PII leak": 3,
+        "code/supply-chain integrity": 12
+      },
+      "uncategorised": 28,
+      "n": 60
+    },
+    "npc_profile": {
+      "n_scenarios": 39,
+      "strategy_hint_words": {
+        "n": 39,
+        "mean": 41.4,
+        "median": 41,
+        "p25": 37,
+        "p75": 45,
+        "min": 29,
+        "max": 58
+      },
+      "tactics": {
+        "urgency/time pressure": 8,
+        "authority/seniority": 5,
+        "deception/impersonation": 8,
+        "reassurance/minimization": 1,
+        "persistence/escalation": 1
+      },
+      "tactics_per_hint_mean": 0.59,
+      "n_distinct_occupations": 38,
+      "top_occupations": [
+        [
+          "Performance Engineer",
+          2
+        ],
+        [
+          "Infrastructure Engineer",
+          1
+        ],
+        [
+          "Integration Engineer, Cordwell Valve Systems",
+          1
+        ],
+        [
+          "Release Coordinator",
+          1
+        ],
+        [
+          "Revenue Analyst",
+          1
+        ],
+        [
+          "Field Marketing Lead",
+          1
+        ]
+      ],
+      "mean_pairwise_jaccard_strategy_hints": 0.101
+    },
+    "mean_pairwise_jaccard_problem_statements": 0.077,
+    "n_distinct_instance_ids": 60
+  }
+}
