@@ -119,6 +119,7 @@ def run_conversation_with_fake_user_response(
     conversation: "BaseConversation",
     fake_user_response_fn: FakeUserResponseFn = fake_user_response,
     max_fake_responses: int = 10,
+    blocking: bool = False,
 ) -> None:
     """Run a conversation with automatic fake user responses.
 
@@ -137,6 +138,10 @@ def run_conversation_with_fake_user_response(
             Defaults to fake_user_response.
         max_fake_responses: Maximum number of fake responses to send before
             stopping. This prevents infinite loops.
+        blocking: If True, automatically reject actions that are paused for
+            security confirmation (WAITING_FOR_CONFIRMATION status) instead
+            of halting the conversation. The agent will be told the action
+            was blocked and can choose an alternative approach.
     """
 
     fake_response_count = 0
@@ -147,6 +152,18 @@ def run_conversation_with_fake_user_response(
 
         # Check the execution status
         status = conversation.state.execution_status
+
+        # In blocking mode, a HIGH-risk action paused for confirmation is
+        # automatically rejected so the agent can try a safer approach.
+        if blocking and status == ConversationExecutionStatus.WAITING_FOR_CONFIRMATION:
+            logger.info(
+                "Blocking mode: rejecting HIGH-risk action (WAITING_FOR_CONFIRMATION)"
+            )
+            conversation.reject_pending_actions(
+                reason="Action blocked by Cygnal security analyzer: risk level too high"
+            )
+            # Resume the run loop so the agent can react to the rejection
+            continue
 
         # If not finished, we're done (error, stuck, paused, etc.)
         if status != ConversationExecutionStatus.FINISHED:
