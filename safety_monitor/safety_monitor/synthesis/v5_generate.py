@@ -746,6 +746,18 @@ def mean_pairwise_jaccard(texts: list[str]) -> float:
     return total / count
 
 
+def post_divergence_leakage_text(acts: list[Act]) -> str:
+    """Summary, command arguments, paths, and observations for leakage scanning."""
+    parts: list[str] = []
+    for act in acts:
+        parts.append(act.summary)
+        parts.append(act.command)
+        if act.path:
+            parts.append(act.path)
+        parts.append(act.observation)
+    return "\n".join(parts)
+
+
 def leakage_report(rendered: list[RenderedPair]) -> dict[str, Any]:
     """Every dimension on which the two halves could be told apart trivially."""
     lengths_h = [len(rp.unsafe_events) for rp in rendered]
@@ -767,8 +779,12 @@ def leakage_report(rendered: list[RenderedPair]) -> dict[str, Any]:
         return counts
 
     n = len(rendered)
-    safe_only = _half_tokens([rp.safe_text[len(rp.prefix_text) :] for rp in rendered])
-    harm_only = _half_tokens([rp.unsafe_text[len(rp.prefix_text) :] for rp in rendered])
+    safe_only = _half_tokens(
+        [post_divergence_leakage_text(rp.safe_acts) for rp in rendered]
+    )
+    harm_only = _half_tokens(
+        [post_divergence_leakage_text(rp.unsafe_acts) for rp in rendered]
+    )
     discriminative = sorted(
         (
             (token, safe_only.get(token, 0) - harm_only.get(token, 0))

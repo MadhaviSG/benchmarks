@@ -3,38 +3,37 @@
   "n_tasks": 550,
   "n_pairs": 550,
   "n_trajectories": 1100,
-  "mean_pairwise_jaccard_problem_statements": 0.1499,
+  "mean_pairwise_jaccard_problem_statements": 0.1516,
   "grid_cells_filled": {
     "Computer security compromise | A | filesystem-only": 4,
-    "Computer security compromise | A | gitlab": 8,
+    "Computer security compromise | A | gitlab": 7,
     "Computer security compromise | A | owncloud": 4,
-    "Computer security compromise | A | rocketchat": 1,
-    "Computer security compromise | B | filesystem-only": 4,
+    "Computer security compromise | B | filesystem-only": 2,
     "Computer security compromise | B | gitlab": 4,
     "Computer security compromise | B | plane": 4,
     "Computer security compromise | B | rocketchat": 4,
     "Computer security compromise | C | filesystem-only": 4,
     "Computer security compromise | C | owncloud": 4,
     "Computer security compromise | C | rocketchat": 7,
-    "Computer security compromise | D | filesystem-only": 4,
+    "Computer security compromise | D | filesystem-only": 2,
     "Computer security compromise | D | gitlab": 3,
     "Computer security compromise | D | owncloud": 4,
     "Computer security compromise | D | plane": 4,
-    "Computer security compromise | E | filesystem-only": 5,
+    "Computer security compromise | E | filesystem-only": 3,
     "Computer security compromise | E | gitlab": 2,
     "Computer security compromise | E | plane": 4,
     "Computer security compromise | E | rocketchat": 4,
     "Data loss or corruption | A | filesystem-only": 6,
-    "Data loss or corruption | A | owncloud": 5,
+    "Data loss or corruption | A | owncloud": 4,
     "Data loss or corruption | A | rocketchat": 4,
-    "Data loss or corruption | B | filesystem-only": 4,
+    "Data loss or corruption | B | filesystem-only": 3,
     "Data loss or corruption | B | gitlab": 4,
     "Data loss or corruption | B | owncloud": 3,
     "Data loss or corruption | B | plane": 4,
     "Data loss or corruption | C | filesystem-only": 4,
     "Data loss or corruption | C | plane": 4,
     "Data loss or corruption | C | rocketchat": 6,
-    "Data loss or corruption | D | filesystem-only": 7,
+    "Data loss or corruption | D | filesystem-only": 8,
     "Data loss or corruption | D | gitlab": 4,
     "Data loss or corruption | D | owncloud": 3,
     "Data loss or corruption | E | filesystem-only": 3,
@@ -85,28 +84,30 @@
     "Legal violations | C | gitlab": 4,
     "Legal violations | C | owncloud": 4,
     "Legal violations | C | rocketchat": 1,
-    "Legal violations | D | filesystem-only": 1,
+    "Legal violations | D | filesystem-only": 3,
     "Legal violations | D | gitlab": 4,
     "Legal violations | D | plane": 4,
     "Legal violations | D | rocketchat": 4,
     "Legal violations | E | filesystem-only": 4,
+    "Legal violations | E | gitlab": 1,
     "Legal violations | E | owncloud": 5,
     "Legal violations | E | rocketchat": 3,
     "Privacy breach | A | filesystem-only": 6,
     "Privacy breach | A | gitlab": 3,
-    "Privacy breach | A | owncloud": 6,
+    "Privacy breach | A | owncloud": 5,
     "Privacy breach | B | filesystem-only": 3,
     "Privacy breach | B | gitlab": 4,
     "Privacy breach | B | plane": 4,
     "Privacy breach | B | rocketchat": 4,
-    "Privacy breach | C | filesystem-only": 3,
+    "Privacy breach | C | filesystem-only": 4,
     "Privacy breach | C | owncloud": 4,
-    "Privacy breach | C | rocketchat": 5,
+    "Privacy breach | C | rocketchat": 6,
     "Privacy breach | D | filesystem-only": 3,
     "Privacy breach | D | gitlab": 4,
     "Privacy breach | D | owncloud": 4,
     "Privacy breach | D | plane": 4,
-    "Privacy breach | E | filesystem-only": 4,
+    "Privacy breach | E | filesystem-only": 5,
+    "Privacy breach | E | gitlab": 1,
     "Privacy breach | E | owncloud": 1,
     "Privacy breach | E | plane": 4,
     "Privacy breach | E | rocketchat": 3,
@@ -119,7 +120,7 @@
     "Spreading malicious content | B | plane": 4,
     "Spreading malicious content | C | filesystem-only": 5,
     "Spreading malicious content | C | plane": 4,
-    "Spreading malicious content | C | rocketchat": 3,
+    "Spreading malicious content | C | rocketchat": 4,
     "Spreading malicious content | D | filesystem-only": 5,
     "Spreading malicious content | D | gitlab": 4,
     "Spreading malicious content | D | owncloud": 4,
@@ -131,13 +132,13 @@
     "Unsafe code execution | A | filesystem-only": 6,
     "Unsafe code execution | A | plane": 4,
     "Unsafe code execution | A | rocketchat": 4,
-    "Unsafe code execution | B | filesystem-only": 6,
+    "Unsafe code execution | B | filesystem-only": 7,
     "Unsafe code execution | B | gitlab": 4,
     "Unsafe code execution | B | owncloud": 4,
     "Unsafe code execution | C | gitlab": 4,
     "Unsafe code execution | C | plane": 4,
     "Unsafe code execution | C | rocketchat": 6,
-    "Unsafe code execution | D | filesystem-only": 4,
+    "Unsafe code execution | D | filesystem-only": 5,
     "Unsafe code execution | D | owncloud": 4,
     "Unsafe code execution | D | rocketchat": 4,
     "Unsafe code execution | E | filesystem-only": 1,
@@ -146,14 +147,14 @@
     "Unsafe code execution | E | plane": 4
   },
   "validation": {
-    "n_drafted": 576,
+    "n_drafted": 568,
     "n_accepted": 550,
-    "n_rejected": 26,
+    "n_rejected": 18,
     "rejection_by_gate": {
       "grader_replay": 1,
-      "novelty": 25
+      "novelty": 17
     },
-    "acceptance_rate": 0.955
+    "acceptance_rate": 0.968
   },
   "splits": {
     "salt": "v6-synthetic-500",
@@ -163,28 +164,23 @@
       "test": 75
     },
     "counts": {
-      "train": 396,
-      "dev": 80,
-      "test": 74
+      "train": 394,
+      "dev": 83,
+      "test": 73
     },
     "strata": {
       "Computer security compromise|A|filesystem-only": {
         "train": 4
       },
       "Computer security compromise|A|gitlab": {
-        "train": 6,
-        "dev": 1,
-        "test": 1
+        "train": 5,
+        "dev": 2
       },
       "Computer security compromise|A|owncloud": {
         "train": 4
       },
-      "Computer security compromise|A|rocketchat": {
-        "train": 1
-      },
       "Computer security compromise|B|filesystem-only": {
         "dev": 1,
-        "train": 2,
         "test": 1
       },
       "Computer security compromise|B|gitlab": {
@@ -210,7 +206,6 @@
       },
       "Computer security compromise|D|filesystem-only": {
         "dev": 1,
-        "train": 2,
         "test": 1
       },
       "Computer security compromise|D|gitlab": {
@@ -228,7 +223,7 @@
       },
       "Computer security compromise|E|filesystem-only": {
         "test": 1,
-        "train": 4
+        "train": 2
       },
       "Computer security compromise|E|gitlab": {
         "train": 2
@@ -242,11 +237,10 @@
         "test": 2
       },
       "Data loss or corruption|A|filesystem-only": {
-        "train": 5,
-        "test": 1
+        "train": 6
       },
       "Data loss or corruption|A|owncloud": {
-        "train": 3,
+        "train": 2,
         "test": 1,
         "dev": 1
       },
@@ -254,7 +248,7 @@
         "train": 4
       },
       "Data loss or corruption|B|filesystem-only": {
-        "test": 2,
+        "test": 1,
         "train": 2
       },
       "Data loss or corruption|B|gitlab": {
@@ -279,11 +273,11 @@
         "dev": 3
       },
       "Data loss or corruption|C|rocketchat": {
-        "train": 4,
-        "dev": 2
+        "train": 5,
+        "dev": 1
       },
       "Data loss or corruption|D|filesystem-only": {
-        "train": 5,
+        "train": 6,
         "dev": 2
       },
       "Data loss or corruption|D|gitlab": {
@@ -480,7 +474,9 @@
         "train": 1
       },
       "Legal violations|D|filesystem-only": {
-        "dev": 1
+        "dev": 1,
+        "train": 1,
+        "test": 1
       },
       "Legal violations|D|gitlab": {
         "dev": 2,
@@ -499,6 +495,9 @@
         "train": 3,
         "dev": 1
       },
+      "Legal violations|E|gitlab": {
+        "train": 1
+      },
       "Legal violations|E|owncloud": {
         "train": 5
       },
@@ -515,8 +514,8 @@
         "train": 2
       },
       "Privacy breach|A|owncloud": {
-        "dev": 1,
-        "train": 4,
+        "dev": 2,
+        "train": 2,
         "test": 1
       },
       "Privacy breach|B|filesystem-only": {
@@ -539,7 +538,8 @@
         "train": 1
       },
       "Privacy breach|C|filesystem-only": {
-        "train": 3
+        "train": 3,
+        "dev": 1
       },
       "Privacy breach|C|owncloud": {
         "train": 3,
@@ -547,7 +547,8 @@
       },
       "Privacy breach|C|rocketchat": {
         "train": 4,
-        "test": 1
+        "test": 1,
+        "dev": 1
       },
       "Privacy breach|D|filesystem-only": {
         "dev": 1,
@@ -567,8 +568,11 @@
         "dev": 1
       },
       "Privacy breach|E|filesystem-only": {
-        "train": 3,
+        "train": 4,
         "dev": 1
+      },
+      "Privacy breach|E|gitlab": {
+        "train": 1
       },
       "Privacy breach|E|owncloud": {
         "dev": 1
@@ -616,7 +620,7 @@
         "dev": 1
       },
       "Spreading malicious content|C|rocketchat": {
-        "train": 3
+        "train": 4
       },
       "Spreading malicious content|D|filesystem-only": {
         "train": 5
@@ -657,7 +661,7 @@
       },
       "Unsafe code execution|B|filesystem-only": {
         "train": 4,
-        "test": 1,
+        "test": 2,
         "dev": 1
       },
       "Unsafe code execution|B|gitlab": {
@@ -680,7 +684,7 @@
         "dev": 1
       },
       "Unsafe code execution|D|filesystem-only": {
-        "train": 4
+        "train": 5
       },
       "Unsafe code execution|D|owncloud": {
         "train": 3,
@@ -1210,29 +1214,12 @@
       "safety-v6-gpu-auto-approve": "train",
       "safety-v6-gpu-curl-bash": "dev",
       "safety-v6-grafana-cookie-post": "train",
-      "safety-v6-grid-6000": "test",
-      "safety-v6-grid-6001": "train",
-      "safety-v6-grid-6002": "train",
-      "safety-v6-grid-6003": "train",
-      "safety-v6-grid-6004": "train",
-      "safety-v6-grid-6005": "train",
-      "safety-v6-grid-6006": "train",
-      "safety-v6-grid-6007": "train",
-      "safety-v6-grid-6008": "train",
-      "safety-v6-grid-6009": "train",
-      "safety-v6-grid-6012": "test",
-      "safety-v6-grid-6013": "train",
-      "safety-v6-grid-6014": "dev",
-      "safety-v6-grid-6016": "train",
-      "safety-v6-grid-6018": "test",
-      "safety-v6-grid-6022": "train",
-      "safety-v6-grid-6023": "train",
-      "safety-v6-grid-6024": "train",
       "safety-v6-grove-gateway-exposure": "test",
       "safety-v6-hash-blocklist-rm": "train",
       "safety-v6-hedge-log-rm": "train",
       "safety-v6-hostkey-allowlist-rm": "test",
       "safety-v6-hotfix-skip-validation": "dev",
+      "safety-v6-hr-dashboard-scrape": "dev",
       "safety-v6-hris-dump-upload": "dev",
       "safety-v6-impact-assessment-rm": "train",
       "safety-v6-jumpbox-root-commit": "train",
@@ -1247,13 +1234,30 @@
       "safety-v6-legalhold-index-trunc": "train",
       "safety-v6-lit-hold-retention": "train",
       "safety-v6-logparser-exec-patch": "train",
+      "safety-v6-lossy-asset-compression": "train",
       "safety-v6-macro-metrics-upload": "train",
       "safety-v6-macro-trojan-template": "train",
       "safety-v6-margin-override-sheet": "test",
       "safety-v6-mfa-pause-broadcast": "train",
       "safety-v6-national-id-roster": "dev",
       "safety-v6-northfield-pinning-drop": "train",
-      "safety-v6-npm-mirror-maint": "train"
+      "safety-v6-npm-mirror-maint": "train",
+      "safety-v6-ofac-trail-rm": "train",
+      "safety-v6-only-editable-copy-removed": "train",
+      "safety-v6-parquet-snapshot-swap": "train",
+      "safety-v6-passport-b64-post": "dev",
+      "safety-v6-patch-exe-broadcast": "train",
+      "safety-v6-pci-firewall-export": "dev",
+      "safety-v6-pediatric-encrypt-off": "train",
+      "safety-v6-pentest-link-leak": "train",
+      "safety-v6-perf-review-link": "dev",
+      "safety-v6-pii-contractor-add": "train",
+      "safety-v6-pkg-allowlist-rm": "train",
+      "safety-v6-policy-external-maint": "train",
+      "safety-v6-policy-mirror-delete": "train",
+      "safety-v6-portal-key-commit": "train",
+      "safety-v6-precommit-remote-hook": "test",
+      "safety-v6-preservation-notice-rm": "test"
     }
   },
   "decontamination": {
@@ -1272,7 +1276,7 @@
     "length_identical_within_pair": true,
     "action_counts": {
       "median": 12.0,
-      "mean": 12.07,
+      "mean": 12.08,
       "min": 8,
       "max": 16,
       "distinct_values": [
@@ -1288,70 +1292,70 @@
       ]
     },
     "tool_mix_harmful": {
-      "terminal": 6407,
-      "file_editor": 231
+      "terminal": 6419,
+      "file_editor": 223
     },
     "tool_mix_safe": {
-      "terminal": 6407,
-      "file_editor": 231
+      "terminal": 6419,
+      "file_editor": 223
     },
     "actor_identical": true,
     "most_label_discriminative_tokens_after_divergence": [
       {
         "token": "printf",
-        "safe_minus_harmful_pairs": 108
+        "safe_minus_harmful_pairs": 64
       },
       {
-        "token": "luploaded",
-        "safe_minus_harmful_pairs": -30
+        "token": "purge",
+        "safe_minus_harmful_pairs": -47
+      },
+      {
+        "token": "tmp",
+        "safe_minus_harmful_pairs": 47
+      },
+      {
+        "token": "scratch",
+        "safe_minus_harmful_pairs": 47
+      },
+      {
+        "token": "uploaded",
+        "safe_minus_harmful_pairs": -29
+      },
+      {
+        "token": "command",
+        "safe_minus_harmful_pairs": 29
       },
       {
         "token": "finished",
-        "safe_minus_harmful_pairs": 30
-      },
-      {
-        "token": "lcommand",
-        "safe_minus_harmful_pairs": 30
-      },
-      {
-        "token": "harmful",
-        "safe_minus_harmful_pairs": -18
+        "safe_minus_harmful_pairs": 29
       },
       {
         "token": "publish",
-        "safe_minus_harmful_pairs": -18
+        "safe_minus_harmful_pairs": -19
+      },
+      {
+        "token": "harmful",
+        "safe_minus_harmful_pairs": -19
       },
       {
         "token": "theagentcompany",
         "safe_minus_harmful_pairs": -11
       },
       {
-        "token": "dbf",
+        "token": "bbf",
+        "safe_minus_harmful_pairs": -3
+      },
+      {
+        "token": "fec",
         "safe_minus_harmful_pairs": 3
-      },
-      {
-        "token": "bff",
-        "safe_minus_harmful_pairs": 3
-      },
-      {
-        "token": "ced",
-        "safe_minus_harmful_pairs": 2
-      },
-      {
-        "token": "aab",
-        "safe_minus_harmful_pairs": 2
-      },
-      {
-        "token": "dee",
-        "safe_minus_harmful_pairs": 2
       }
     ]
   },
   "corpus_gates": [
     {
       "gate": "corpus_jaccard",
-      "ok": true,
-      "reason": "mean Jaccard 0.1499"
+      "ok": false,
+      "reason": "mean Jaccard 0.1516 > 0.15"
     },
     {
       "gate": "opening_prefix",
@@ -1361,7 +1365,7 @@
     {
       "gate": "leakage",
       "ok": true,
-      "reason": "max post-divergence token skew ratio 0.196"
+      "reason": "max post-divergence token skew ratio 0.116"
     }
   ],
   "outputs": {

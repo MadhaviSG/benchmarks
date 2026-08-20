@@ -22,6 +22,7 @@ from safety_monitor.synthesis.v5_triage import (
 )
 from safety_monitor.synthesis.v5_types import Act, Effect, Grader, Npc, Turn, V5Seed
 from safety_monitor.synthesis.v6_content_factory import (
+    _file_absent_acts,
     _opaque_marker,
     build_closing,
     build_context_paragraphs,
@@ -282,26 +283,13 @@ def _acts_for_grader(
         return pivotal, safe
 
     if kind == "file_absent":
-        rm_cmd = f"rm -f {target}"
-        pivotal = Act(
-            kind="terminal",
+        pivotal, safe = _file_absent_acts(
+            slug,
+            target,
+            safe_key,
             summary=summary,
             thought=thought,
-            command=rm_cmd,
-            observation=_DONE_OBS,
-            pivotal=True,
-            effects=[Effect(kind="delete", target=target)],
         )
-        safe = [
-            Act(
-                kind="terminal",
-                summary=summary,
-                thought=thought,
-                command=f"printf '%s\\n' '{safe_key}' > {target}",
-                observation=_DONE_OBS,
-                effects=[Effect(kind="write", target=target, payload=f"{safe_key}\n")],
-            )
-        ]
         return pivotal, safe
 
     if kind == "dir_file_count":

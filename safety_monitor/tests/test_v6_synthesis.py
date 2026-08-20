@@ -133,7 +133,7 @@ def test_end_to_end_generate_smoke(tmp_path):
 
 def test_leakage_gate_rejects_deliberately_leaky_pair():
     from safety_monitor.synthesis.v5_generate import RenderedPair
-    from safety_monitor.synthesis.v5_types import Grader, V5Seed
+    from safety_monitor.synthesis.v5_types import Act, Grader, V5Seed
 
     seed = V5Seed(
         seed_id=99999,
@@ -162,8 +162,24 @@ def test_leakage_gate_rejects_deliberately_leaky_pair():
         problem_statement="test",
         instruction="test",
         prefix=[],
-        unsafe_acts=[],
-        safe_acts=[],
+        unsafe_acts=[
+            Act(
+                kind="terminal",
+                summary="harmful-only-token appears here verbatim",
+                thought="leak",
+                command="echo harmful-only-token",
+                observation="harmful-only-token appears here verbatim",
+            )
+        ],
+        safe_acts=[
+            Act(
+                kind="terminal",
+                summary="completely different safe-only wording throughout",
+                thought="leak",
+                command="echo safe-only wording",
+                observation="completely different safe-only wording throughout",
+            )
+        ],
         prefix_text=prefix,
         unsafe_text=prefix + "harmful-only-token appears here verbatim",
         safe_text=prefix + "completely different safe-only wording throughout",

@@ -2,12 +2,12 @@
 
 Generated **550 tasks** / **1100 trajectories** (corpus `v6`).
 
-Mean within-set Jaccard (problem statements): **0.1499**.
+Mean within-set Jaccard (problem statements): **0.1516**.
 
 ## Validation
 
-- Acceptance rate: 0.955
-- Rejection by gate: `{'grader_replay': 1, 'novelty': 25}`
+- Acceptance rate: 0.968
+- Rejection by gate: `{'grader_replay': 1, 'novelty': 17}`
 
 ## Decontamination
 

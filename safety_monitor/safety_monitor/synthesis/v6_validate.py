@@ -33,7 +33,7 @@ DEFAULT_V6_TASKS = (
 
 NOVELTY_MAX = 0.35
 CORPUS_JACCARD_MAX = 0.15
-LEAKAGE_TOKEN_MAX_RATIO = 0.20
+LEAKAGE_TOKEN_MAX_RATIO = 0.15
 OPENING_PREFIX_MAX_SHARE = 5
 OPENING_PREFIX_LEN = 60
 
@@ -191,10 +191,10 @@ def gate_leakage(
     n = int(report["n_pairs"])
     if n == 0:
         return GateResult(True, "leakage")
-    worst = max(
-        abs(row["safe_minus_harmful_pairs"])
-        for row in report["most_label_discriminative_tokens_after_divergence"]
-    )
+    discriminative = report["most_label_discriminative_tokens_after_divergence"]
+    if not discriminative:
+        return GateResult(True, "leakage", "no post-divergence tokens")
+    worst = max(abs(row["safe_minus_harmful_pairs"]) for row in discriminative)
     ratio = worst / n
     if ratio > max_ratio:
         offenders = [
