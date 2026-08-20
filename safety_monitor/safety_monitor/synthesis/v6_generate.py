@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections import Counter
 from pathlib import Path
@@ -9,6 +10,7 @@ from typing import Any
 
 from safety_monitor.synthesis.pairs import ContrastPair, MinedTrajectory
 from safety_monitor.synthesis.v5_generate import (
+    LENGTH_SCHEDULE,
     GenerationError,
     RenderedPair,
     build_pair,
@@ -18,7 +20,6 @@ from safety_monitor.synthesis.v5_generate import (
     leakage_report,
     mean_pairwise_jaccard,
     replay_grader,
-    schedule,
     validate_pair,
 )
 from safety_monitor.synthesis.v5_graders import is_no_op, synthesize_evaluator
@@ -37,15 +38,51 @@ from safety_monitor.synthesis.v6_types import (
 from safety_monitor.synthesis.v6_validate import (
     load_existing_corpus_problems,
     summarise_reports,
+    validate_corpus_gates,
     validate_seed_gates,
 )
+
+
+def _digest(text: str) -> int:
+    return int(hashlib.sha1(text.encode()).hexdigest()[:8], 16)
+
+
+def schedule(seeds: list[V5Seed]) -> dict[str, tuple[int, int]]:
+    """Assign (variant, target action count) per task from instance_id hash."""
+    ordered = sorted(seeds, key=lambda s: s.instance_id)
+    out: dict[str, tuple[int, int]] = {}
+    for i, seed in enumerate(ordered):
+        out[seed.instance_id] = (
+            _digest(seed.instance_id) % 10,
+            LENGTH_SCHEDULE[i % len(LENGTH_SCHEDULE)],
+        )
+    return out
+
+
+def _assert_legacy_integrity(legacy: list[dict[str, Any]], n_tasks: int) -> None:
+    if len(legacy) != n_tasks * 2:
+        raise GenerationError(f"legacy rows {len(legacy)} != 2×tasks ({n_tasks * 2})")
+    by_id: Counter[str] = Counter()
+    roles: dict[str, set[str]] = {}
+    for row in legacy:
+        iid = str(row["instance_id"])
+        by_id[iid] += 1
+        roles.setdefault(iid, set()).add(str(row["pair_role"]))
+    dupes = [iid for iid, n in by_id.items() if n != 2]
+    if dupes:
+        raise GenerationError(
+            f"legacy instance_ids not exactly twice: {dupes[:5]} (+{len(dupes) - 5} more)"
+        )
+    incomplete = [iid for iid, rs in roles.items() if rs != {"harmful", "clean"}]
+    if incomplete:
+        raise GenerationError(f"legacy missing harmful+clean halves: {incomplete[:5]}")
 
 
 RUN = "v6_synthetic"
 GENERATOR = "v6_generate"
 CORPUS = "v6"
 
-_REPO_ROOT = Path(__file__).resolve().parents[4]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PAIRS_DIR = _REPO_ROOT / "analysis_outputs" / "v6_synthetic_pairs"
 DEFAULT_TASKS_DIR = _REPO_ROOT / "analysis_outputs" / "v6_generated_tasks"
 DEFAULT_ACCEPTED = DEFAULT_TASKS_DIR / "accepted_seeds.jsonl"
@@ -72,6 +109,7 @@ def load_seeds(
     include_bootstrap: bool = True,
     include_content: bool = True,
     grid_fill: int = 0,
+    include_accepted: bool = False,
     accepted_path: Path = DEFAULT_ACCEPTED,
 ) -> list[V5Seed]:
     seeds: list[V5Seed] = []
@@ -81,7 +119,7 @@ def load_seeds(
         seeds.extend(bootstrap_priority_batches())
     if grid_fill:
         seeds.extend(bootstrap_grid_fill(max_new=grid_fill))
-    if accepted_path.exists():
+    if include_accepted and accepted_path.exists():
         seeds.extend(load_json_seeds(str(accepted_path)))
     # dedupe by instance_id, keep last (content modules beat bootstrap clones)
     by_id: dict[str, V5Seed] = {}
@@ -223,6 +261,17 @@ def generate(
         legacy.append(_legacy_record(rp, "harmful", harmful, rp.unsafe_text))
         legacy.append(_legacy_record(rp, "clean", safe, rp.safe_text))
 
+    _assert_legacy_integrity(legacy, len(task_records))
+
+    corpus_gates = validate_corpus_gates(
+        problem_statements=[r["problem_statement"] for r in task_records],
+        rendered=rendered,
+    )
+    if strict:
+        for gate in corpus_gates:
+            if not gate.ok:
+                raise GenerationError(f"corpus gate {gate.gate} failed: {gate.reason}")
+
     tasks_path = tasks_dir / "v6_train.jsonl"
     _write_jsonl(tasks_path, task_records)
     accepted_path = tasks_dir / "accepted_seeds.jsonl"
@@ -259,6 +308,9 @@ def generate(
             "n_failed": sum(1 for r in replays if not r["ok"]),
         },
         "leakage": leakage_report(rendered),
+        "corpus_gates": [
+            {"gate": g.gate, "ok": g.ok, "reason": g.reason} for g in corpus_gates
+        ],
         "outputs": {
             "tasks": str(tasks_path),
             "trajectories": str(trajectories_path),
@@ -345,10 +397,11 @@ def _progress_note(seeds: list[V5Seed], summary: dict[str, Any]) -> str:
         f"**Methodology:** deterministic v4/v5 path — hand-authored `v6_content_*.py` seeds, "
         f"rendered with `v5_generate` (shared prefix, single pivot, grader replay). "
         f"**Zero LLM calls** for seed or trajectory drafting.\n\n"
+        f"- Regenerated merge: `analysis_outputs/synthetic_pairs/` (v4+v5+v6)\n\n"
         f"Regenerate:\n\n"
         f"```bash\n"
-        f"cd benchmarks/safety_monitor && PYTHONPATH=. python3 -m safety_monitor v6-synth \\\n"
-        f"  --grid-fill 30 --merge\n"
+        f"cd benchmarks/safety_monitor && uv run python -m safety_monitor v6-synth \\\n"
+        f"  --grid-fill 25 --merge\n"
         f"```\n\n"
         f"Optional future work: LLM drafting via `v6-author` is not required for synthetic pairs.\n"
     )

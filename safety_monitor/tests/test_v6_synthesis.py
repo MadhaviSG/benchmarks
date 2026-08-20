@@ -15,7 +15,14 @@ from safety_monitor.synthesis.v6_generate import (
     schedule,
 )
 from safety_monitor.synthesis.v6_types import validate_v6_all
-from safety_monitor.synthesis.v6_validate import gate_grader, gate_structural
+from safety_monitor.synthesis.v6_validate import (
+    CORPUS_JACCARD_MAX,
+    LEAKAGE_TOKEN_MAX_RATIO,
+    gate_corpus_jaccard,
+    gate_grader,
+    gate_leakage,
+    gate_structural,
+)
 
 
 SEEDS = load_seeds(include_bootstrap=True, include_content=True, grid_fill=0)
@@ -105,11 +112,75 @@ def test_end_to_end_generate_smoke(tmp_path):
         tasks_dir=tmp_path / "tasks",
         include_bootstrap=True,
         include_content=True,
-        grid_fill=0,
+        grid_fill=25,
         max_tasks=550,
         write_report=False,
     )
     assert summary["n_tasks"] == 550
     assert summary["n_trajectories"] == summary["n_tasks"] * 2
     assert summary["replay"]["n_failed"] == 0
+    assert summary["mean_pairwise_jaccard_problem_statements"] <= CORPUS_JACCARD_MAX
+    assert all(g["ok"] for g in summary["corpus_gates"])
     assert (tmp_path / "pairs" / "trajectories.jsonl").exists()
+    legacy = (
+        (tmp_path / "pairs" / "safety_trajectories_v6_synthetic.jsonl")
+        .read_text(encoding="utf-8")
+        .strip()
+        .splitlines()
+    )
+    assert len(legacy) == summary["n_tasks"] * 2
+
+
+def test_leakage_gate_rejects_deliberately_leaky_pair():
+    from safety_monitor.synthesis.v5_generate import RenderedPair
+    from safety_monitor.synthesis.v5_types import Grader, V5Seed
+
+    seed = V5Seed(
+        seed_id=99999,
+        instance_id="safety-v6-leak-test",
+        outcome_category="Harmful decision-making",
+        mechanism_category="A",
+        tool="file system",
+        intent="benign",
+        seed_sentence="Leak test seed.",
+        gradeability="state_change",
+        tool_realization="file system -> file editor plus terminal",
+        harm_kind="commission",
+        services=["filesystem-only"],
+        environment="Test workspace.",
+        title="Leak test",
+        context=["Synthetic leak test."],
+        steps=["do the thing"],
+        closing="",
+        variant=0,
+        grader=Grader(kind="file_contains", target="/workspace/x.txt"),
+        checkpoint_text="leak test",
+    )
+    prefix = "[Step 1] USER\n" + "-" * 40 + "\nMessage: test\n"
+    leaky = RenderedPair(
+        seed=seed,
+        problem_statement="test",
+        instruction="test",
+        prefix=[],
+        unsafe_acts=[],
+        safe_acts=[],
+        prefix_text=prefix,
+        unsafe_text=prefix + "harmful-only-token appears here verbatim",
+        safe_text=prefix + "completely different safe-only wording throughout",
+        variant=0,
+        target_actions=8,
+    )
+    result = gate_leakage([leaky], max_ratio=LEAKAGE_TOKEN_MAX_RATIO)
+    assert not result.ok
+    assert result.gate == "leakage"
+
+
+def test_corpus_jaccard_gate_rejects_templated_batch():
+    templated = [
+        "You are supporting Acme Corp. While supporting Acme Corp the agent does X.\n\n"
+        "What this needs:\n\n1. Read controls\n2. Apply change"
+        for _ in range(20)
+    ]
+    result = gate_corpus_jaccard(templated, max_jaccard=CORPUS_JACCARD_MAX)
+    assert not result.ok
+    assert result.gate == "corpus_jaccard"

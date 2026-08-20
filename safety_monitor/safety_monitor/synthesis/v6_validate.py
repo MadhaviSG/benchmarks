@@ -10,8 +10,10 @@ from typing import Any
 
 from safety_monitor.synthesis.v5_generate import (
     build_pair,
+    leakage_report,
+    mean_pairwise_jaccard,
     replay_grader,
-    schedule,
+    schedule as _v5_schedule,
 )
 from safety_monitor.synthesis.v5_graders import is_no_op, synthesize_evaluator
 from safety_monitor.synthesis.v5_triage import COVERED, GENERATED, triage_by_seed
@@ -19,7 +21,7 @@ from safety_monitor.synthesis.v5_types import V5Seed
 from safety_monitor.synthesis.v6_types import validate_v6_seed
 
 
-_REPO_ROOT = Path(__file__).resolve().parents[4]
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_V3 = _REPO_ROOT / "analysis_outputs" / "hf_cache" / "v3_train.jsonl"
 DEFAULT_V4 = _REPO_ROOT / "analysis_outputs" / "hf_cache" / "v4_train.jsonl"
 DEFAULT_V5_TASKS = (
@@ -30,6 +32,10 @@ DEFAULT_V6_TASKS = (
 )
 
 NOVELTY_MAX = 0.35
+CORPUS_JACCARD_MAX = 0.15
+LEAKAGE_TOKEN_MAX_RATIO = 0.20
+OPENING_PREFIX_MAX_SHARE = 5
+OPENING_PREFIX_LEN = 60
 
 
 @dataclass
@@ -93,7 +99,7 @@ def gate_grader(seed: V5Seed) -> GateResult:
     code = synthesize_evaluator(seed)
     if is_no_op(code):
         return GateResult(False, "grader", "synthesised grader is a no-op")
-    plan = schedule([seed])
+    plan = _v5_schedule([seed])
     variant, target = plan[seed.instance_id]
     rp = build_pair(seed, variant, target)
     replay = replay_grader(seed, rp, code)
@@ -138,6 +144,84 @@ def gate_triage(seed: V5Seed) -> GateResult:
             )
         return GateResult(False, "triage", f"taxonomy status={row.status}")
     return GateResult(True, "triage")
+
+
+def gate_corpus_jaccard(
+    problem_statements: list[str], *, max_jaccard: float = CORPUS_JACCARD_MAX
+) -> GateResult:
+    if len(problem_statements) < 2:
+        return GateResult(True, "corpus_jaccard", "fewer than 2 statements")
+    score = mean_pairwise_jaccard(problem_statements)
+    if score > max_jaccard:
+        return GateResult(
+            False,
+            "corpus_jaccard",
+            f"mean Jaccard {score:.4f} > {max_jaccard}",
+        )
+    return GateResult(True, "corpus_jaccard", f"mean Jaccard {score:.4f}")
+
+
+def gate_opening_prefix(
+    problem_statements: list[str],
+    *,
+    max_share: int = OPENING_PREFIX_MAX_SHARE,
+    prefix_len: int = OPENING_PREFIX_LEN,
+) -> GateResult:
+    from collections import Counter
+
+    prefixes = Counter(ps[:prefix_len] for ps in problem_statements)
+    if not prefixes:
+        return GateResult(True, "opening_prefix")
+    prefix, count = prefixes.most_common(1)[0]
+    if count > max_share:
+        return GateResult(
+            False,
+            "opening_prefix",
+            f"opening prefix shared by {count} tasks (> {max_share})",
+        )
+    return GateResult(True, "opening_prefix", f"max shared opening count {count}")
+
+
+def gate_leakage(
+    rendered: list[Any],
+    *,
+    max_ratio: float = LEAKAGE_TOKEN_MAX_RATIO,
+) -> GateResult:
+    report = leakage_report(rendered)
+    n = int(report["n_pairs"])
+    if n == 0:
+        return GateResult(True, "leakage")
+    worst = max(
+        abs(row["safe_minus_harmful_pairs"])
+        for row in report["most_label_discriminative_tokens_after_divergence"]
+    )
+    ratio = worst / n
+    if ratio > max_ratio:
+        offenders = [
+            row
+            for row in report["most_label_discriminative_tokens_after_divergence"]
+            if abs(row["safe_minus_harmful_pairs"]) / n > max_ratio
+        ]
+        return GateResult(
+            False,
+            "leakage",
+            f"post-divergence token skew {ratio:.3f} > {max_ratio}: {offenders[:3]}",
+        )
+    return GateResult(
+        True, "leakage", f"max post-divergence token skew ratio {ratio:.3f}"
+    )
+
+
+def validate_corpus_gates(
+    *,
+    problem_statements: list[str],
+    rendered: list[Any],
+) -> list[GateResult]:
+    return [
+        gate_corpus_jaccard(problem_statements),
+        gate_opening_prefix(problem_statements),
+        gate_leakage(rendered),
+    ]
 
 
 def validate_seed_gates(

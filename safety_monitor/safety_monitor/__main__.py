@@ -27,9 +27,9 @@ def _cmd_v6_synth(args: argparse.Namespace) -> int:
     )
     print(json.dumps(summary, indent=2))
     if args.merge:
-        from safety_monitor.synthesis.v6_merge import merge_v2
+        from safety_monitor.synthesis.v6_merge import merge_all
 
-        print(json.dumps(merge_v2(), indent=2))
+        print(json.dumps(merge_all(), indent=2))
     return 0
 
 
