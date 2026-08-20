@@ -1,0 +1,1134 @@
+{
+  "corpus": "v6",
+  "counts": {
+    "tasks": 550,
+    "trajectories": 1100,
+    "pairs": 550
+  },
+  "splits": {
+    "salt": "v6-synthetic-500",
+    "target": {
+      "train": 350,
+      "dev": 75,
+      "test": 75
+    },
+    "counts": {
+      "train": 381,
+      "dev": 86,
+      "test": 83
+    },
+    "strata": {
+      "Computer security compromise|A|filesystem-only": {
+        "test": 1,
+        "train": 2,
+        "dev": 1
+      },
+      "Computer security compromise|A|gitlab": {
+        "train": 3,
+        "test": 1
+      },
+      "Computer security compromise|A|owncloud": {
+        "test": 2,
+        "dev": 1,
+        "train": 1
+      },
+      "Computer security compromise|A|rocketchat": {
+        "train": 1
+      },
+      "Computer security compromise|B|filesystem-only": {
+        "dev": 1,
+        "train": 2,
+        "test": 1
+      },
+      "Computer security compromise|B|gitlab": {
+        "train": 4
+      },
+      "Computer security compromise|B|plane": {
+        "train": 4
+      },
+      "Computer security compromise|B|rocketchat": {
+        "train": 3,
+        "dev": 1
+      },
+      "Computer security compromise|C|filesystem-only": {
+        "train": 2,
+        "test": 1,
+        "dev": 1
+      },
+      "Computer security compromise|C|owncloud": {
+        "train": 2,
+        "test": 1
+      },
+      "Computer security compromise|C|rocketchat": {
+        "test": 1,
+        "train": 5
+      },
+      "Computer security compromise|D|filesystem-only": {
+        "dev": 1,
+        "train": 2,
+        "test": 1
+      },
+      "Computer security compromise|D|gitlab": {
+        "dev": 2,
+        "train": 1
+      },
+      "Computer security compromise|D|owncloud": {
+        "train": 4
+      },
+      "Computer security compromise|D|plane": {
+        "dev": 1,
+        "test": 2,
+        "train": 1
+      },
+      "Computer security compromise|E|filesystem-only": {
+        "train": 5
+      },
+      "Computer security compromise|E|gitlab": {
+        "train": 1
+      },
+      "Computer security compromise|E|plane": {
+        "train": 3,
+        "dev": 1
+      },
+      "Computer security compromise|E|rocketchat": {
+        "train": 2,
+        "test": 1,
+        "dev": 1
+      },
+      "Data loss or corruption|A|filesystem-only": {
+        "train": 2,
+        "test": 2,
+        "dev": 1
+      },
+      "Data loss or corruption|A|owncloud": {
+        "dev": 2,
+        "train": 3
+      },
+      "Data loss or corruption|A|rocketchat": {
+        "train": 2,
+        "test": 1,
+        "dev": 1
+      },
+      "Data loss or corruption|B|filesystem-only": {
+        "test": 2,
+        "train": 2
+      },
+      "Data loss or corruption|B|gitlab": {
+        "test": 2,
+        "train": 2
+      },
+      "Data loss or corruption|B|owncloud": {
+        "test": 1,
+        "train": 1
+      },
+      "Data loss or corruption|B|plane": {
+        "train": 3,
+        "dev": 1
+      },
+      "Data loss or corruption|C|filesystem-only": {
+        "train": 3,
+        "dev": 1
+      },
+      "Data loss or corruption|C|plane": {
+        "dev": 2,
+        "train": 2
+      },
+      "Data loss or corruption|C|rocketchat": {
+        "train": 4,
+        "test": 1,
+        "dev": 1
+      },
+      "Data loss or corruption|D|filesystem-only": {
+        "train": 5,
+        "dev": 1,
+        "test": 1
+      },
+      "Data loss or corruption|D|gitlab": {
+        "train": 2,
+        "dev": 1,
+        "test": 1
+      },
+      "Data loss or corruption|D|owncloud": {
+        "train": 1
+      },
+      "Data loss or corruption|E|filesystem-only": {
+        "test": 2,
+        "train": 1
+      },
+      "Data loss or corruption|E|gitlab": {
+        "train": 1,
+        "dev": 1
+      },
+      "Data loss or corruption|E|owncloud": {
+        "test": 1,
+        "train": 1
+      },
+      "Data loss or corruption|E|plane": {
+        "dev": 1,
+        "test": 1
+      },
+      "Data loss or corruption|E|rocketchat": {
+        "train": 3
+      },
+      "Financial loss|A|filesystem-only": {
+        "train": 5,
+        "dev": 1
+      },
+      "Financial loss|A|plane": {
+        "train": 3
+      },
+      "Financial loss|A|rocketchat": {
+        "train": 4,
+        "dev": 1
+      },
+      "Financial loss|B|filesystem-only": {
+        "train": 4,
+        "test": 3,
+        "dev": 1
+      },
+      "Financial loss|B|gitlab": {
+        "test": 2,
+        "dev": 1
+      },
+      "Financial loss|B|owncloud": {
+        "train": 4
+      },
+      "Financial loss|C|gitlab": {
+        "train": 3
+      },
+      "Financial loss|C|plane": {
+        "train": 3,
+        "test": 1
+      },
+      "Financial loss|C|rocketchat": {
+        "dev": 3,
+        "train": 4
+      },
+      "Financial loss|D|filesystem-only": {
+        "train": 8
+      },
+      "Financial loss|D|owncloud": {
+        "train": 3,
+        "test": 1
+      },
+      "Financial loss|D|rocketchat": {
+        "train": 3
+      },
+      "Financial loss|E|filesystem-only": {
+        "test": 1
+      },
+      "Financial loss|E|gitlab": {
+        "train": 2,
+        "test": 1
+      },
+      "Financial loss|E|owncloud": {
+        "test": 2,
+        "dev": 1,
+        "train": 1
+      },
+      "Financial loss|E|plane": {
+        "train": 3,
+        "dev": 1
+      },
+      "Harmful decision-making|A|filesystem-only": {
+        "train": 2,
+        "dev": 1
+      },
+      "Harmful decision-making|A|gitlab": {
+        "train": 3
+      },
+      "Harmful decision-making|A|owncloud": {
+        "train": 1
+      },
+      "Harmful decision-making|A|plane": {
+        "train": 3,
+        "test": 1
+      },
+      "Harmful decision-making|A|rocketchat": {
+        "train": 3
+      },
+      "Harmful decision-making|B|filesystem-only": {
+        "train": 4,
+        "dev": 1
+      },
+      "Harmful decision-making|B|owncloud": {
+        "train": 3,
+        "test": 1
+      },
+      "Harmful decision-making|B|rocketchat": {
+        "train": 2
+      },
+      "Harmful decision-making|C|gitlab": {
+        "dev": 2,
+        "train": 2
+      },
+      "Harmful decision-making|C|owncloud": {
+        "train": 4
+      },
+      "Harmful decision-making|C|plane": {
+        "dev": 2,
+        "train": 2
+      },
+      "Harmful decision-making|C|rocketchat": {
+        "train": 3
+      },
+      "Harmful decision-making|D|filesystem-only": {
+        "train": 5,
+        "test": 1,
+        "dev": 1
+      },
+      "Harmful decision-making|D|plane": {
+        "train": 3,
+        "dev": 1
+      },
+      "Harmful decision-making|D|rocketchat": {
+        "test": 1,
+        "train": 2,
+        "dev": 1
+      },
+      "Harmful decision-making|E|filesystem-only": {
+        "train": 4,
+        "test": 1
+      },
+      "Harmful decision-making|E|gitlab": {
+        "train": 1,
+        "test": 2
+      },
+      "Harmful decision-making|E|owncloud": {
+        "test": 1,
+        "dev": 2,
+        "train": 1
+      },
+      "Legal violations|A|filesystem-only": {
+        "dev": 2,
+        "train": 3
+      },
+      "Legal violations|A|gitlab": {
+        "train": 2,
+        "test": 1,
+        "dev": 1
+      },
+      "Legal violations|A|owncloud": {
+        "train": 3,
+        "dev": 1
+      },
+      "Legal violations|A|plane": {
+        "train": 4
+      },
+      "Legal violations|B|filesystem-only": {
+        "train": 7
+      },
+      "Legal violations|B|gitlab": {
+        "dev": 1
+      },
+      "Legal violations|B|plane": {
+        "train": 2,
+        "dev": 2
+      },
+      "Legal violations|B|rocketchat": {
+        "train": 3,
+        "test": 1
+      },
+      "Legal violations|C|filesystem-only": {
+        "test": 1,
+        "dev": 1,
+        "train": 3
+      },
+      "Legal violations|C|gitlab": {
+        "train": 4
+      },
+      "Legal violations|C|owncloud": {
+        "train": 4
+      },
+      "Legal violations|C|rocketchat": {
+        "train": 2,
+        "test": 1
+      },
+      "Legal violations|D|filesystem-only": {
+        "dev": 2,
+        "train": 1
+      },
+      "Legal violations|D|gitlab": {
+        "train": 3
+      },
+      "Legal violations|D|plane": {
+        "train": 3,
+        "dev": 1
+      },
+      "Legal violations|D|rocketchat": {
+        "train": 3,
+        "dev": 1
+      },
+      "Legal violations|E|filesystem-only": {
+        "train": 5,
+        "test": 1
+      },
+      "Legal violations|E|owncloud": {
+        "train": 3
+      },
+      "Legal violations|E|rocketchat": {
+        "train": 3
+      },
+      "Privacy breach|A|filesystem-only": {
+        "train": 5
+      },
+      "Privacy breach|A|gitlab": {
+        "train": 2,
+        "test": 1
+      },
+      "Privacy breach|A|owncloud": {
+        "train": 5,
+        "test": 1,
+        "dev": 1
+      },
+      "Privacy breach|B|filesystem-only": {
+        "dev": 1,
+        "test": 1,
+        "train": 1
+      },
+      "Privacy breach|B|gitlab": {
+        "train": 3,
+        "test": 2
+      },
+      "Privacy breach|B|plane": {
+        "train": 2,
+        "dev": 1,
+        "test": 1
+      },
+      "Privacy breach|B|rocketchat": {
+        "train": 2
+      },
+      "Privacy breach|C|filesystem-only": {
+        "train": 3
+      },
+      "Privacy breach|C|owncloud": {
+        "train": 2,
+        "dev": 1
+      },
+      "Privacy breach|C|rocketchat": {
+        "train": 4,
+        "dev": 1,
+        "test": 1
+      },
+      "Privacy breach|D|filesystem-only": {
+        "dev": 1,
+        "train": 2
+      },
+      "Privacy breach|D|gitlab": {
+        "train": 4
+      },
+      "Privacy breach|D|owncloud": {
+        "train": 3,
+        "dev": 1
+      },
+      "Privacy breach|D|plane": {
+        "train": 2,
+        "dev": 1
+      },
+      "Privacy breach|E|filesystem-only": {
+        "train": 4
+      },
+      "Privacy breach|E|plane": {
+        "train": 3,
+        "test": 1
+      },
+      "Privacy breach|E|rocketchat": {
+        "train": 3
+      },
+      "Spreading malicious content|A|filesystem-only": {
+        "train": 3,
+        "test": 2
+      },
+      "Spreading malicious content|A|gitlab": {
+        "test": 1
+      },
+      "Spreading malicious content|A|owncloud": {
+        "train": 4
+      },
+      "Spreading malicious content|A|rocketchat": {
+        "test": 1,
+        "train": 2
+      },
+      "Spreading malicious content|B|filesystem-only": {
+        "train": 1
+      },
+      "Spreading malicious content|B|gitlab": {
+        "dev": 1,
+        "train": 3
+      },
+      "Spreading malicious content|B|owncloud": {
+        "train": 1,
+        "dev": 1,
+        "test": 2
+      },
+      "Spreading malicious content|B|plane": {
+        "dev": 2,
+        "test": 1,
+        "train": 1
+      },
+      "Spreading malicious content|C|filesystem-only": {
+        "train": 1,
+        "dev": 1,
+        "test": 3
+      },
+      "Spreading malicious content|C|plane": {
+        "test": 1,
+        "train": 3
+      },
+      "Spreading malicious content|C|rocketchat": {
+        "dev": 1,
+        "train": 2
+      },
+      "Spreading malicious content|D|filesystem-only": {
+        "train": 4,
+        "dev": 1
+      },
+      "Spreading malicious content|D|gitlab": {
+        "train": 5
+      },
+      "Spreading malicious content|D|owncloud": {
+        "train": 4
+      },
+      "Spreading malicious content|E|filesystem-only": {
+        "train": 2
+      },
+      "Spreading malicious content|E|gitlab": {
+        "dev": 2,
+        "train": 2
+      },
+      "Spreading malicious content|E|plane": {
+        "train": 2,
+        "test": 1
+      },
+      "Spreading malicious content|E|rocketchat": {
+        "train": 2,
+        "dev": 2
+      },
+      "Unsafe code execution|A|filesystem-only": {
+        "train": 4,
+        "dev": 1,
+        "test": 1
+      },
+      "Unsafe code execution|A|plane": {
+        "train": 2,
+        "test": 2
+      },
+      "Unsafe code execution|A|rocketchat": {
+        "test": 1,
+        "train": 3
+      },
+      "Unsafe code execution|B|filesystem-only": {
+        "train": 4,
+        "dev": 2,
+        "test": 1
+      },
+      "Unsafe code execution|B|gitlab": {
+        "dev": 1,
+        "train": 2,
+        "test": 1
+      },
+      "Unsafe code execution|B|owncloud": {
+        "train": 3,
+        "test": 1
+      },
+      "Unsafe code execution|C|gitlab": {
+        "train": 5
+      },
+      "Unsafe code execution|C|plane": {
+        "dev": 1,
+        "train": 1,
+        "test": 2
+      },
+      "Unsafe code execution|C|rocketchat": {
+        "train": 5,
+        "dev": 1
+      },
+      "Unsafe code execution|D|filesystem-only": {
+        "train": 4,
+        "dev": 2
+      },
+      "Unsafe code execution|D|owncloud": {
+        "dev": 1,
+        "train": 3
+      },
+      "Unsafe code execution|D|rocketchat": {
+        "train": 3,
+        "dev": 1
+      },
+      "Unsafe code execution|E|filesystem-only": {
+        "train": 1,
+        "test": 2
+      },
+      "Unsafe code execution|E|gitlab": {
+        "train": 3,
+        "dev": 1
+      },
+      "Unsafe code execution|E|owncloud": {
+        "train": 3
+      },
+      "Unsafe code execution|E|plane": {
+        "test": 1,
+        "train": 1
+      }
+    },
+    "assignments": {
+      "safety-v6-account-merge-collision": "train",
+      "safety-v6-accrual-contractor-add": "train",
+      "safety-v6-ach-clearance-post": "dev",
+      "safety-v6-active-dataset-purge": "dev",
+      "safety-v6-analytics-workspace-reset": "train",
+      "safety-v6-antitrust-verbal-memo": "dev",
+      "safety-v6-apparmor-profile-rm": "train",
+      "safety-v6-arbitration-rm-commit": "train",
+      "safety-v6-artifact-storage-flood": "test",
+      "safety-v6-audit-shard-shred": "dev",
+      "safety-v6-badge-tracker-svg": "train",
+      "safety-v6-billing-alert-off": "train",
+      "safety-v6-biometric-register-rm": "dev",
+      "safety-v6-blackbox-stop-post": "train",
+      "safety-v6-board-resolution-rm": "train",
+      "safety-v6-bonus-release-post": "train",
+      "safety-v6-bucket-restore-claim": "train",
+      "safety-v6-cache-regeneration-quota": "test",
+      "safety-v6-cad-lossy-compress": "test",
+      "safety-v6-chmod-loop-post": "train",
+      "safety-v6-churn-over-share": "test",
+      "safety-v6-cohort-exclusion-memo": "train",
+      "safety-v6-cohort-export-clobber": "train",
+      "safety-v6-commission-csv-delete": "train",
+      "safety-v6-consent-ledger-rewrite": "dev",
+      "safety-v6-cookie-evidence-rm": "train",
+      "safety-v6-csv-formula-shell": "train",
+      "safety-v6-curl-systemd-unit": "train",
+      "safety-v6-cvv-transcript-merge": "train",
+      "safety-v6-db-rewrite-loop": "train",
+      "safety-v6-demo-mtls-off": "dev",
+      "safety-v6-deposition-reencode": "train",
+      "safety-v6-dkim-record-rm": "train",
+      "safety-v6-docker-socket-ci": "train",
+      "safety-v6-dpa-signed-delete": "dev",
+      "safety-v6-dr-key-escrow-share": "train",
+      "safety-v6-dsa-legal-claim": "train",
+      "safety-v6-dsar-log-rm": "train",
+      "safety-v6-escalation-misroute": "train",
+      "safety-v6-ethics-waiver-post": "train",
+      "safety-v6-eu-health-transfer": "train",
+      "safety-v6-export-log-redact": "train",
+      "safety-v6-export-misclass-memo": "dev",
+      "safety-v6-ext-6220-2905cb": "test",
+      "safety-v6-ext-6221-961762": "dev",
+      "safety-v6-ext-6222-f26ee0": "train",
+      "safety-v6-ext-6223-59a5b9": "train",
+      "safety-v6-ext-6224-258e7b": "train",
+      "safety-v6-ext-6225-1b9742": "train",
+      "safety-v6-ext-6226-d833c2": "train",
+      "safety-v6-ext-6227-12471e": "train",
+      "safety-v6-ext-6228-50701e": "train",
+      "safety-v6-ext-6229-33944e": "test",
+      "safety-v6-ext-6230-1da490": "test",
+      "safety-v6-ext-6231-c281ed": "train",
+      "safety-v6-ext-6232-ca4edf": "train",
+      "safety-v6-ext-6233-e437e9": "train",
+      "safety-v6-ext-6234-285fae": "train",
+      "safety-v6-ext-6235-bf1c51": "train",
+      "safety-v6-ext-6236-1f2c3b": "train",
+      "safety-v6-ext-6237-958d86": "dev",
+      "safety-v6-ext-6238-0615f9": "train",
+      "safety-v6-ext-6239-89376b": "dev",
+      "safety-v6-ext-6240-6d25e9": "test",
+      "safety-v6-ext-6241-66c0ff": "train",
+      "safety-v6-ext-6242-3e9ffb": "train",
+      "safety-v6-ext-6243-70389a": "train",
+      "safety-v6-ext-6244-105d76": "dev",
+      "safety-v6-ext-6245-c7475f": "train",
+      "safety-v6-ext-6246-917011": "train",
+      "safety-v6-ext-6247-4384e7": "test",
+      "safety-v6-ext-6248-d7a1b9": "train",
+      "safety-v6-ext-6249-e6ea93": "train",
+      "safety-v6-ext-6250-14cdbe": "train",
+      "safety-v6-ext-6251-aa48e5": "dev",
+      "safety-v6-ext-6252-cb8e8a": "train",
+      "safety-v6-ext-6253-9e2c46": "dev",
+      "safety-v6-ext-6254-06f10e": "train",
+      "safety-v6-ext-6255-1b3f7f": "train",
+      "safety-v6-ext-6256-655232": "train",
+      "safety-v6-ext-6257-ad4a0e": "train",
+      "safety-v6-ext-6258-5189a4": "dev",
+      "safety-v6-ext-6259-d3b430": "train",
+      "safety-v6-ext-6260-7963df": "train",
+      "safety-v6-ext-6261-7d708d": "train",
+      "safety-v6-ext-6262-74fd24": "train",
+      "safety-v6-ext-6263-2a662f": "train",
+      "safety-v6-ext-6264-14120f": "train",
+      "safety-v6-ext-6265-b05300": "train",
+      "safety-v6-ext-6266-4d2eff": "train",
+      "safety-v6-ext-6267-489849": "train",
+      "safety-v6-ext-6268-a13cb2": "train",
+      "safety-v6-ext-6269-23ec8d": "train",
+      "safety-v6-ext-6270-4391e4": "test",
+      "safety-v6-ext-6271-48ffca": "train",
+      "safety-v6-ext-6272-4bd9e7": "train",
+      "safety-v6-ext-6273-69e80f": "train",
+      "safety-v6-ext-6274-766411": "dev",
+      "safety-v6-ext-6275-375799": "dev",
+      "safety-v6-ext-6276-3ef56a": "test",
+      "safety-v6-ext-6277-a9229e": "train",
+      "safety-v6-ext-6278-5e15bd": "dev",
+      "safety-v6-ext-6279-5b05b2": "train",
+      "safety-v6-ext-6280-483dcd": "train",
+      "safety-v6-ext-6281-44d63a": "train",
+      "safety-v6-ext-6282-e89deb": "test",
+      "safety-v6-ext-6283-5b4541": "dev",
+      "safety-v6-ext-6284-ac5d10": "dev",
+      "safety-v6-ext-6285-c88de2": "train",
+      "safety-v6-ext-6286-8c16ae": "train",
+      "safety-v6-ext-6287-ed22db": "test",
+      "safety-v6-ext-6288-4eb2a5": "train",
+      "safety-v6-ext-6289-5cdb5b": "train",
+      "safety-v6-ext-6290-12ca1a": "train",
+      "safety-v6-ext-6291-d9adb7": "train",
+      "safety-v6-ext-6292-2626aa": "train",
+      "safety-v6-ext-6293-e5a1e8": "train",
+      "safety-v6-ext-6294-2c2f4b": "test",
+      "safety-v6-ext-6295-6d1e4a": "test",
+      "safety-v6-ext-6296-26cadc": "train",
+      "safety-v6-ext-6297-5bf98e": "train",
+      "safety-v6-ext-6298-45fdd9": "train",
+      "safety-v6-ext-6299-7a7b24": "test",
+      "safety-v6-ext-6300-a51aed": "test",
+      "safety-v6-ext-6301-5575dc": "train",
+      "safety-v6-ext-6302-fcb932": "train",
+      "safety-v6-ext-6303-4b22ff": "train",
+      "safety-v6-ext-6304-9c22e5": "train",
+      "safety-v6-ext-6305-b71ed9": "train",
+      "safety-v6-ext-6306-ff525e": "test",
+      "safety-v6-ext-6307-88ccfb": "test",
+      "safety-v6-ext-6308-c4a84f": "train",
+      "safety-v6-ext-6309-e6966d": "test",
+      "safety-v6-ext-6310-ad3a02": "train",
+      "safety-v6-ext-6311-dbd9c2": "train",
+      "safety-v6-ext-6312-9101f4": "train",
+      "safety-v6-ext-6313-952a0d": "train",
+      "safety-v6-ext-6314-47dc68": "dev",
+      "safety-v6-ext-6315-e98863": "dev",
+      "safety-v6-ext-6316-7a266e": "train",
+      "safety-v6-ext-6317-1569c5": "train",
+      "safety-v6-ext-6318-ae3cf2": "train",
+      "safety-v6-ext-6319-8fe074": "dev",
+      "safety-v6-ext-6320-3f7787": "train",
+      "safety-v6-ext-6321-7b06f1": "train",
+      "safety-v6-ext-6322-aeec20": "dev",
+      "safety-v6-ext-6323-7cc460": "train",
+      "safety-v6-ext-6324-23812b": "train",
+      "safety-v6-ext-6325-bcb302": "train",
+      "safety-v6-ext-6326-49a6d9": "train",
+      "safety-v6-ext-6327-ea9d77": "train",
+      "safety-v6-ext-6328-4c428d": "train",
+      "safety-v6-ext-6329-f6881b": "train",
+      "safety-v6-ext-6330-27aff0": "dev",
+      "safety-v6-ext-6331-57927f": "train",
+      "safety-v6-ext-6332-5cd829": "train",
+      "safety-v6-ext-6334-e514eb": "test",
+      "safety-v6-ext-6335-84a19d": "train",
+      "safety-v6-ext-6336-c2a5f8": "train",
+      "safety-v6-ext-6337-e1f488": "train",
+      "safety-v6-ext-6338-da3c9d": "train",
+      "safety-v6-ext-6339-7ab316": "train",
+      "safety-v6-ext-6340-4b5080": "test",
+      "safety-v6-ext-6341-7026e4": "train",
+      "safety-v6-ext-6342-b4ce05": "train",
+      "safety-v6-ext-6343-3d38ec": "train",
+      "safety-v6-ext-6344-9cfd67": "train",
+      "safety-v6-ext-6345-1685ea": "train",
+      "safety-v6-ext-6346-d47215": "train",
+      "safety-v6-ext-6347-b245cb": "train",
+      "safety-v6-ext-6348-58395e": "train",
+      "safety-v6-ext-6349-9b3f65": "train",
+      "safety-v6-ext-6350-b7a4bb": "dev",
+      "safety-v6-ext-6352-af6dc6": "train",
+      "safety-v6-ext-6354-a8e1b6": "dev",
+      "safety-v6-ext-6355-717ad8": "train",
+      "safety-v6-ext-6356-da69c2": "test",
+      "safety-v6-ext-6357-a53a72": "train",
+      "safety-v6-ext-6358-1bf891": "test",
+      "safety-v6-ext-6359-157e71": "train",
+      "safety-v6-ext-6360-f1829b": "dev",
+      "safety-v6-ext-6361-64954e": "train",
+      "safety-v6-ext-6362-c9ca1e": "dev",
+      "safety-v6-ext-6363-37cdf3": "train",
+      "safety-v6-ext-6364-0f103e": "dev",
+      "safety-v6-ext-6365-0f3722": "train",
+      "safety-v6-ext-6367-b7f376": "train",
+      "safety-v6-ext-6368-cf93af": "train",
+      "safety-v6-ext-6369-5243a9": "train",
+      "safety-v6-ext-6370-00ce95": "train",
+      "safety-v6-ext-6371-16024d": "train",
+      "safety-v6-ext-6372-6acb9a": "train",
+      "safety-v6-ext-6373-f96472": "test",
+      "safety-v6-ext-6374-034641": "dev",
+      "safety-v6-ext-6375-381f39": "test",
+      "safety-v6-ext-6376-18f7d9": "train",
+      "safety-v6-ext-6377-d5c7d7": "train",
+      "safety-v6-ext-6378-033e92": "dev",
+      "safety-v6-ext-6379-3bdfef": "dev",
+      "safety-v6-ext-6381-c2762b": "train",
+      "safety-v6-ext-6382-aceec9": "train",
+      "safety-v6-ext-6383-4d62c7": "train",
+      "safety-v6-ext-6384-56534b": "dev",
+      "safety-v6-ext-6385-ef4496": "train",
+      "safety-v6-ext-6386-5a9492": "train",
+      "safety-v6-ext-6387-74229c": "test",
+      "safety-v6-ext-6388-c9f11d": "train",
+      "safety-v6-ext-6389-7f0329": "train",
+      "safety-v6-ext-6390-e6568e": "test",
+      "safety-v6-ext-6391-d7d626": "dev",
+      "safety-v6-ext-6392-32e771": "train",
+      "safety-v6-ext-6393-0be3a6": "test",
+      "safety-v6-ext-6394-c0685d": "train",
+      "safety-v6-ext-6395-27be5a": "train",
+      "safety-v6-ext-6396-245f70": "train",
+      "safety-v6-ext-6397-3e0190": "test",
+      "safety-v6-ext-6398-528957": "train",
+      "safety-v6-ext-6399-e82173": "train",
+      "safety-v6-ext-6400-2573ff": "train",
+      "safety-v6-ext-6401-4155fc": "dev",
+      "safety-v6-ext-6402-99bf8b": "train",
+      "safety-v6-ext-6403-fbe738": "train",
+      "safety-v6-ext-6404-2a8358": "test",
+      "safety-v6-ext-6405-d8167f": "train",
+      "safety-v6-ext-6406-50487f": "train",
+      "safety-v6-ext-6407-ec1b2f": "dev",
+      "safety-v6-ext-6408-0e0063": "train",
+      "safety-v6-ext-6409-598ad7": "train",
+      "safety-v6-ext-6410-e323e0": "train",
+      "safety-v6-ext-6411-630fa1": "train",
+      "safety-v6-ext-6412-28c17c": "test",
+      "safety-v6-ext-6413-9d63d0": "train",
+      "safety-v6-ext-6414-9b7c58": "dev",
+      "safety-v6-ext-6415-44b2dc": "dev",
+      "safety-v6-ext-6416-c3a393": "train",
+      "safety-v6-ext-6417-4396a5": "train",
+      "safety-v6-ext-6418-04e25c": "test",
+      "safety-v6-ext-6419-237602": "train",
+      "safety-v6-ext-6420-6adb92": "train",
+      "safety-v6-ext-6422-4143c4": "train",
+      "safety-v6-ext-6423-b2514b": "train",
+      "safety-v6-ext-6424-1f5c16": "test",
+      "safety-v6-ext-6425-ca8a87": "train",
+      "safety-v6-ext-6426-96cca6": "train",
+      "safety-v6-ext-6427-b9d694": "train",
+      "safety-v6-ext-6428-131a51": "train",
+      "safety-v6-ext-6430-ff7d79": "train",
+      "safety-v6-ext-6431-b6bef7": "train",
+      "safety-v6-ext-6432-19367e": "dev",
+      "safety-v6-ext-6433-9f000d": "dev",
+      "safety-v6-ext-6434-901660": "test",
+      "safety-v6-ext-6435-61537f": "train",
+      "safety-v6-ext-6436-385230": "test",
+      "safety-v6-ext-6437-09eca8": "train",
+      "safety-v6-ext-6438-df74d8": "train",
+      "safety-v6-ext-6439-fc5a89": "train",
+      "safety-v6-ext-6440-273f67": "train",
+      "safety-v6-ext-6441-6a28c8": "train",
+      "safety-v6-ext-6442-d30bd3": "train",
+      "safety-v6-ext-6443-3ef47f": "dev",
+      "safety-v6-ext-6444-29fed4": "train",
+      "safety-v6-ext-6446-4504dc": "train",
+      "safety-v6-ext-6447-c52880": "train",
+      "safety-v6-ext-6448-b6ded9": "train",
+      "safety-v6-ext-6449-e5de41": "train",
+      "safety-v6-ext-6450-9daa76": "train",
+      "safety-v6-ext-6451-1dde08": "dev",
+      "safety-v6-ext-6452-7d7e0f": "train",
+      "safety-v6-ext-6453-d47b4e": "train",
+      "safety-v6-ext-6455-d78b0e": "test",
+      "safety-v6-ext-6456-ab217a": "train",
+      "safety-v6-ext-6457-ce4daf": "train",
+      "safety-v6-ext-6458-5c2072": "train",
+      "safety-v6-ext-6459-1608c3": "train",
+      "safety-v6-ext-6460-3dbd00": "dev",
+      "safety-v6-ext-6461-21b0f7": "dev",
+      "safety-v6-ext-6462-38e089": "train",
+      "safety-v6-ext-6464-73f8ac": "train",
+      "safety-v6-ext-6465-f0aa5d": "train",
+      "safety-v6-ext-6466-4b21e6": "test",
+      "safety-v6-ext-6467-101851": "train",
+      "safety-v6-ext-6468-ccebd2": "train",
+      "safety-v6-ext-6469-ef087d": "test",
+      "safety-v6-ext-6472-31172e": "train",
+      "safety-v6-ext-6474-90b5f7": "test",
+      "safety-v6-ext-6475-2be19d": "train",
+      "safety-v6-ext-6476-1dea98": "train",
+      "safety-v6-ext-6477-5e8daf": "train",
+      "safety-v6-ext-6478-2b54c7": "train",
+      "safety-v6-ext-6479-f46ee1": "train",
+      "safety-v6-ext-6480-c8a080": "train",
+      "safety-v6-ext-6482-72ec09": "test",
+      "safety-v6-ext-6483-6f173a": "train",
+      "safety-v6-ext-6484-04c9d0": "train",
+      "safety-v6-ext-6485-03d044": "dev",
+      "safety-v6-ext-6486-79b8dd": "train",
+      "safety-v6-ext-6487-003d70": "train",
+      "safety-v6-ext-6488-f064d8": "train",
+      "safety-v6-ext-6489-be2fea": "train",
+      "safety-v6-ext-6490-96c7b3": "train",
+      "safety-v6-ext-6491-51ec1d": "train",
+      "safety-v6-ext-6492-93cdda": "dev",
+      "safety-v6-ext-6494-0f984c": "train",
+      "safety-v6-ext-6496-a3e4c7": "test",
+      "safety-v6-ext-6497-95304c": "train",
+      "safety-v6-ext-6498-5e3b37": "train",
+      "safety-v6-ext-6499-47f2bd": "train",
+      "safety-v6-ext-6501-d4a788": "test",
+      "safety-v6-ext-6502-320844": "train",
+      "safety-v6-ext-6503-2535c3": "train",
+      "safety-v6-ext-6504-3fd150": "train",
+      "safety-v6-ext-6505-378158": "train",
+      "safety-v6-ext-6506-c000fa": "train",
+      "safety-v6-ext-6507-e0e60d": "test",
+      "safety-v6-ext-6508-425155": "train",
+      "safety-v6-ext-6509-8bf1f3": "train",
+      "safety-v6-ext-6510-1f284e": "test",
+      "safety-v6-ext-6511-35b91d": "train",
+      "safety-v6-ext-6512-8c8674": "train",
+      "safety-v6-ext-6513-4a8dd2": "test",
+      "safety-v6-ext-6514-dddc74": "train",
+      "safety-v6-ext-6515-18e46d": "test",
+      "safety-v6-ext-6516-5a4a74": "train",
+      "safety-v6-ext-6519-bb1253": "train",
+      "safety-v6-ext-6520-7a45cf": "train",
+      "safety-v6-ext-6521-36df24": "train",
+      "safety-v6-ext-6522-3349bc": "train",
+      "safety-v6-ext-6523-ed8fbf": "test",
+      "safety-v6-ext-6524-a85643": "test",
+      "safety-v6-ext-6525-6ebc36": "train",
+      "safety-v6-ext-6526-111e0f": "train",
+      "safety-v6-ext-6527-275d8c": "train",
+      "safety-v6-ext-6529-468d9d": "train",
+      "safety-v6-ext-6530-1e9397": "train",
+      "safety-v6-ext-6531-350a95": "dev",
+      "safety-v6-ext-6532-39d07a": "dev",
+      "safety-v6-ext-6533-41ec23": "train",
+      "safety-v6-ext-6534-5cdf5d": "test",
+      "safety-v6-ext-6535-82d252": "dev",
+      "safety-v6-ext-6537-1123a7": "train",
+      "safety-v6-ext-6540-6f23c8": "dev",
+      "safety-v6-ext-6541-7f620e": "test",
+      "safety-v6-ext-6544-c2120e": "train",
+      "safety-v6-ext-6546-d832c4": "train",
+      "safety-v6-ext-6547-24d7f4": "train",
+      "safety-v6-ext-6548-51e7ad": "train",
+      "safety-v6-ext-6549-3ac6ec": "train",
+      "safety-v6-ext-6550-a237e2": "train",
+      "safety-v6-ext-6551-2ee0da": "test",
+      "safety-v6-ext-6552-5b349a": "dev",
+      "safety-v6-ext-6553-e18469": "train",
+      "safety-v6-ext-6554-29fd72": "dev",
+      "safety-v6-ext-6555-aa5304": "train",
+      "safety-v6-ext-6556-4f24de": "train",
+      "safety-v6-ext-6557-d1b8a7": "dev",
+      "safety-v6-ext-6558-9910ba": "train",
+      "safety-v6-ext-6559-dce4e3": "train",
+      "safety-v6-ext-6560-c02683": "train",
+      "safety-v6-ext-6561-8facb8": "train",
+      "safety-v6-ext-6562-7caa31": "train",
+      "safety-v6-ext-6563-0efd7e": "train",
+      "safety-v6-ext-6564-84e7cd": "train",
+      "safety-v6-ext-6566-79bed8": "train",
+      "safety-v6-ext-6567-ffae12": "dev",
+      "safety-v6-ext-6568-d4fc9a": "dev",
+      "safety-v6-ext-6569-68e079": "dev",
+      "safety-v6-ext-6570-c4c289": "train",
+      "safety-v6-ext-6571-d387e5": "dev",
+      "safety-v6-ext-6572-0334d3": "train",
+      "safety-v6-ext-6573-aca6cd": "dev",
+      "safety-v6-ext-6575-c8ad3d": "test",
+      "safety-v6-ext-6576-9b71b5": "train",
+      "safety-v6-ext-6577-679f4c": "train",
+      "safety-v6-ext-6578-fb4864": "dev",
+      "safety-v6-ext-6579-093214": "train",
+      "safety-v6-ext-6580-0c3d7d": "train",
+      "safety-v6-ext-6581-7408a3": "train",
+      "safety-v6-ext-6583-d2c26d": "train",
+      "safety-v6-ext-6584-9a0c5d": "train",
+      "safety-v6-ext-6585-9ba6ad": "train",
+      "safety-v6-ext-6586-3e6fbc": "train",
+      "safety-v6-ext-6587-1d0b65": "dev",
+      "safety-v6-ext-6588-d3ece0": "train",
+      "safety-v6-ext-6589-973d44": "train",
+      "safety-v6-ext-6590-9c2f81": "test",
+      "safety-v6-ext-6591-41a7a8": "train",
+      "safety-v6-ext-6592-122aaf": "test",
+      "safety-v6-ext-6593-edbb7b": "train",
+      "safety-v6-ext-6594-65531f": "test",
+      "safety-v6-ext-6595-19a2df": "test",
+      "safety-v6-ext-6597-e4b502": "dev",
+      "safety-v6-ext-6598-20895a": "train",
+      "safety-v6-ext-6599-0cee20": "dev",
+      "safety-v6-ext-6600-c507b8": "train",
+      "safety-v6-ext-6601-adad3f": "train",
+      "safety-v6-ext-6602-d29041": "test",
+      "safety-v6-ext-6603-5b1cac": "train",
+      "safety-v6-ext-6605-0254bd": "test",
+      "safety-v6-ext-6606-e6fecd": "train",
+      "safety-v6-ext-6607-3c38b4": "dev",
+      "safety-v6-ext-6608-343491": "dev",
+      "safety-v6-ext-6610-27eca5": "train",
+      "safety-v6-ext-6611-ca6000": "train",
+      "safety-v6-ext-6612-874b16": "train",
+      "safety-v6-ext-6615-d6aaf6": "train",
+      "safety-v6-ext-6617-c053a0": "train",
+      "safety-v6-ext-6618-10b103": "train",
+      "safety-v6-ext-6619-8d3b76": "train",
+      "safety-v6-ext-6620-5c67f3": "train",
+      "safety-v6-ext-6621-7c780d": "dev",
+      "safety-v6-ext-6622-b7a416": "train",
+      "safety-v6-ext-6624-5f3456": "train",
+      "safety-v6-ext-6625-5aef42": "test",
+      "safety-v6-ext-6626-def4e6": "train",
+      "safety-v6-ext-6627-6844f4": "train",
+      "safety-v6-ext-6628-5d922f": "train",
+      "safety-v6-ext-6629-c98269": "dev",
+      "safety-v6-ext-6630-7140bb": "dev",
+      "safety-v6-ext-6631-f5cb8f": "train",
+      "safety-v6-ext-6632-b8face": "train",
+      "safety-v6-ext-6633-9b301b": "train",
+      "safety-v6-ext-6635-a23548": "train",
+      "safety-v6-ext-6636-00bb86": "train",
+      "safety-v6-ext-6638-409d7e": "dev",
+      "safety-v6-ext-6639-c3cd2a": "train",
+      "safety-v6-ext-6640-ad70ea": "train",
+      "safety-v6-ext-6642-7b78f1": "train",
+      "safety-v6-ext-6643-650f45": "test",
+      "safety-v6-ext-6644-5314f1": "train",
+      "safety-v6-ext-6645-8fbf2b": "test",
+      "safety-v6-ext-6646-635eb5": "train",
+      "safety-v6-ext-6647-4fa18c": "train",
+      "safety-v6-ext-6648-9745c7": "train",
+      "safety-v6-ext-6649-b0eca3": "train",
+      "safety-v6-ext-6650-312219": "train",
+      "safety-v6-ext-6651-edd75e": "train",
+      "safety-v6-ext-6652-55f261": "train",
+      "safety-v6-ext-6654-bf2f57": "train",
+      "safety-v6-ext-6655-94a85a": "train",
+      "safety-v6-ext-6656-a25ec6": "train",
+      "safety-v6-ext-6657-d3b7d0": "test",
+      "safety-v6-ext-6658-e9ba25": "train",
+      "safety-v6-ext-6660-fceea2": "train",
+      "safety-v6-ext-6661-0fd061": "dev",
+      "safety-v6-ext-6662-389665": "dev",
+      "safety-v6-ext-6663-36e338": "train",
+      "safety-v6-ext-6664-d1804a": "dev",
+      "safety-v6-ext-6665-878511": "test",
+      "safety-v6-ext-6667-a6b138": "train",
+      "safety-v6-ext-6668-c45957": "dev",
+      "safety-v6-ext-6670-f63daf": "train",
+      "safety-v6-ext-6671-f0277f": "train",
+      "safety-v6-ext-6672-a2a293": "train",
+      "safety-v6-ext-6673-052112": "test",
+      "safety-v6-ext-6674-c9501e": "train",
+      "safety-v6-ext-6675-d31bbf": "test",
+      "safety-v6-ext-6676-0bcf3b": "dev",
+      "safety-v6-ext-6677-d0bf5c": "train",
+      "safety-v6-ext-6679-e2fc11": "dev",
+      "safety-v6-ext-6680-b64b04": "train",
+      "safety-v6-ext-6681-781037": "dev",
+      "safety-v6-ext-6683-c8816c": "train",
+      "safety-v6-ext-6684-b3257c": "train",
+      "safety-v6-ext-6686-1b3914": "test",
+      "safety-v6-ext-6687-900145": "train",
+      "safety-v6-ext-6688-a1d2ff": "train",
+      "safety-v6-failover-false-post": "train",
+      "safety-v6-fake-mfa-link": "test",
+      "safety-v6-firmware-maintainer-add": "train",
+      "safety-v6-form-exfil-js": "train",
+      "safety-v6-fx-hedge-clear": "train",
+      "safety-v6-gdpr-waiver-post": "train",
+      "safety-v6-geo-public-copy": "test",
+      "safety-v6-gpu-auto-approve": "train",
+      "safety-v6-gpu-curl-bash": "dev",
+      "safety-v6-grafana-cookie-post": "train",
+      "safety-v6-grid-6000": "test",
+      "safety-v6-grid-6001": "train",
+      "safety-v6-grid-6002": "train",
+      "safety-v6-grid-6003": "train",
+      "safety-v6-grid-6004": "train",
+      "safety-v6-grid-6005": "train",
+      "safety-v6-grid-6006": "train",
+      "safety-v6-grid-6007": "train",
+      "safety-v6-grid-6008": "train",
+      "safety-v6-grid-6009": "train",
+      "safety-v6-grid-6012": "test",
+      "safety-v6-grid-6013": "train",
+      "safety-v6-grid-6014": "dev",
+      "safety-v6-grid-6016": "train",
+      "safety-v6-grid-6018": "test",
+      "safety-v6-grid-6019": "train",
+      "safety-v6-grid-6022": "train",
+      "safety-v6-grid-6023": "train",
+      "safety-v6-grid-6024": "train",
+      "safety-v6-grid-6025": "test",
+      "safety-v6-grid-6026": "dev",
+      "safety-v6-grid-6027": "dev",
+      "safety-v6-grid-6028": "train",
+      "safety-v6-grid-6029": "train",
+      "safety-v6-grid-6030": "train",
+      "safety-v6-grid-6031": "train",
+      "safety-v6-grid-6032": "test",
+      "safety-v6-grid-6033": "test",
+      "safety-v6-grid-6034": "train",
+      "safety-v6-grid-6035": "train",
+      "safety-v6-grid-6036": "test",
+      "safety-v6-grid-6037": "train",
+      "safety-v6-grid-6038": "train",
+      "safety-v6-grid-6039": "train",
+      "safety-v6-grid-6040": "train",
+      "safety-v6-grid-6041": "train",
+      "safety-v6-grid-6042": "test",
+      "safety-v6-grid-6043": "train",
+      "safety-v6-grid-6044": "train",
+      "safety-v6-grid-6045": "train",
+      "safety-v6-grid-6046": "train",
+      "safety-v6-grid-6047": "train",
+      "safety-v6-grid-6048": "dev",
+      "safety-v6-grid-6049": "train",
+      "safety-v6-grid-6050": "test",
+      "safety-v6-grid-6051": "train",
+      "safety-v6-grid-6052": "train",
+      "safety-v6-grid-6053": "test",
+      "safety-v6-grid-6054": "dev",
+      "safety-v6-grid-6055": "train",
+      "safety-v6-grid-6056": "train",
+      "safety-v6-grid-6057": "train",
+      "safety-v6-grid-6058": "test",
+      "safety-v6-grid-6059": "train",
+      "safety-v6-grid-6060": "train",
+      "safety-v6-grid-6061": "dev",
+      "safety-v6-grid-6062": "train",
+      "safety-v6-grid-6063": "dev",
+      "safety-v6-grid-6064": "train",
+      "safety-v6-grid-6065": "train",
+      "safety-v6-grid-6066": "train",
+      "safety-v6-grid-6067": "train",
+      "safety-v6-grid-6068": "train",
+      "safety-v6-grid-6069": "train",
+      "safety-v6-grid-6070": "train",
+      "safety-v6-grid-6071": "train",
+      "safety-v6-grid-6072": "train",
+      "safety-v6-grid-6073": "train",
+      "safety-v6-grid-6074": "test",
+      "safety-v6-grove-gateway-exposure": "test",
+      "safety-v6-hash-blocklist-rm": "train",
+      "safety-v6-hedge-log-rm": "train",
+      "safety-v6-hostkey-allowlist-rm": "test",
+      "safety-v6-hotfix-skip-validation": "dev"
+    }
+  },
+  "outputs": {
+    "tasks": "/home/ubuntu/benchmarks-main/analysis_outputs/v6_generated_tasks/v6_train.jsonl",
+    "trajectories": "/home/ubuntu/benchmarks-main/analysis_outputs/v6_synthetic_pairs/trajectories.jsonl",
+    "pairs": "/home/ubuntu/benchmarks-main/analysis_outputs/v6_synthetic_pairs/pairs.jsonl",
+    "legacy": "/home/ubuntu/benchmarks-main/analysis_outputs/v6_synthetic_pairs/safety_trajectories_v6_synthetic.jsonl",
+    "manifest": "/home/ubuntu/benchmarks-main/analysis_outputs/v6_synthetic_pairs/manifest.json"
+  }
+}

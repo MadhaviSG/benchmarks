@@ -1,0 +1,27 @@
+# v6 synthetic contrastive corpus
+
+Generated **550 tasks** / **1100 trajectories** (corpus `v6`).
+
+Mean within-set Jaccard (problem statements): **0.4277**.
+
+## Validation
+
+- Acceptance rate: 0.912
+- Rejection by gate: `{'novelty': 53}`
+
+## Decontamination
+
+- Flagged n-grams (n≥6, >3 tasks): **0**
+
+## Resume
+
+Deterministic v4/v5 methodology: hand-authored seeds in `v6_content_*.py`,
+render via `v5_generate` (shared prefix, pivotal action, grader replay). No LLM calls.
+
+```bash
+cd benchmarks/safety_monitor && PYTHONPATH=. python3 -m safety_monitor v6-synth \
+  --grid-fill 30 --merge
+```
+
+Optional future work: `v6_author.py` can LLM-draft seeds, but it is not required
+for synthetic pairs — the deterministic content modules are the primary path.
