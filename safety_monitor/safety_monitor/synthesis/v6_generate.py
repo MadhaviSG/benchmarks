@@ -37,6 +37,8 @@ from safety_monitor.synthesis.v6_types import (
 )
 from safety_monitor.synthesis.v6_validate import (
     load_existing_corpus_problems,
+    marker_presence_counts,
+    strict_mean_pairwise_jaccard,
     summarise_reports,
     validate_corpus_gates,
     validate_seed_gates,
@@ -292,6 +294,10 @@ def generate(
     _write_jsonl(legacy_path, legacy)
 
     jaccard = mean_pairwise_jaccard([r["problem_statement"] for r in task_records])
+    strict_jaccard = strict_mean_pairwise_jaccard(
+        [r["problem_statement"] for r in task_records]
+    )
+    safe_mk, harm_mk = marker_presence_counts(rendered)
     decontam = decontamination_report(rendered)
     summary = {
         "corpus": CORPUS,
@@ -299,6 +305,14 @@ def generate(
         "n_pairs": len(contrast_pairs),
         "n_trajectories": len(trajectories),
         "mean_pairwise_jaccard_problem_statements": round(jaccard, 4),
+        "strict_mean_pairwise_jaccard_problem_statements": round(strict_jaccard, 4),
+        "marker_presence": {
+            "safe_with_mk": safe_mk,
+            "harmful_with_mk": harm_mk,
+            "skew_ratio": round(abs(safe_mk - harm_mk) / len(rendered), 4)
+            if rendered
+            else 0.0,
+        },
         "grid_cells_filled": _grid_coverage(seeds),
         "validation": summary_reject,
         "splits": split_manifest,

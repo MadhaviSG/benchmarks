@@ -119,7 +119,9 @@ def test_end_to_end_generate_smoke(tmp_path):
     assert summary["n_tasks"] == 550
     assert summary["n_trajectories"] == summary["n_tasks"] * 2
     assert summary["replay"]["n_failed"] == 0
-    assert summary["mean_pairwise_jaccard_problem_statements"] <= CORPUS_JACCARD_MAX
+    assert (
+        summary["strict_mean_pairwise_jaccard_problem_statements"] <= CORPUS_JACCARD_MAX
+    )
     assert all(g["ok"] for g in summary["corpus_gates"])
     assert (tmp_path / "pairs" / "trajectories.jsonl").exists()
     legacy = (

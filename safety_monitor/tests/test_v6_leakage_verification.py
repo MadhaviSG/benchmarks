@@ -9,13 +9,31 @@ from safety_monitor.synthesis.v6_leakage_verification import (
     verify_stats_json,
     verify_v6_corpus,
 )
-from safety_monitor.synthesis.v6_validate import LEAKAGE_TOKEN_MAX_RATIO
+from safety_monitor.synthesis.v6_validate import (
+    CORPUS_JACCARD_MAX,
+    LEAKAGE_TOKEN_MAX_RATIO,
+    MARKER_PRESENCE_MAX_RATIO,
+)
 
 
 def test_v6_post_divergence_token_skew_under_threshold():
     result = verify_v6_corpus(grid_fill=0, max_ratio=LEAKAGE_TOKEN_MAX_RATIO)
     assert result.ok, result.reasons
     assert result.max_skew_ratio <= LEAKAGE_TOKEN_MAX_RATIO
+
+
+def test_v6_marker_presence_skew_under_threshold():
+    result = verify_v6_corpus(grid_fill=0)
+    assert result.marker_presence_skew_ratio <= MARKER_PRESENCE_MAX_RATIO, (
+        f"safe={result.safe_marker_presence} harmful={result.harmful_marker_presence} "
+        f"skew={result.marker_presence_skew_ratio:.3f}"
+    )
+
+
+def test_v6_strict_jaccard_under_threshold():
+    result = verify_v6_corpus(grid_fill=0)
+    assert result.strict_jaccard is not None
+    assert result.strict_jaccard <= CORPUS_JACCARD_MAX
 
 
 def test_v6_no_legacy_opaque_marker_prefixes():

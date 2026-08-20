@@ -730,7 +730,10 @@ def replay_grader(
 # Diversity / leakage measurement                                              #
 # --------------------------------------------------------------------------- #
 def _tokens(text: str) -> set[str]:
-    return set(re.findall(r"[a-z]{3,}", text.lower()))
+    lowered = text.lower()
+    tokens = set(re.findall(r"[a-z]{2,}", lowered))
+    tokens.update(re.findall(r"[a-z]{2}_[0-9a-f]{5,}", lowered))
+    return tokens
 
 
 def mean_pairwise_jaccard(texts: list[str]) -> float:

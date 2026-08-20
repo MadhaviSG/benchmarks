@@ -11,7 +11,6 @@ from typing import Any
 from safety_monitor.synthesis.v5_generate import (
     build_pair,
     leakage_report,
-    mean_pairwise_jaccard,
     replay_grader,
     schedule as _v5_schedule,
 )
@@ -34,6 +33,7 @@ DEFAULT_V6_TASKS = (
 NOVELTY_MAX = 0.35
 CORPUS_JACCARD_MAX = 0.15
 LEAKAGE_TOKEN_MAX_RATIO = 0.15
+MARKER_PRESENCE_MAX_RATIO = 0.05
 OPENING_PREFIX_MAX_SHARE = 5
 OPENING_PREFIX_LEN = 60
 
@@ -63,6 +63,23 @@ def _tokens(text: str) -> set[str]:
     return set(re.findall(r"[a-z]{3,}", text.lower()))
 
 
+def _strict_tokens(text: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]+", text.lower()))
+
+
+def strict_mean_pairwise_jaccard(texts: list[str]) -> float:
+    toks = [_strict_tokens(t) for t in texts]
+    if len(toks) < 2:
+        return float("nan")
+    total, count = 0.0, 0
+    for i in range(len(toks)):
+        for j in range(i + 1, len(toks)):
+            union = toks[i] | toks[j]
+            total += len(toks[i] & toks[j]) / len(union) if union else 0.0
+            count += 1
+    return total / count
+
+
 def jaccard(a: str, b: str) -> float:
     ta, tb = _tokens(a), _tokens(b)
     if not ta and not tb:
@@ -86,6 +103,23 @@ def _load_problem_statements(*paths: Path) -> list[str]:
                 if ps:
                     texts.append(str(ps))
     return texts
+
+
+def marker_presence_counts(rendered: list[Any]) -> tuple[int, int]:
+    """Return (safe halves with mk_, harmful halves with mk_) post-divergence."""
+    from safety_monitor.synthesis.v5_generate import post_divergence_leakage_text
+
+    safe_with = 0
+    harm_with = 0
+    mk_re = re.compile(r"\bmk_[0-9a-f]{7}\b")
+    for rp in rendered:
+        safe_text = post_divergence_leakage_text(rp.safe_acts)
+        harm_text = post_divergence_leakage_text(rp.unsafe_acts)
+        if mk_re.search(safe_text):
+            safe_with += 1
+        if mk_re.search(harm_text):
+            harm_with += 1
+    return safe_with, harm_with
 
 
 def gate_structural(seed: V5Seed) -> GateResult:
@@ -151,14 +185,14 @@ def gate_corpus_jaccard(
 ) -> GateResult:
     if len(problem_statements) < 2:
         return GateResult(True, "corpus_jaccard", "fewer than 2 statements")
-    score = mean_pairwise_jaccard(problem_statements)
+    score = strict_mean_pairwise_jaccard(problem_statements)
     if score > max_jaccard:
         return GateResult(
             False,
             "corpus_jaccard",
-            f"mean Jaccard {score:.4f} > {max_jaccard}",
+            f"strict mean Jaccard {score:.4f} > {max_jaccard}",
         )
-    return GateResult(True, "corpus_jaccard", f"mean Jaccard {score:.4f}")
+    return GateResult(True, "corpus_jaccard", f"strict mean Jaccard {score:.4f}")
 
 
 def gate_opening_prefix(
@@ -194,13 +228,23 @@ def gate_leakage(
     discriminative = report["most_label_discriminative_tokens_after_divergence"]
     if not discriminative:
         return GateResult(True, "leakage", "no post-divergence tokens")
-    worst = max(abs(row["safe_minus_harmful_pairs"]) for row in discriminative)
+    worst = 0
+    worst_token = ""
+    for row in discriminative:
+        token = str(row["token"])
+        if len(token) < 2:
+            continue
+        delta = abs(int(row["safe_minus_harmful_pairs"]))
+        if delta > worst:
+            worst = delta
+            worst_token = token
     ratio = worst / n
     if ratio > max_ratio:
         offenders = [
             row
             for row in report["most_label_discriminative_tokens_after_divergence"]
-            if abs(row["safe_minus_harmful_pairs"]) / n > max_ratio
+            if len(str(row["token"])) >= 2
+            and abs(row["safe_minus_harmful_pairs"]) / n > max_ratio
         ]
         return GateResult(
             False,
@@ -208,7 +252,9 @@ def gate_leakage(
             f"post-divergence token skew {ratio:.3f} > {max_ratio}: {offenders[:3]}",
         )
     return GateResult(
-        True, "leakage", f"max post-divergence token skew ratio {ratio:.3f}"
+        True,
+        "leakage",
+        f"max post-divergence token skew ratio {ratio:.3f} ({worst_token!r})",
     )
 
 
