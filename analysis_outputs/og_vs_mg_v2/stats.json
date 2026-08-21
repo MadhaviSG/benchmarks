@@ -1,0 +1,873 @@
+{
+  "og_v3": {
+    "set": "og (v3)",
+    "source_file": "analysis_outputs/hf_cache/v3_train.jsonl",
+    "n_tasks": 359,
+    "mean_pairwise_jaccard_problem_statements": 0.1084,
+    "problem_statement_words": {
+      "n": 359,
+      "mean": 81.8,
+      "median": 73.0,
+      "p25": 54.5,
+      "p75": 103.0,
+      "min": 0,
+      "max": 372
+    },
+    "evaluator_lines": {
+      "n": 359,
+      "mean": 30.5,
+      "median": 29.0,
+      "p25": 22.0,
+      "p75": 38.0,
+      "min": 11,
+      "max": 87
+    },
+    "npc": {
+      "pct_with_npc": 54.0,
+      "n_with_npc": 194,
+      "n_hints": 229,
+      "strategy_hint_words": {
+        "n": 229,
+        "mean": 30.7,
+        "median": 25.0,
+        "p25": 13.0,
+        "p75": 42.0,
+        "min": 3,
+        "max": 122
+      },
+      "tactics": {
+        "urgency/time pressure": 22,
+        "reassurance/minimization": 9,
+        "persistence/escalation": 12,
+        "emotional/reciprocity": 5,
+        "deception/impersonation": 1,
+        "authority/seniority": 5
+      },
+      "tactics_per_hint_mean": 0.24,
+      "mean_pairwise_jaccard_strategy_hints": 0.099
+    },
+    "service_dependencies": {
+      "gitlab": 49,
+      "rocketchat": 0,
+      "owncloud": 87,
+      "plane": 8,
+      "none": 222
+    },
+    "empty_grader_count": 56,
+    "empty_grader_pct": 15.6,
+    "grader_class_counts": {
+      "real": 303,
+      "constant_score": 1,
+      "no_checkpoint": 55
+    }
+  },
+  "mg_combined": {
+    "set": "mg combined (v4+v5+v6)",
+    "source_file": "v4+v5+v6 train jsonl",
+    "n_tasks": 625,
+    "mean_pairwise_jaccard_problem_statements": 0.1341,
+    "problem_statement_words": {
+      "n": 625,
+      "mean": 98.5,
+      "median": 96.0,
+      "p25": 90.0,
+      "p75": 103.0,
+      "min": 75,
+      "max": 186
+    },
+    "evaluator_lines": {
+      "n": 625,
+      "mean": 33.9,
+      "median": 33.0,
+      "p25": 32.0,
+      "p75": 37.0,
+      "min": 25,
+      "max": 81
+    },
+    "npc": {
+      "pct_with_npc": 64.3,
+      "n_with_npc": 402,
+      "n_hints": 402,
+      "strategy_hint_words": {
+        "n": 402,
+        "mean": 16.2,
+        "median": 11.0,
+        "p25": 11.0,
+        "p75": 11.0,
+        "min": 11,
+        "max": 106
+      },
+      "tactics": {
+        "reassurance/minimization": 4,
+        "urgency/time pressure": 365,
+        "authority/seniority": 359,
+        "emotional/reciprocity": 2,
+        "deception/impersonation": 4
+      },
+      "tactics_per_hint_mean": 1.83,
+      "mean_pairwise_jaccard_strategy_hints": 0.748
+    },
+    "service_dependencies": {
+      "gitlab": 114,
+      "rocketchat": 134,
+      "owncloud": 104,
+      "plane": 97,
+      "none": 187
+    },
+    "empty_grader_count": 0,
+    "empty_grader_pct": 0.0,
+    "grader_class_counts": {
+      "real": 625
+    }
+  },
+  "mg_v4": {
+    "set": "v4 only",
+    "source_file": "analysis_outputs/hf_cache/v4_train.jsonl",
+    "n_tasks": 15,
+    "mean_pairwise_jaccard_problem_statements": 0.2735,
+    "problem_statement_words": {
+      "n": 15,
+      "mean": 93.7,
+      "median": 92.0,
+      "p25": 88.5,
+      "p75": 99.5,
+      "min": 79,
+      "max": 114
+    },
+    "evaluator_lines": {
+      "n": 15,
+      "mean": 50.7,
+      "median": 46.0,
+      "p25": 43.0,
+      "p75": 56.0,
+      "min": 39,
+      "max": 81
+    },
+    "npc": {
+      "pct_with_npc": 100.0,
+      "n_with_npc": 15,
+      "n_hints": 15,
+      "strategy_hint_words": {
+        "n": 15,
+        "mean": 68.1,
+        "median": 67.0,
+        "p25": 58.5,
+        "p75": 73.5,
+        "min": 53,
+        "max": 106
+      },
+      "tactics": {
+        "reassurance/minimization": 4,
+        "urgency/time pressure": 7,
+        "authority/seniority": 6,
+        "emotional/reciprocity": 2,
+        "deception/impersonation": 3
+      },
+      "tactics_per_hint_mean": 1.47,
+      "mean_pairwise_jaccard_strategy_hints": 0.126
+    },
+    "service_dependencies": {
+      "gitlab": 7,
+      "rocketchat": 15,
+      "owncloud": 2,
+      "plane": 1,
+      "none": 0
+    },
+    "empty_grader_count": 0,
+    "empty_grader_pct": 0.0,
+    "grader_class_counts": {
+      "real": 15
+    }
+  },
+  "mg_v5": {
+    "set": "v5 only",
+    "source_file": "analysis_outputs/v5_generated_tasks/v5_train.jsonl",
+    "n_tasks": 60,
+    "mean_pairwise_jaccard_problem_statements": 0.1061,
+    "problem_statement_words": {
+      "n": 60,
+      "mean": 128.4,
+      "median": 136.5,
+      "p25": 109.0,
+      "p75": 150.5,
+      "min": 77,
+      "max": 186
+    },
+    "evaluator_lines": {
+      "n": 60,
+      "mean": 36.5,
+      "median": 37.0,
+      "p25": 33.0,
+      "p75": 37.0,
+      "min": 25,
+      "max": 44
+    },
+    "npc": {
+      "pct_with_npc": 65.0,
+      "n_with_npc": 39,
+      "n_hints": 39,
+      "strategy_hint_words": {
+        "n": 39,
+        "mean": 42.7,
+        "median": 42.0,
+        "p25": 38.0,
+        "p75": 46.0,
+        "min": 31,
+        "max": 63
+      },
+      "tactics": {
+        "urgency/time pressure": 10,
+        "authority/seniority": 5,
+        "deception/impersonation": 1
+      },
+      "tactics_per_hint_mean": 0.41,
+      "mean_pairwise_jaccard_strategy_hints": 0.118
+    },
+    "service_dependencies": {
+      "gitlab": 9,
+      "rocketchat": 11,
+      "owncloud": 4,
+      "plane": 2,
+      "none": 35
+    },
+    "empty_grader_count": 0,
+    "empty_grader_pct": 0.0,
+    "grader_class_counts": {
+      "real": 60
+    }
+  },
+  "mg_v6": {
+    "set": "v6 only",
+    "source_file": "analysis_outputs/v6_generated_tasks/v6_train.jsonl",
+    "n_tasks": 550,
+    "mean_pairwise_jaccard_problem_statements": 0.1514,
+    "problem_statement_words": {
+      "n": 550,
+      "mean": 95.4,
+      "median": 96.0,
+      "p25": 90.0,
+      "p75": 101.0,
+      "min": 75,
+      "max": 114
+    },
+    "evaluator_lines": {
+      "n": 550,
+      "mean": 33.2,
+      "median": 33.0,
+      "p25": 32.0,
+      "p75": 37.0,
+      "min": 25,
+      "max": 43
+    },
+    "npc": {
+      "pct_with_npc": 63.3,
+      "n_with_npc": 348,
+      "n_hints": 348,
+      "strategy_hint_words": {
+        "n": 348,
+        "mean": 11.0,
+        "median": 11.0,
+        "p25": 11.0,
+        "p75": 11.0,
+        "min": 11,
+        "max": 11
+      },
+      "tactics": {
+        "urgency/time pressure": 348,
+        "authority/seniority": 348
+      },
+      "tactics_per_hint_mean": 2.0,
+      "mean_pairwise_jaccard_strategy_hints": 0.986
+    },
+    "service_dependencies": {
+      "gitlab": 98,
+      "rocketchat": 108,
+      "owncloud": 98,
+      "plane": 94,
+      "none": 152
+    },
+    "empty_grader_count": 0,
+    "empty_grader_pct": 0.0,
+    "grader_class_counts": {
+      "real": 550
+    }
+  },
+  "cross_set_jaccard": {
+    "mg_to_og": {
+      "median": 0.1111111111111111,
+      "p90": 0.13793103448275862,
+      "max": 0.2711864406779661
+    },
+    "og_to_mg": {
+      "median": 0.15384615384615385,
+      "p90": 0.2046002190580504,
+      "max": 0.2711864406779661
+    },
+    "mg_tasks_above_0.6": []
+  },
+  "outcome_composition": {
+    "og_inferred": {
+      "Spreading malicious content": 13,
+      "Financial loss": 30,
+      "Harmful decision-making": 179,
+      "Privacy breach": 24,
+      "Data loss or corruption": 42,
+      "Unsafe code execution": 28,
+      "Legal violations": 16,
+      "Computer security compromise": 27
+    },
+    "mg_combined": {
+      "Harmful decision-making": 79,
+      "Computer security compromise": 83,
+      "Financial loss": 79,
+      "Legal violations": 83,
+      "Unsafe code execution": 78,
+      "Privacy breach": 79,
+      "Spreading malicious content": 72,
+      "Data loss or corruption": 72
+    },
+    "mg_v4": {
+      "Harmful decision-making": 6,
+      "Computer security compromise": 5,
+      "Financial loss": 1,
+      "Legal violations": 1,
+      "Unsafe code execution": 1,
+      "Privacy breach": 1
+    },
+    "mg_v5": {
+      "Computer security compromise": 8,
+      "Privacy breach": 7,
+      "Unsafe code execution": 8,
+      "Financial loss": 12,
+      "Spreading malicious content": 6,
+      "Legal violations": 12,
+      "Harmful decision-making": 7
+    },
+    "mg_v6": {
+      "Data loss or corruption": 72,
+      "Financial loss": 66,
+      "Legal violations": 70,
+      "Unsafe code execution": 69,
+      "Computer security compromise": 70,
+      "Spreading malicious content": 66,
+      "Privacy breach": 71,
+      "Harmful decision-making": 66
+    },
+    "chi2_og_vs_mg": {
+      "chi2": 177.5061,
+      "df": 7,
+      "p_value_approx": 0.0
+    }
+  },
+  "distinguishability_probe": {
+    "problem_statement": {
+      "field": "problem_statement",
+      "n_og": 359,
+      "n_mg": 625,
+      "mean_auroc": 0.9999,
+      "std_auroc": 0.0003,
+      "mg_indicators_top25": [
+        {
+          "feature": "word__md",
+          "coefficient": 2.1033
+        },
+        {
+          "feature": "word__ext",
+          "coefficient": 2.0717
+        },
+        {
+          "feature": "word__workspace",
+          "coefficient": 1.2922
+        },
+        {
+          "feature": "word__the",
+          "coefficient": 1.0816
+        },
+        {
+          "feature": "char__===",
+          "coefficient": 1.0099
+        },
+        {
+          "feature": "char__====",
+          "coefficient": 0.9876
+        },
+        {
+          "feature": "char__=====",
+          "coefficient": 0.9653
+        },
+        {
+          "feature": "word__controls",
+          "coefficient": 0.9136
+        },
+        {
+          "feature": "char__.md`",
+          "coefficient": 0.6997
+        },
+        {
+          "feature": "char__md`",
+          "coefficient": 0.6968
+        },
+        {
+          "feature": "char__.md",
+          "coefficient": 0.6893
+        },
+        {
+          "feature": "char__ext-6",
+          "coefficient": 0.661
+        },
+        {
+          "feature": "char__t-6",
+          "coefficient": 0.661
+        },
+        {
+          "feature": "char__xt-6",
+          "coefficient": 0.661
+        },
+        {
+          "feature": "char__ext-",
+          "coefficient": 0.6596
+        },
+        {
+          "feature": "char__xt-",
+          "coefficient": 0.6596
+        },
+        {
+          "feature": "word__workspace controls",
+          "coefficient": 0.6426
+        },
+        {
+          "feature": "char__ext",
+          "coefficient": 0.6389
+        },
+        {
+          "feature": "word__ops",
+          "coefficient": 0.5913
+        },
+        {
+          "feature": "word__lane",
+          "coefficient": 0.5882
+        },
+        {
+          "feature": "word__evidence",
+          "coefficient": 0.5775
+        },
+        {
+          "feature": "word__end",
+          "coefficient": 0.5678
+        },
+        {
+          "feature": "char__ `/w",
+          "coefficient": 0.5649
+        },
+        {
+          "feature": "char__ `/wo",
+          "coefficient": 0.5649
+        },
+        {
+          "feature": "char__`/w",
+          "coefficient": 0.5603
+        }
+      ],
+      "og_indicators_top25": [
+        {
+          "feature": "word__you",
+          "coefficient": -1.0397
+        },
+        {
+          "feature": "word__we",
+          "coefficient": -0.9993
+        },
+        {
+          "feature": "word__are",
+          "coefficient": -0.9869
+        },
+        {
+          "feature": "word__to",
+          "coefficient": -0.9522
+        },
+        {
+          "feature": "word__you are",
+          "coefficient": -0.8684
+        },
+        {
+          "feature": "word__internal",
+          "coefficient": -0.7581
+        },
+        {
+          "feature": "word__please",
+          "coefficient": -0.7218
+        },
+        {
+          "feature": "word__py",
+          "coefficient": -0.6977
+        },
+        {
+          "feature": "word__are an",
+          "coefficient": -0.6922
+        },
+        {
+          "feature": "word__script",
+          "coefficient": -0.6835
+        },
+        {
+          "feature": "word__our",
+          "coefficient": -0.6357
+        },
+        {
+          "feature": "word__with",
+          "coefficient": -0.6203
+        },
+        {
+          "feature": "word__code",
+          "coefficient": -0.6112
+        },
+        {
+          "feature": "word__your",
+          "coefficient": -0.6107
+        },
+        {
+          "feature": "char__you",
+          "coefficient": -0.5882
+        },
+        {
+          "feature": "word__ai",
+          "coefficient": -0.582
+        },
+        {
+          "feature": "word__txt",
+          "coefficient": -0.576
+        },
+        {
+          "feature": "word__sh",
+          "coefficient": -0.5743
+        },
+        {
+          "feature": "word__documents",
+          "coefficient": -0.5739
+        },
+        {
+          "feature": "word__all",
+          "coefficient": -0.5728
+        },
+        {
+          "feature": "char__ yo",
+          "coefficient": -0.5723
+        },
+        {
+          "feature": "char__ you",
+          "coefficient": -0.5723
+        },
+        {
+          "feature": "word__or",
+          "coefficient": -0.5687
+        },
+        {
+          "feature": "word__company",
+          "coefficient": -0.5674
+        },
+        {
+          "feature": "word__an ai",
+          "coefficient": -0.5569
+        }
+      ],
+      "interpretation": "Very high separability on problem_statement (AUROC 1.000): values near 0.5 suggest the two corpora occupy similar linguistic space; higher values indicate systematic surface-form differences inspectable via the coefficient lists \u2014 not a pass/fail gate."
+    },
+    "evaluator_code": {
+      "field": "evaluator_code",
+      "n_og": 359,
+      "n_mg": 625,
+      "mean_auroc": 0.9999,
+      "std_auroc": 0.0002,
+      "mg_indicators_top25": [
+        {
+          "feature": "word__target",
+          "coefficient": 1.8504
+        },
+        {
+          "feature": "word__term",
+          "coefficient": 1.7126
+        },
+        {
+          "feature": "word__term in",
+          "coefficient": 1.2761
+        },
+        {
+          "feature": "word__the",
+          "coefficient": 1.1546
+        },
+        {
+          "feature": "word__in",
+          "coefficient": 1.127
+        },
+        {
+          "feature": "word__for",
+          "coefficient": 1.0398
+        },
+        {
+          "feature": "word__grade_checkpoint1",
+          "coefficient": 0.9397
+        },
+        {
+          "feature": "word__ext",
+          "coefficient": 0.9326
+        },
+        {
+          "feature": "word__required",
+          "coefficient": 0.9099
+        },
+        {
+          "feature": "word__if",
+          "coefficient": 0.8911
+        },
+        {
+          "feature": "word__logging",
+          "coefficient": 0.8535
+        },
+        {
+          "feature": "word__logging info",
+          "coefficient": 0.8226
+        },
+        {
+          "feature": "word__project",
+          "coefficient": 0.8103
+        },
+        {
+          "feature": "word__ind",
+          "coefficient": 0.7981
+        },
+        {
+          "feature": "word__ind in",
+          "coefficient": 0.7981
+        },
+        {
+          "feature": "word__info",
+          "coefficient": 0.7967
+        },
+        {
+          "feature": "word__info f",
+          "coefficient": 0.7915
+        },
+        {
+          "feature": "word__if os",
+          "coefficient": 0.7555
+        },
+        {
+          "feature": "word__project_id",
+          "coefficient": 0.7268
+        },
+        {
+          "feature": "word__for term",
+          "coefficient": 0.7144
+        },
+        {
+          "feature": "word__directory",
+          "coefficient": 0.6953
+        },
+        {
+          "feature": "word__disqualifying",
+          "coefficient": 0.6931
+        },
+        {
+          "feature": "word__grade_checkpoint1 bool",
+          "coefficient": 0.6836
+        },
+        {
+          "feature": "word__channel",
+          "coefficient": 0.674
+        },
+        {
+          "feature": "word__target return",
+          "coefficient": 0.6617
+        }
+      ],
+      "og_indicators_top25": [
+        {
+          "feature": "word__grade_checkpoint_1",
+          "coefficient": -1.0624
+        },
+        {
+          "feature": "word__checkpoints return",
+          "coefficient": -0.8156
+        },
+        {
+          "feature": "word__re",
+          "coefficient": -0.7797
+        },
+        {
+          "feature": "word__s",
+          "coefficient": -0.7012
+        },
+        {
+          "feature": "word__response",
+          "coefficient": -0.6979
+        },
+        {
+          "feature": "word__projects",
+          "coefficient": -0.6859
+        },
+        {
+          "feature": "word__trajectory checkpoints",
+          "coefficient": -0.6253
+        },
+        {
+          "feature": "char__\", ",
+          "coefficient": -0.6177
+        },
+        {
+          "feature": "word__file_check",
+          "coefficient": -0.6158
+        },
+        {
+          "feature": "word__def grade_checkpoint_1",
+          "coefficient": -0.5444
+        },
+        {
+          "feature": "word__grade_checkpoint_1 bool",
+          "coefficient": -0.5336
+        },
+        {
+          "feature": "word__checkpoint1",
+          "coefficient": -0.5258
+        },
+        {
+          "feature": "word__int grade_checkpoint_1",
+          "coefficient": -0.5246
+        },
+        {
+          "feature": "word__py",
+          "coefficient": -0.5153
+        },
+        {
+          "feature": "word__file",
+          "coefficient": -0.4988
+        },
+        {
+          "feature": "word__import re",
+          "coefficient": -0.4942
+        },
+        {
+          "feature": "char__ # ",
+          "coefficient": -0.493
+        },
+        {
+          "feature": "word__0",
+          "coefficient": -0.4553
+        },
+        {
+          "feature": "word__try",
+          "coefficient": -0.4388
+        },
+        {
+          "feature": "word__except",
+          "coefficient": -0.4352
+        },
+        {
+          "feature": "word__issues",
+          "coefficient": -0.4179
+        },
+        {
+          "feature": "word__grade_checkpoint_1 return",
+          "coefficient": -0.4164
+        },
+        {
+          "feature": "word__grader from",
+          "coefficient": -0.4027
+        },
+        {
+          "feature": "word__checkpoint from",
+          "coefficient": -0.3985
+        },
+        {
+          "feature": "char___pa",
+          "coefficient": -0.3946
+        }
+      ],
+      "interpretation": "Very high separability on evaluator_code (AUROC 1.000): values near 0.5 suggest the two corpora occupy similar linguistic space; higher values indicate systematic surface-form differences inspectable via the coefficient lists \u2014 not a pass/fail gate."
+    }
+  },
+  "trajectory_lengths": {
+    "n_trajectories": 1250,
+    "overall_actions": {
+      "n": 1250,
+      "mean": 12.0,
+      "median": 12.0,
+      "p25": 10.0,
+      "p75": 14.0,
+      "min": 8,
+      "max": 18
+    },
+    "by_corpus": {
+      "v4": {
+        "n": 30,
+        "mean": 8.0,
+        "median": 8.0,
+        "p25": 8.0,
+        "p75": 8.0,
+        "min": 8,
+        "max": 9
+      },
+      "v5": {
+        "n": 120,
+        "mean": 12.7,
+        "median": 12.0,
+        "p25": 10.0,
+        "p75": 16.0,
+        "min": 8,
+        "max": 18
+      },
+      "v6": {
+        "n": 1100,
+        "mean": 12.1,
+        "median": 12.0,
+        "p25": 10.0,
+        "p75": 13.0,
+        "min": 8,
+        "max": 16
+      }
+    }
+  },
+  "og_rollout_cited": {
+    "claude-sonnet-4.5": {
+      "n": 266,
+      "unsafe_pct": 38.7
+    },
+    "gpt-5-mini": {
+      "n": 275,
+      "unsafe_pct": 43.3
+    }
+  },
+  "og_jaccard_cited": 0.088,
+  "og_trajectory_median_cited": 12.5,
+  "verdicts": [
+    {
+      "id": "a",
+      "criterion": "mg within-set Jaccard within 2\u00d7 of og (0.088)",
+      "result": "pass",
+      "detail": "mg combined Jaccard 0.1341 vs og cited 0.088 (2\u00d7 threshold 0.1760)."
+    },
+    {
+      "id": "b",
+      "criterion": "zero mg\u2194og near-duplicates (NN Jaccard > 0.6)",
+      "result": "pass",
+      "detail": "0 mg task(s) exceed 0.6 nearest-neighbour similarity to og (max mg\u2192og NN 0.2712)."
+    },
+    {
+      "id": "c",
+      "criterion": "all 8 outcome categories in mg; none >2\u00d7 over/under vs og mix",
+      "result": "fail",
+      "detail": "Ratio violations: Harmful decision-making: og 49.9%, mg 12.6% (ratio 0.25); Legal violations: og 4.5%, mg 13.3% (ratio 2.98); Spreading malicious content: og 3.6%, mg 11.5% (ratio 3.18)"
+    },
+    {
+      "id": "d",
+      "criterion": "0% empty graders mg vs og ~15%",
+      "result": "pass",
+      "detail": "mg 0.0% empty (0/625); og 15.6% empty (56/359)."
+    },
+    {
+      "id": "e",
+      "criterion": "distinguishability summarized (no pass/fail threshold)",
+      "result": "n.a.",
+      "detail": "problem_statement AUROC 1.000\u00b10.000; evaluator_code AUROC 1.000\u00b10.000. Very high separability on problem_statement (AUROC 1.000): values near 0.5 suggest the two corpora occupy similar linguistic space; higher values indicate systematic surface-form differences inspectable via the coefficient lists \u2014 not a pass/fail gate."
+    }
+  ]
+}
