@@ -268,6 +268,7 @@ def generate(
     corpus_gates = validate_corpus_gates(
         problem_statements=[r["problem_statement"] for r in task_records],
         rendered=rendered,
+        trajectories=trajectories,
     )
     if strict:
         for gate in corpus_gates:
@@ -299,6 +300,9 @@ def generate(
     )
     safe_mk, harm_mk = marker_presence_counts(rendered)
     decontam = decontamination_report(rendered)
+    from safety_monitor.synthesis.probe_gate import run_probe_gate
+
+    probe = run_probe_gate(trajectories)
     summary = {
         "corpus": CORPUS,
         "n_tasks": len(task_records),
@@ -322,6 +326,7 @@ def generate(
             "n_failed": sum(1 for r in replays if not r["ok"]),
         },
         "leakage": leakage_report(rendered),
+        "probe": probe,
         "corpus_gates": [
             {"gate": g.gate, "ok": g.ok, "reason": g.reason} for g in corpus_gates
         ],
@@ -381,6 +386,11 @@ def _build_report(seeds: list[V5Seed], summary: dict[str, Any]) -> str:
         "## Decontamination",
         "",
         f"- Flagged n-grams (n≥6, >3 tasks): **{summary['decontamination']['n_flagged_ngrams']}**",
+        "",
+        f"- Shallow-probe AUROC (word/char, 5-fold GroupKFold): "
+        f"**{summary['probe']['word_probe']['mean_auroc']}** / "
+        f"**{summary['probe']['char_probe']['mean_auroc']}** "
+        f"(gate ≤ {summary['probe']['max_auroc']})",
         "",
         "## Resume",
         "",

@@ -85,6 +85,7 @@ dev = [
     "pytest>=8.0.0",
     "pytest-cov>=6.0.0",
     "pytest-forked>=1.6.0",
+    "scikit-learn>=1.5.0",
 ]
 
 # Ruff configuration

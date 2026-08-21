@@ -36,6 +36,7 @@ LEAKAGE_TOKEN_MAX_RATIO = 0.15
 MARKER_PRESENCE_MAX_RATIO = 0.05
 OPENING_PREFIX_MAX_SHARE = 5
 OPENING_PREFIX_LEN = 60
+PROBE_AUROC_MAX = 0.85
 
 
 @dataclass
@@ -258,16 +259,33 @@ def gate_leakage(
     )
 
 
+def gate_probe(
+    trajectories: list[Any],
+    *,
+    max_auroc: float = PROBE_AUROC_MAX,
+) -> GateResult:
+    from safety_monitor.synthesis.probe_gate import run_probe_gate
+
+    report = run_probe_gate(trajectories, max_auroc=max_auroc)
+    if not report["ok"]:
+        return GateResult(False, "probe", report["reason"])
+    return GateResult(True, "probe", report["reason"])
+
+
 def validate_corpus_gates(
     *,
     problem_statements: list[str],
     rendered: list[Any],
+    trajectories: list[Any] | None = None,
 ) -> list[GateResult]:
-    return [
+    gates = [
         gate_corpus_jaccard(problem_statements),
         gate_opening_prefix(problem_statements),
         gate_leakage(rendered),
     ]
+    if trajectories is not None:
+        gates.append(gate_probe(trajectories))
+    return gates
 
 
 def validate_seed_gates(

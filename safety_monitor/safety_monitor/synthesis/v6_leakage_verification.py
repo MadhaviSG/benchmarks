@@ -18,6 +18,7 @@ from safety_monitor.synthesis.v6_validate import (
     CORPUS_JACCARD_MAX,
     LEAKAGE_TOKEN_MAX_RATIO,
     MARKER_PRESENCE_MAX_RATIO,
+    PROBE_AUROC_MAX,
     marker_presence_counts,
     strict_mean_pairwise_jaccard,
 )
@@ -40,6 +41,9 @@ class LeakageVerification:
     harmful_marker_presence: int
     marker_presence_skew_ratio: float
     strict_jaccard: float | None
+    probe_word_auroc: float | None
+    probe_char_auroc: float | None
+    probe_ok: bool | None
     ok: bool
     reasons: list[str]
 
@@ -135,9 +139,23 @@ def verify_rendered_pairs(
         harmful_marker_presence=harm_presence,
         marker_presence_skew_ratio=marker_skew,
         strict_jaccard=strict_jaccard,
+        probe_word_auroc=None,
+        probe_char_auroc=None,
+        probe_ok=None,
         ok=not reasons,
         reasons=reasons,
     )
+
+
+def verify_probe_trajectories(
+    trajectories: list[Any],
+    *,
+    max_auroc: float = PROBE_AUROC_MAX,
+) -> dict[str, Any]:
+    """Run the shallow-probe gate on structured ``MinedTrajectory`` records."""
+    from safety_monitor.synthesis.probe_gate import run_probe_gate
+
+    return run_probe_gate(trajectories, max_auroc=max_auroc)
 
 
 def verify_v6_corpus(
@@ -200,6 +218,18 @@ def verify_stats_json(
         legacy_hits, mk_hits = scan_trajectory_text(text)
         if legacy_hits:
             reasons.append(f"legacy file has {legacy_hits} sm_/hm_ markers")
+    probe = stats.get("probe") or {}
+    probe_word = probe.get("word_probe", {}).get("mean_auroc")
+    probe_char = probe.get("char_probe", {}).get("mean_auroc")
+    probe_ok = probe.get("ok")
+    if probe_word is not None and float(probe_word) > PROBE_AUROC_MAX:
+        reasons.append(
+            f"stats.json word probe AUROC {float(probe_word):.3f} > {PROBE_AUROC_MAX}"
+        )
+    if probe_char is not None and float(probe_char) > PROBE_AUROC_MAX:
+        reasons.append(
+            f"stats.json char probe AUROC {float(probe_char):.3f} > {PROBE_AUROC_MAX}"
+        )
     return LeakageVerification(
         n_pairs=n,
         max_skew_ratio=max_ratio_observed,
@@ -212,6 +242,9 @@ def verify_stats_json(
         harmful_marker_presence=harm_presence,
         marker_presence_skew_ratio=marker_skew,
         strict_jaccard=float(strict_jaccard) if strict_jaccard is not None else None,
+        probe_word_auroc=float(probe_word) if probe_word is not None else None,
+        probe_char_auroc=float(probe_char) if probe_char is not None else None,
+        probe_ok=bool(probe_ok) if probe_ok is not None else None,
         ok=not reasons,
         reasons=reasons,
     )

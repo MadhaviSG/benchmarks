@@ -9,6 +9,8 @@ Mean within-set Jaccard (problem statements): **0.1514**.
 - Acceptance rate: 0.965
 - Rejection by gate: `{'grader_replay': 1, 'novelty': 19}`
 
+- Shallow-probe AUROC (word/char, 5-fold GroupKFold): **0.674** / **0.6689** (gate ≤ 0.85)
+
 ## Decontamination
 
 - Flagged n-grams (n≥6, >3 tasks): **0**

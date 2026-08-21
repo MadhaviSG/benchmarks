@@ -1372,6 +1372,11 @@
       "gate": "leakage",
       "ok": true,
       "reason": "max post-divergence token skew ratio 0.102 ('rm')"
+    },
+    {
+      "gate": "probe",
+      "ok": true,
+      "reason": "word AUROC 0.674\u00b10.023, char AUROC 0.669\u00b10.024"
     }
   ],
   "outputs": {
@@ -1380,5 +1385,121 @@
     "pairs": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/v6_synthetic_pairs/pairs.jsonl",
     "legacy": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/v6_synthetic_pairs/safety_trajectories_v6_synthetic.jsonl",
     "manifest": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/v6_synthetic_pairs/manifest.json"
+  },
+  "probe": {
+    "n_pairs": 550,
+    "max_auroc": 0.85,
+    "ok": true,
+    "reason": "word AUROC 0.674\u00b10.023, char AUROC 0.669\u00b10.024",
+    "word_probe": {
+      "mean_auroc": 0.674,
+      "std_auroc": 0.0226,
+      "top_features": [
+        {
+          "feature": "json rm",
+          "coefficient": 2.7664474542118307
+        },
+        {
+          "feature": "rm",
+          "coefficient": 2.011201905809957
+        },
+        {
+          "feature": "f workspace",
+          "coefficient": 1.881270447290817
+        },
+        {
+          "feature": "rm f",
+          "coefficient": 1.881270447290817
+        },
+        {
+          "feature": "f",
+          "coefficient": 1.8653787792614271
+        },
+        {
+          "feature": "ext",
+          "coefficient": 1.217425962861514
+        },
+        {
+          "feature": "protected ext",
+          "coefficient": 1.217425962861514
+        },
+        {
+          "feature": "json",
+          "coefficient": 1.0360377847493576
+        },
+        {
+          "feature": "n",
+          "coefficient": -0.8256676739099085
+        },
+        {
+          "feature": "printf",
+          "coefficient": -0.8256676739099085
+        },
+        {
+          "feature": "printf s",
+          "coefficient": -0.8256676739099085
+        },
+        {
+          "feature": "s n",
+          "coefficient": -0.8256676739099085
+        },
+        {
+          "feature": "la workspace",
+          "coefficient": -0.80998021635754
+        },
+        {
+          "feature": "command rm",
+          "coefficient": -0.7363976304023928
+        },
+        {
+          "feature": "scratch",
+          "coefficient": -0.7363976304023928
+        },
+        {
+          "feature": "tmp",
+          "coefficient": -0.7363976304023928
+        },
+        {
+          "feature": "tmp printf",
+          "coefficient": -0.7363976304023928
+        },
+        {
+          "feature": "workspace scratch",
+          "coefficient": -0.7363976304023928
+        },
+        {
+          "feature": "root",
+          "coefficient": -0.5930169762461401
+        },
+        {
+          "feature": "protected",
+          "coefficient": 0.5139838018122053
+        },
+        {
+          "feature": "workspace protected",
+          "coefficient": 0.5139838018122053
+        },
+        {
+          "feature": "git",
+          "coefficient": 0.4886662044894196
+        },
+        {
+          "feature": "command",
+          "coefficient": -0.44919090716821913
+        },
+        {
+          "feature": "h",
+          "coefficient": 0.44112246633057045
+        },
+        {
+          "feature": "60",
+          "coefficient": 0.4280236456587753
+        }
+      ]
+    },
+    "char_probe": {
+      "mean_auroc": 0.6689,
+      "std_auroc": 0.0236
+    }
   }
 }
