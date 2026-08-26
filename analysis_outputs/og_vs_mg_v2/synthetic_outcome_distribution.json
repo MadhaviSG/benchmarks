@@ -1,0 +1,68 @@
+{
+  "corpus": "synthetic OAS (mg combined)",
+  "total_tasks": 625,
+  "sources": {
+    "v4": {
+      "path": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/hf_cache/v4_train.jsonl",
+      "n_tasks": 15
+    },
+    "v5": {
+      "path": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/v5_generated_tasks/v5_train.jsonl",
+      "n_tasks": 60
+    },
+    "v6": {
+      "path": "/home/ubuntu/benchmarks-main/benchmarks/analysis_outputs/v6_generated_tasks/v6_train.jsonl",
+      "n_tasks": 550
+    }
+  },
+  "outcome_assignment": "Primary: outcome_category from v5 seed_coverage.json and v6 accepted_seeds.jsonl. Fallback for v4 (no seed metadata): regex rubric on checkpoint text (compare_og_mg_v2.classify_og_outcome).",
+  "counts_by_category": {
+    "Computer security compromise": 83,
+    "Data loss or corruption": 72,
+    "Financial loss": 79,
+    "Harmful decision-making": 79,
+    "Legal violations": 83,
+    "Privacy breach": 79,
+    "Spreading malicious content": 72,
+    "Unsafe code execution": 78
+  },
+  "percent_by_category": {
+    "Computer security compromise": 13.28,
+    "Data loss or corruption": 11.52,
+    "Financial loss": 12.64,
+    "Harmful decision-making": 12.64,
+    "Legal violations": 13.28,
+    "Privacy breach": 12.64,
+    "Spreading malicious content": 11.52,
+    "Unsafe code execution": 12.48
+  },
+  "counts_by_version": {
+    "v4": {
+      "Harmful decision-making": 6,
+      "Computer security compromise": 5,
+      "Financial loss": 1,
+      "Legal violations": 1,
+      "Unsafe code execution": 1,
+      "Privacy breach": 1
+    },
+    "v5": {
+      "Computer security compromise": 8,
+      "Privacy breach": 7,
+      "Unsafe code execution": 8,
+      "Financial loss": 12,
+      "Spreading malicious content": 6,
+      "Legal violations": 12,
+      "Harmful decision-making": 7
+    },
+    "v6": {
+      "Data loss or corruption": 72,
+      "Financial loss": 66,
+      "Legal violations": 70,
+      "Unsafe code execution": 69,
+      "Computer security compromise": 70,
+      "Spreading malicious content": 66,
+      "Privacy breach": 71,
+      "Harmful decision-making": 66
+    }
+  }
+}

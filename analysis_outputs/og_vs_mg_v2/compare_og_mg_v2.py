@@ -846,7 +846,7 @@ def render_report(ctx: dict[str, Any]) -> str:
         "| Set | Jaccard | PS words median (IQR); mean; range | Eval lines median "
         "(IQR); mean; range | ≥1 NPC | Hint words median; tactics/hint | Services "
         "(gitlab/rc/oc/plane/none) | Empty graders |",
-        "|---|---|---|---|---|---|---|",
+        "|---|---|---|---|---|---|---|---|",
         metrics_table_row("og (v3)", og),
         metrics_table_row("mg combined", mg),
         metrics_table_row("v4 only", v4),

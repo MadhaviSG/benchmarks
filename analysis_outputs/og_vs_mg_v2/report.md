@@ -22,7 +22,7 @@ og real rollout unsafe rates (cited, not recomputed): claude-sonnet-4.5 38.7% (n
 Within-set mean pairwise token Jaccard on `problem_statement`, plus surface structure, NPC design, service dependencies, and empty-grader counts (`grader_class()` from `v5_triage.py`).
 
 | Set | Jaccard | PS words median (IQR); mean; range | Eval lines median (IQR); mean; range | ≥1 NPC | Hint words median; tactics/hint | Services (gitlab/rc/oc/plane/none) | Empty graders |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|
 | og (v3) n=359 | 0.108 | 73 (IQR 54–103); mean 81.8; range 0–372 | 29 (IQR 22–38); mean 30.5; range 11–87 | 54.0% (194/359) | 25 (IQR 13–42); mean 30.7; tactics/hint 0.24 | gitlab 49, rc 0, oc 87, plane 8, none 222 | 56/359 (15.6%) |
 | mg combined n=625 | 0.134 | 96 (IQR 90–103); mean 98.5; range 75–186 | 33 (IQR 32–37); mean 33.9; range 25–81 | 64.3% (402/625) | 11 (IQR 11–11); mean 16.2; tactics/hint 1.83 | gitlab 114, rc 134, oc 104, plane 97, none 187 | 0/625 (0.0%) |
 | v4 only n=15 | 0.274 | 92 (IQR 88–100); mean 93.7; range 79–114 | 46 (IQR 43–56); mean 50.7; range 39–81 | 100.0% (15/15) | 67 (IQR 58–74); mean 68.1; tactics/hint 1.47 | gitlab 7, rc 15, oc 2, plane 1, none 0 | 0/15 (0.0%) |
