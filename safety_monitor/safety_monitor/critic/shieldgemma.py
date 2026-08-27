@@ -229,6 +229,7 @@ class ShieldGemmaCritic(SafetyCritic):
         max_history_steps: int = 8,
         threshold: float = 0.5,
         critic_id: str = "shieldgemma",
+        adapter_dir: str | None = None,
     ) -> None:
         self.model_path = model_path
         self.complete = complete
@@ -236,6 +237,7 @@ class ShieldGemmaCritic(SafetyCritic):
         self.max_history_steps = max_history_steps
         self.threshold = threshold
         self.critic_id = critic_id
+        self.adapter_dir = adapter_dir
         self._model: Any = None
         self._tokenizer: Any = None
         self._score_impl: ScoreFn | None = None
@@ -281,20 +283,25 @@ class ShieldGemmaCritic(SafetyCritic):
                 return score_causal_yes_no(model, tokenizer, prompt)
 
             impl = _score_causal
+        if self.adapter_dir:
+            from peft import PeftModel
+
+            model = PeftModel.from_pretrained(model, self.adapter_dir)
         model.eval()
         self._model = model
         self._tokenizer = tokenizer
         self._score_impl = impl
         return impl
 
-    def label_action(
+    def score_action(
         self,
         action: ObservableAction,
         history: Sequence[Step],
         *,
         instruction: str | None = None,
         env_state: dict[str, Any] | None = None,
-    ) -> ActionVerdict:
+    ) -> tuple[ActionVerdict, float]:
+        """Label one action and return (verdict, yes_probability)."""
         del instruction, env_state
         prompt = format_shieldgemma_prompt(
             action, history, max_history_steps=self.max_history_steps
@@ -308,20 +315,45 @@ class ShieldGemmaCritic(SafetyCritic):
         else:
             yes_prob, raw = self._ensure_local_model()(prompt)
         label = map_shieldgemma_verdict(raw, yes_prob, threshold=self.threshold)
-        return ActionVerdict(
-            action_id=action.action_id,
-            label=label,
-            raw_response=raw if raw else json.dumps({"yes_prob": yes_prob}),
-            critic_id=self.critic_id,
-            tool_name=action.tool_name,
+        if yes_prob is None:
+            yes_prob = 1.0 if label is SafetyLabel.HIGH_UNSAFE else 0.0
+        return (
+            ActionVerdict(
+                action_id=action.action_id,
+                label=label,
+                raw_response=raw if raw else json.dumps({"yes_prob": yes_prob}),
+                critic_id=self.critic_id,
+                tool_name=action.tool_name,
+            ),
+            float(yes_prob),
         )
+
+    def label_action(
+        self,
+        action: ObservableAction,
+        history: Sequence[Step],
+        *,
+        instruction: str | None = None,
+        env_state: dict[str, Any] | None = None,
+    ) -> ActionVerdict:
+        verdict, _yes_prob = self.score_action(
+            action, history, instruction=instruction, env_state=env_state
+        )
+        return verdict
 
 
 def load_shieldgemma_critic(
     *,
     model_path: str | None = None,
     critic_id: str = "shieldgemma",
+    adapter_dir: str | None = None,
+    threshold: float = 0.5,
 ) -> ShieldGemmaCritic:
     """Validate the local path up front; weights load on first label_action."""
     resolved = resolve_shieldgemma_model_path(model_path)
-    return ShieldGemmaCritic(model_path=resolved, critic_id=critic_id)
+    return ShieldGemmaCritic(
+        model_path=resolved,
+        critic_id=critic_id,
+        adapter_dir=adapter_dir,
+        threshold=threshold,
+    )

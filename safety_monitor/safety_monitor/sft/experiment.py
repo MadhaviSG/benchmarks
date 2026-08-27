@@ -105,6 +105,7 @@ def run_experiment(
     max_v3_trajectories: int | None = None,
     upsample: bool = True,
     epochs: int = 2,
+    use_shipped_splits: bool = False,
 ) -> dict[str, Any]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -117,7 +118,24 @@ def run_experiment(
     if max_v3_trajectories is not None:
         v3 = v3[: max(0, max_v3_trajectories)]
 
-    split = split_synthetic_tasks(synthetic, v3, holdout_fraction=holdout_fraction)
+    if use_shipped_splits:
+        from safety_monitor.sft.data import (
+            assert_train_eval_firewall,
+            split_by_shipped_fields,
+        )
+
+        shipped = split_by_shipped_fields(synthetic, v3)
+        overlap = assert_train_eval_firewall(
+            shipped.train_instance_ids,
+            [t.instance_id for t in shipped.v3_eval_trajectories],
+        )
+        print(
+            f"firewall check: train ∩ v3-eval instance_ids == {overlap}",
+            file=sys.stderr,
+        )
+        split = shipped.as_legacy_split()
+    else:
+        split = split_synthetic_tasks(synthetic, v3, holdout_fraction=holdout_fraction)
     _dump(out / "split.json", split.as_dict())
 
     train_examples = build_examples(
@@ -221,10 +239,11 @@ def run_experiment(
         "train_stats": train_stats,
         "metrics": metrics,
         "firewall": {
-            "train_sources": "synthetic v4+v5 only",
+            "train_sources": "synthetic v4/v5/v6 only",
             "v3_in_train": False,
             "holdout_is_task_level": True,
             "holdout_instance_overlap_with_train": [],
+            "split_source": split.split_source,
         },
     }
     overlap = set(split.train_instance_ids) & set(split.holdout_instance_ids)

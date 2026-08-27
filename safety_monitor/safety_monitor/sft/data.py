@@ -1,8 +1,12 @@
 """Convert labeled trajectories into critic SFT examples and task-level splits.
 
 The train/eval firewall is enforced here: training examples may only come from
-synthetic (v4/v5) trajectories. Splits are by ``instance_id`` so no task's
+synthetic (v4/v5/v6) trajectories. Splits are by ``instance_id`` so no task's
 steps appear in both train and the synthetic holdout.
+
+The scaling ladder uses the corpus's shipped task-level ``split`` field
+(salt ``v6-synthetic-500``): train / dev / test. The hashed ``qwen-sft``
+cut remains available for the original single-run experiment.
 """
 
 from __future__ import annotations
@@ -15,7 +19,9 @@ from typing import Any
 
 from safety_monitor.critic.prompted import format_action, format_history
 from safety_monitor.critic.prompts import SYSTEM_PROMPT, render_history
+from safety_monitor.critic.shieldgemma import format_shieldgemma_prompt
 from safety_monitor.synthesis.pairs import MinedTrajectory, assign_split
+from safety_monitor.synthesis.v6_splits import SPLIT_SALT as SHIPPED_SPLIT_SALT
 from safety_monitor.types import (
     ObservableAction,
     Observation,
@@ -27,6 +33,9 @@ from safety_monitor.types import (
 SFT_SPLIT_SALT = "qwen-sft"
 DEFAULT_HOLDOUT_FRACTION = 0.2
 SYNTHETIC_CONDITIONS = frozenset({"synthetic"})
+SYNTHETIC_CORPORA = frozenset({"v4", "v5", "v6"})
+PROMPT_FORMAT_QWEN = "qwen"
+PROMPT_FORMAT_SHIELDGEMMA = "shieldgemma"
 
 
 @dataclass
@@ -42,7 +51,8 @@ class SFTExample:
     role: str
     rule_based: int
     source: str
-    bucket: str  # train | synthetic_holdout | v3_eval
+    bucket: str  # train | synthetic_holdout | v3_eval | synthetic_dev | synthetic_test
+    prompt_format: str = PROMPT_FORMAT_QWEN
 
     @property
     def user_text(self) -> str:
@@ -53,6 +63,11 @@ class SFTExample:
 
     @property
     def assistant_text(self) -> str:
+        for msg in reversed(self.messages):
+            if msg["role"] == "assistant":
+                return msg["content"]
+        if self.prompt_format == PROMPT_FORMAT_SHIELDGEMMA:
+            return shieldgemma_assistant_text(self.label)
         return f"Label: {self.label.value}"
 
 
@@ -67,10 +82,12 @@ class SplitManifest:
     v3_eval_trajectories: list[MinedTrajectory]
     salt: str = SFT_SPLIT_SALT
     holdout_fraction: float = DEFAULT_HOLDOUT_FRACTION
+    split_source: str = "hashed"
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "salt": self.salt,
+            "split_source": self.split_source,
             "holdout_fraction": self.holdout_fraction,
             "n_train_tasks": len(self.train_instance_ids),
             "n_holdout_tasks": len(self.holdout_instance_ids),
@@ -81,6 +98,64 @@ class SplitManifest:
             "holdout_instance_ids": sorted(self.holdout_instance_ids),
             "n_v3_eval_tasks": len({t.instance_id for t in self.v3_eval_trajectories}),
         }
+
+
+@dataclass
+class ShippedSplitManifest:
+    """Train/dev/test partition taken from the corpus ``split`` field."""
+
+    train_instance_ids: list[str]
+    dev_instance_ids: list[str]
+    test_instance_ids: list[str]
+    unused_instance_ids: list[str]
+    train_trajectories: list[MinedTrajectory]
+    dev_trajectories: list[MinedTrajectory]
+    test_trajectories: list[MinedTrajectory]
+    v3_eval_trajectories: list[MinedTrajectory]
+    salt: str = SHIPPED_SPLIT_SALT
+    train_v3_overlap: list[str] | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        overlap = self.train_v3_overlap
+        if overlap is None:
+            overlap = sorted(
+                set(self.train_instance_ids)
+                & {t.instance_id for t in self.v3_eval_trajectories}
+            )
+        return {
+            "salt": self.salt,
+            "split_source": "shipped",
+            "n_train_tasks": len(self.train_instance_ids),
+            "n_dev_tasks": len(self.dev_instance_ids),
+            "n_test_tasks": len(self.test_instance_ids),
+            "n_unused_tasks": len(self.unused_instance_ids),
+            "n_train_trajectories": len(self.train_trajectories),
+            "n_dev_trajectories": len(self.dev_trajectories),
+            "n_test_trajectories": len(self.test_trajectories),
+            "n_v3_eval_trajectories": len(self.v3_eval_trajectories),
+            "n_v3_eval_tasks": len({t.instance_id for t in self.v3_eval_trajectories}),
+            "train_instance_ids": sorted(self.train_instance_ids),
+            "dev_instance_ids": sorted(self.dev_instance_ids),
+            "test_instance_ids": sorted(self.test_instance_ids),
+            "unused_instance_ids": sorted(self.unused_instance_ids),
+            "firewall": {
+                "train_intersect_v3_eval_instance_ids": overlap,
+                "ok": overlap == [],
+            },
+        }
+
+    def as_legacy_split(self) -> SplitManifest:
+        """Map test → holdout so the original single-run experiment can consume it."""
+        return SplitManifest(
+            train_instance_ids=list(self.train_instance_ids),
+            holdout_instance_ids=list(self.test_instance_ids),
+            train_trajectories=list(self.train_trajectories),
+            holdout_trajectories=list(self.test_trajectories),
+            v3_eval_trajectories=list(self.v3_eval_trajectories),
+            salt=self.salt,
+            holdout_fraction=0.0,
+            split_source="shipped",
+        )
 
 
 def load_trajectories(path: str | Path) -> list[MinedTrajectory]:
@@ -95,10 +170,17 @@ def load_trajectories(path: str | Path) -> list[MinedTrajectory]:
 
 
 def is_synthetic(traj: MinedTrajectory) -> bool:
+    if traj.corpus in SYNTHETIC_CORPORA:
+        return True
     if traj.condition in SYNTHETIC_CONDITIONS:
         return True
     run = (traj.run or "").lower()
-    return "synthetic" in run or run.startswith("v4_") or run.startswith("v5_")
+    return (
+        "synthetic" in run
+        or run.startswith("v4_")
+        or run.startswith("v5_")
+        or run.startswith("v6_")
+    )
 
 
 def assert_train_is_synthetic(trajs: Sequence[MinedTrajectory]) -> None:
@@ -109,8 +191,24 @@ def assert_train_is_synthetic(trajs: Sequence[MinedTrajectory]) -> None:
         raise ValueError(
             "Train/eval firewall: refusing to train on non-synthetic trajectories. "
             f"Example key={sample.key!r} run={sample.run!r} condition={sample.condition!r}. "
-            "Train must be v4/v5 synthetic pairs only."
+            "Train must be v4/v5/v6 synthetic pairs only."
         )
+
+
+def assert_train_eval_firewall(
+    train_instance_ids: Sequence[str],
+    eval_instance_ids: Sequence[str],
+) -> list[str]:
+    """Assert ``train ∩ v3-eval instance_ids == []``. Returns the overlap (empty)."""
+    overlap = sorted(set(train_instance_ids) & set(eval_instance_ids))
+    if overlap:
+        sample = overlap[:10]
+        raise ValueError(
+            "Train/eval firewall: train ∩ v3-eval instance_ids is not empty: "
+            f"{sample}{'…' if len(overlap) > 10 else ''} "
+            f"(n={len(overlap)}). Training must never see real OAS eval tasks."
+        )
+    return overlap
 
 
 def labeled_step_to_step(step: Any) -> Step:
@@ -171,6 +269,49 @@ def critic_messages(
     return messages
 
 
+def shieldgemma_assistant_text(label: SafetyLabel) -> str:
+    """ShieldGemma SFT target: Yes = policy violation = high-unsafe."""
+    return "Yes" if label is SafetyLabel.HIGH_UNSAFE else "No"
+
+
+def shieldgemma_sft_messages(
+    action: ObservableAction,
+    history: Sequence[Step],
+    *,
+    label: SafetyLabel | None = None,
+    max_history_steps: int = 8,
+) -> list[dict[str, str]]:
+    """Render one action into ShieldGemma's native Yes/No policy-prompt format.
+
+    Uses the same ``_POLICY`` + template as :func:`format_shieldgemma_prompt`
+    so zero-shot and post-SFT scoring stay a controlled comparison.
+    """
+    prompt = format_shieldgemma_prompt(
+        action, history, max_history_steps=max_history_steps
+    )
+    messages = [{"role": "user", "content": prompt}]
+    if label is not None:
+        messages.append(
+            {"role": "assistant", "content": shieldgemma_assistant_text(label)}
+        )
+    return messages
+
+
+def format_example_as_shieldgemma(example: SFTExample) -> list[dict[str, str]]:
+    """Return ShieldGemma-format messages for an example already built that way.
+
+    Build examples with ``prompt_format='shieldgemma'`` (see
+    :func:`example_from_action`). Generic Qwen-format examples cannot be
+    losslessly converted without the original action/history objects.
+    """
+    if example.prompt_format != PROMPT_FORMAT_SHIELDGEMMA:
+        raise ValueError(
+            "format_example_as_shieldgemma requires prompt_format='shieldgemma'; "
+            "rebuild via example_from_action(..., prompt_format='shieldgemma')"
+        )
+    return list(example.messages)
+
+
 def example_from_action(
     traj: MinedTrajectory,
     step_index: int,
@@ -178,6 +319,7 @@ def example_from_action(
     bucket: str,
     source: str,
     max_history_steps: int = 20,
+    prompt_format: str = PROMPT_FORMAT_QWEN,
 ) -> SFTExample:
     steps = mined_to_steps(traj)
     labeled = traj.steps[step_index]
@@ -185,13 +327,23 @@ def example_from_action(
     if action is None:
         raise ValueError(f"Missing action at {traj.key}:{step_index}")
     history = steps[:step_index]
-    messages = critic_messages(
-        action,
-        history,
-        traj.instruction,
-        label=labeled.label,
-        max_history_steps=max_history_steps,
-    )
+    if prompt_format == PROMPT_FORMAT_SHIELDGEMMA:
+        messages = shieldgemma_sft_messages(
+            action,
+            history,
+            label=labeled.label,
+            max_history_steps=min(max_history_steps, 8),
+        )
+    elif prompt_format == PROMPT_FORMAT_QWEN:
+        messages = critic_messages(
+            action,
+            history,
+            traj.instruction,
+            label=labeled.label,
+            max_history_steps=max_history_steps,
+        )
+    else:
+        raise ValueError(f"Unknown prompt_format {prompt_format!r}")
     return SFTExample(
         example_id=f"{traj.key}:{labeled.action_id}",
         instance_id=traj.instance_id,
@@ -203,6 +355,7 @@ def example_from_action(
         rule_based=int(traj.rule_based or 0),
         source=source,
         bucket=bucket,
+        prompt_format=prompt_format,
     )
 
 
@@ -212,6 +365,7 @@ def build_examples(
     bucket: str,
     source: str = "unknown",
     max_history_steps: int = 20,
+    prompt_format: str = PROMPT_FORMAT_QWEN,
 ) -> list[SFTExample]:
     examples: list[SFTExample] = []
     for traj in trajs:
@@ -225,18 +379,45 @@ def build_examples(
                     bucket=bucket,
                     source=source,
                     max_history_steps=max_history_steps,
+                    prompt_format=prompt_format,
                 )
             )
     return examples
 
 
 def source_for_traj(traj: MinedTrajectory) -> str:
+    if traj.corpus:
+        return f"{traj.corpus}_synthetic"
     run = (traj.run or "").lower()
+    if "v6" in run:
+        return "v6_synthetic"
     if "v5" in run:
         return "v5_synthetic"
     if "v4" in run:
         return "v4_synthetic"
     return run or traj.condition or "unknown"
+
+
+def strata_key_for_task(trajs: Sequence[MinedTrajectory]) -> str:
+    """outcome-category × service when present; otherwise corpus tag."""
+    if not trajs:
+        return "unknown"
+    sample = trajs[0]
+    outcome = (sample.outcome_category or "").strip()
+    services = [s for s in (sample.services or []) if s]
+    if outcome:
+        svc = services[0] if services else "filesystem-only"
+        return f"{outcome}|{svc}"
+    if sample.corpus:
+        return f"corpus:{sample.corpus}"
+    run = (sample.run or "").lower()
+    if "v6" in run:
+        return "corpus:v6"
+    if "v5" in run:
+        return "corpus:v5"
+    if "v4" in run:
+        return "corpus:v4"
+    return "unknown"
 
 
 def split_synthetic_tasks(
@@ -271,6 +452,57 @@ def split_synthetic_tasks(
         v3_eval_trajectories=list(v3_eval),
         salt=salt,
         holdout_fraction=holdout_fraction,
+    )
+
+
+def _task_split_map(trajs: Sequence[MinedTrajectory]) -> dict[str, str]:
+    mapping: dict[str, str] = {}
+    for traj in trajs:
+        assigned = (traj.split or "train").strip() or "train"
+        prev = mapping.get(traj.instance_id)
+        if prev is not None and prev != assigned:
+            raise ValueError(
+                f"Inconsistent shipped split for {traj.instance_id}: "
+                f"{prev!r} vs {assigned!r}"
+            )
+        mapping[traj.instance_id] = assigned
+    return mapping
+
+
+def split_by_shipped_fields(
+    synthetic: Sequence[MinedTrajectory],
+    v3_eval: Sequence[MinedTrajectory],
+    *,
+    salt: str = SHIPPED_SPLIT_SALT,
+) -> ShippedSplitManifest:
+    """Use the corpus task-level ``split`` field (train/dev/test). Never re-hash."""
+    assert_train_is_synthetic(synthetic)
+    task_split = _task_split_map(synthetic)
+    train_ids = sorted(iid for iid, sp in task_split.items() if sp == "train")
+    dev_ids = sorted(iid for iid, sp in task_split.items() if sp == "dev")
+    test_ids = sorted(iid for iid, sp in task_split.items() if sp == "test")
+    unused_ids = sorted(
+        iid for iid, sp in task_split.items() if sp not in {"train", "dev", "test"}
+    )
+    train_set, dev_set, test_set = set(train_ids), set(dev_ids), set(test_ids)
+    leaked = (train_set & dev_set) | (train_set & test_set) | (dev_set & test_set)
+    if leaked:
+        raise RuntimeError(
+            f"instance_id leakage in shipped split: {sorted(leaked)[:5]}"
+        )
+    v3_ids = [t.instance_id for t in v3_eval]
+    overlap = assert_train_eval_firewall(train_ids, v3_ids)
+    return ShippedSplitManifest(
+        train_instance_ids=train_ids,
+        dev_instance_ids=dev_ids,
+        test_instance_ids=test_ids,
+        unused_instance_ids=unused_ids,
+        train_trajectories=[t for t in synthetic if t.instance_id in train_set],
+        dev_trajectories=[t for t in synthetic if t.instance_id in dev_set],
+        test_trajectories=[t for t in synthetic if t.instance_id in test_set],
+        v3_eval_trajectories=list(v3_eval),
+        salt=salt,
+        train_v3_overlap=overlap,
     )
 
 

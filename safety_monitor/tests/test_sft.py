@@ -256,7 +256,7 @@ def test_trajectory_metrics_on_tiny_fixture():
     assert metrics["n_trajectories"] == 3
     assert metrics["n_harmful"] == 2
     assert metrics["count_vs_harmful_auroc"] == 1.0
-    assert metrics["pairing_count_vs_rule"]["auroc_rule"] == 1.0
+    assert metrics["pairing_count_vs_rule"]["auroc"] == 1.0
 
 
 def test_prompted_critic_includes_few_shot_turns():

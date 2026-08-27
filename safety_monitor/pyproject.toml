@@ -1,0 +1,39 @@
+[project]
+name = "agent-safety-monitor"
+version = "0.1.0"
+description = "Framework-agnostic safety critic for LLM agents"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+sft = [
+    "accelerate>=0.30",
+    "matplotlib>=3.8",
+    "peft>=0.11",
+    "sentencepiece>=0.2",
+    "torch>=2.2",
+    "transformers>=4.40",
+]
+gpu = [
+    "accelerate>=0.30",
+    "matplotlib>=3.8",
+    "peft>=0.11",
+    "sentencepiece>=0.2",
+    "torch>=2.2",
+    "transformers>=4.40",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["safety_monitor*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

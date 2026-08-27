@@ -1,4 +1,4 @@
-"""CLI entrypoint for safety_monitor synthesis commands."""
+"""CLI entrypoint for safety_monitor synthesis and SFT commands."""
 
 from __future__ import annotations
 
@@ -132,8 +132,166 @@ def main(argv: list[str] | None = None) -> int:
     pa.add_argument("--grid-fill", type=int, default=0)
     pa.set_defaults(func=_cmd_v6_author)
 
+    p_sft = sub.add_parser(
+        "sft-run",
+        help="Single-run critic SFT (Qwen path; alias: sft-qwen)",
+    )
+    _add_sft_run_args(p_sft)
+    p_sft.set_defaults(func=_cmd_sft_run)
+
+    p_qwen = sub.add_parser(
+        "sft-qwen",
+        help="Alias for sft-run (documented in qwen_sft/report.md)",
+    )
+    _add_sft_run_args(p_qwen)
+    p_qwen.set_defaults(func=_cmd_sft_run)
+
+    p_scale = sub.add_parser(
+        "sft-scaling",
+        help="ShieldGemma nested data-scaling SFT ladder",
+    )
+    p_scale.add_argument(
+        "--train",
+        type=Path,
+        nargs="+",
+        default=None,
+        help="Synthetic trajectory JSONL (default: analysis_outputs/synthetic_pairs)",
+    )
+    p_scale.add_argument(
+        "--eval",
+        type=Path,
+        default=None,
+        help="V3 eval JSONL (default: analysis_outputs/critic_training_pairs)",
+    )
+    p_scale.add_argument("--out-dir", type=Path, default=None)
+    p_scale.add_argument("--backend", choices=("auto", "mock", "hf"), default="auto")
+    p_scale.add_argument("--model-path", type=str, default=None)
+    p_scale.add_argument(
+        "--rungs",
+        type=str,
+        default="0,200,400,all",
+        help="Comma-separated rung sizes; 'all' = every train task",
+    )
+    p_scale.add_argument("--epochs", type=int, default=2)
+    p_scale.add_argument("--seed", type=int, default=42)
+    p_scale.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Zero-shot only, first 100 v3 trajectories, print score summary",
+    )
+    p_scale.set_defaults(func=_cmd_sft_scaling)
+
     args = parser.parse_args(argv)
     return args.func(args)
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _add_sft_run_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--train",
+        type=Path,
+        nargs="+",
+        default=None,
+        help="Synthetic trajectory JSONL path(s)",
+    )
+    parser.add_argument(
+        "--eval",
+        type=Path,
+        default=None,
+        help="V3 eval trajectory JSONL (critic_training_pairs)",
+    )
+    parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--backend", choices=("auto", "mock", "hf"), default="auto")
+    parser.add_argument("--model-path", type=str, default=None)
+    parser.add_argument("--epochs", type=int, default=2)
+    parser.add_argument("--holdout-fraction", type=float, default=0.2)
+    parser.add_argument("--max-v3-trajectories", type=int, default=None)
+    parser.add_argument(
+        "--use-shipped-splits",
+        action="store_true",
+        help="Use corpus split=train/dev/test instead of the hashed qwen-sft cut",
+    )
+
+
+def _default_train() -> Path:
+    return _repo_root() / "analysis_outputs" / "synthetic_pairs" / "trajectories.jsonl"
+
+
+def _default_eval() -> Path:
+    return (
+        _repo_root()
+        / "analysis_outputs"
+        / "critic_training_pairs"
+        / "trajectories.jsonl"
+    )
+
+
+def _cmd_sft_run(args: argparse.Namespace) -> int:
+    from safety_monitor.sft.experiment import run_experiment
+
+    train = args.train or [_default_train()]
+    eval_path = args.eval or _default_eval()
+    out_dir = args.out_dir or (_repo_root() / "analysis_outputs" / "qwen_sft")
+    result = run_experiment(
+        train_paths=train,
+        eval_path=eval_path,
+        out_dir=out_dir,
+        holdout_fraction=args.holdout_fraction,
+        backend=args.backend,
+        model_path=args.model_path,
+        max_v3_trajectories=args.max_v3_trajectories,
+        epochs=args.epochs,
+        use_shipped_splits=bool(args.use_shipped_splits),
+    )
+    print(
+        json.dumps(
+            {
+                "sft_actually_ran": result.get("sft_actually_ran"),
+                "backend": result.get("backend"),
+                "out_dir": str(out_dir),
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def _cmd_sft_scaling(args: argparse.Namespace) -> int:
+    from safety_monitor.sft.scaling import parse_rungs, run_scaling_ladder
+
+    train = args.train or [_default_train()]
+    eval_path = args.eval or _default_eval()
+    out_dir = args.out_dir or (
+        _repo_root() / "analysis_outputs" / "shieldgemma_sft_scaling"
+    )
+    result = run_scaling_ladder(
+        train_paths=train,
+        eval_path=eval_path,
+        out_dir=out_dir,
+        backend=args.backend,
+        model_path=args.model_path,
+        rungs=parse_rungs(args.rungs),
+        epochs=args.epochs,
+        seed=args.seed,
+        smoke=bool(args.smoke),
+    )
+    print(
+        json.dumps(
+            {
+                "experiment": result.get("experiment"),
+                "sft_actually_ran": result.get("sft_actually_ran"),
+                "backend": result.get("backend"),
+                "rungs": result.get("rungs"),
+                "firewall": result.get("firewall"),
+                "out_dir": str(out_dir),
+            },
+            indent=2,
+        )
+    )
+    return 0
 
 
 if __name__ == "__main__":

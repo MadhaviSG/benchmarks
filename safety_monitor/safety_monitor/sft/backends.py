@@ -81,6 +81,7 @@ class HardwareProbe:
     reason: str = ""
     can_sft: bool = False
     backend: str = "mock"
+    family: str = "qwen"
     notes: list[str] = field(default_factory=list)
 
     def as_dict(self) -> dict[str, Any]:
@@ -95,6 +96,7 @@ class HardwareProbe:
             "reason": self.reason,
             "can_sft": self.can_sft,
             "backend": self.backend,
+            "family": self.family,
             "notes": self.notes,
         }
 
@@ -186,12 +188,31 @@ def find_qwen_on_disk(explicit: str | None = None) -> tuple[str | None, str | No
     return str(best), f"smallest local Qwen-like dir among {len(found)}: {best}"
 
 
+def find_sft_model_on_disk(
+    *,
+    family: str,
+    explicit: str | None = None,
+) -> tuple[str | None, str | None]:
+    """Resolve local weights for Qwen or ShieldGemma. Never downloads."""
+    if family == "shieldgemma":
+        from safety_monitor.critic.shieldgemma import resolve_shieldgemma_model_path
+
+        try:
+            path = resolve_shieldgemma_model_path(explicit)
+            return path, f"ShieldGemma at {path}"
+        except RuntimeError as exc:
+            return None, str(exc)
+    return find_qwen_on_disk(explicit)
+
+
 def probe_hardware(
     *,
     model_path: str | None = None,
     backend: str = "auto",
+    model_family: str = "qwen",
 ) -> HardwareProbe:
     probe = HardwareProbe()
+    probe.family = model_family
     probe.torch_available = _try_import("torch")
     probe.transformers_available = _try_import("transformers")
     probe.peft_available = _try_import("peft")
@@ -202,11 +223,17 @@ def probe_hardware(
         probe.cuda = bool(torch.cuda.is_available())
         if probe.cuda:
             probe.notes.append(f"cuda_device={torch.cuda.get_device_name(0)}")
-    path, note = find_qwen_on_disk(model_path)
+    path, note = find_sft_model_on_disk(family=model_family, explicit=model_path)
     probe.model_path = path
     probe.notes.append(note or "")
     if path:
         probe.model_id = Path(path).name
+
+    weights_label = (
+        "local ShieldGemma weights"
+        if model_family == "shieldgemma"
+        else "local Qwen weights"
+    )
 
     if backend == "mock":
         probe.backend = "mock"
@@ -224,7 +251,7 @@ def probe_hardware(
     if not probe.cuda:
         missing.append("GPU/CUDA")
     if not probe.model_path:
-        missing.append("local Qwen weights")
+        missing.append(weights_label)
 
     if backend == "hf" and missing:
         probe.backend = "hf"
@@ -237,8 +264,9 @@ def probe_hardware(
     if missing:
         probe.backend = "mock"
         probe.can_sft = False
+        family_name = "ShieldGemma" if model_family == "shieldgemma" else "Qwen"
         probe.reason = (
-            "No local Qwen SFT possible ("
+            f"No local {family_name} SFT possible ("
             + ", ".join(missing)
             + "); using mock smoke backend"
         )
@@ -246,7 +274,8 @@ def probe_hardware(
 
     probe.backend = "hf"
     probe.can_sft = True
-    probe.reason = f"local Qwen at {probe.model_path} with CUDA"
+    family_name = "ShieldGemma" if model_family == "shieldgemma" else "Qwen"
+    probe.reason = f"local {family_name} at {probe.model_path} with CUDA"
     return probe
 
 
@@ -257,9 +286,56 @@ def keyword_complete(messages: list[dict[str, str]]) -> str:
         if msg.get("role") == "user":
             user = msg.get("content") or ""
             break
-    current = user.split("CURRENT action to label:")[-1].lower()
+    current = _current_action_span(user)
     hit = any(cue in current for cue in _HIGH_CUES)
     return "Label: high-unsafe" if hit else "Label: low-unsafe"
+
+
+def _current_action_span(user: str) -> str:
+    text = user.lower()
+    for marker in ("CURRENT action to label:", "CURRENT action:"):
+        if marker.lower() in text:
+            return text.split(marker.lower())[-1]
+    return text
+
+
+def shieldgemma_keyword_score(prompt: str) -> tuple[float | None, str]:
+    """Zero-shot mock Yes-probability from cue words (CPU stand-in)."""
+    current = _current_action_span(prompt)
+    hit = any(cue in current for cue in _HIGH_CUES)
+    yes_prob = 0.9 if hit else 0.1
+    return yes_prob, f"yes_prob={yes_prob:.4f} no_prob={1.0 - yes_prob:.4f}"
+
+
+def make_shieldgemma_keyword_critic(
+    *, critic_id: str = "mock-shieldgemma-zero-shot", threshold: float = 0.5
+):
+    from safety_monitor.critic.shieldgemma import ShieldGemmaCritic
+
+    return ShieldGemmaCritic(
+        score_fn=shieldgemma_keyword_score,
+        critic_id=critic_id,
+        threshold=threshold,
+    )
+
+
+def make_shieldgemma_logreg_critic(
+    model: HashingLogReg,
+    *,
+    critic_id: str = "mock-shieldgemma-sft",
+    threshold: float = 0.5,
+):
+    from safety_monitor.critic.shieldgemma import ShieldGemmaCritic
+
+    def score_fn(prompt: str) -> tuple[float | None, str]:
+        yes_prob = model.predict_proba(prompt)
+        return yes_prob, f"yes_prob={yes_prob:.4f} no_prob={1.0 - yes_prob:.4f}"
+
+    return ShieldGemmaCritic(
+        score_fn=score_fn,
+        critic_id=critic_id,
+        threshold=threshold,
+    )
 
 
 def make_keyword_critic(
@@ -387,8 +463,14 @@ def train_lora_sft(
     lora_r: int = 16,
     max_length: int = 2048,
     lr: float = 1e-4,
+    use_chat_template: bool = True,
 ) -> dict[str, Any]:
-    """LoRA SFT on local Qwen. Imports torch/transformers/peft lazily."""
+    """LoRA SFT on a local causal LM. Imports torch/transformers/peft lazily.
+
+    ``use_chat_template=False`` concatenates the user prompt with the assistant
+    target (ShieldGemma Yes/No). That matches the native policy-prompt scoring
+    path, which reads Yes/No logits at the last prompt position.
+    """
     import torch
     from peft import LoraConfig, TaskType, get_peft_model
     from torch.utils.data import Dataset
@@ -416,8 +498,7 @@ def train_lora_sft(
         def __getitem__(self, idx: int) -> dict[str, Any]:
             return self.rows[idx]
 
-    rows: list[dict[str, Any]] = []
-    for messages in messages_list:
+    def _encode_chat(messages: Sequence[dict[str, str]]) -> tuple[list[int], list[int]]:
         prompt_messages = [m for m in messages if m["role"] != "assistant"]
         full = tokenizer.apply_chat_template(
             list(messages), tokenize=False, add_generation_prompt=False
@@ -425,8 +506,33 @@ def train_lora_sft(
         prompt = tokenizer.apply_chat_template(
             prompt_messages, tokenize=False, add_generation_prompt=True
         )
-        full_ids = tokenizer(full, truncation=True, max_length=max_length).input_ids
-        prompt_ids = tokenizer(prompt, truncation=True, max_length=max_length).input_ids
+        return (
+            tokenizer(full, truncation=True, max_length=max_length).input_ids,
+            tokenizer(prompt, truncation=True, max_length=max_length).input_ids,
+        )
+
+    def _encode_completion(
+        messages: Sequence[dict[str, str]],
+    ) -> tuple[list[int], list[int]]:
+        user = ""
+        assistant = ""
+        for msg in messages:
+            if msg["role"] == "user":
+                user = msg["content"]
+            elif msg["role"] == "assistant":
+                assistant = msg["content"]
+        prompt_ids = tokenizer(user, truncation=True, max_length=max_length).input_ids
+        full_ids = tokenizer(
+            user + assistant, truncation=True, max_length=max_length
+        ).input_ids
+        return full_ids, prompt_ids
+
+    rows: list[dict[str, Any]] = []
+    for messages in messages_list:
+        if use_chat_template:
+            full_ids, prompt_ids = _encode_chat(messages)
+        else:
+            full_ids, prompt_ids = _encode_completion(messages)
         labels = list(full_ids)
         cutoff = min(len(prompt_ids), len(labels))
         for i in range(cutoff):
@@ -492,6 +598,7 @@ def train_lora_sft(
         "n_examples": len(rows),
         "epochs": epochs,
         "metrics": dict(train_result.metrics),
+        "use_chat_template": use_chat_template,
     }
 
 

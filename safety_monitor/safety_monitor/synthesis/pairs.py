@@ -52,6 +52,9 @@ class MinedTrajectory(BaseModel):
     signature_available: bool = False
     steps: list[LabeledStep] = Field(default_factory=list)
     split: str = "train"
+    corpus: str | None = None
+    outcome_category: str | None = None
+    services: list[str] = Field(default_factory=list)
 
     @property
     def n_actions(self) -> int:

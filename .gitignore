@@ -220,5 +220,8 @@ builds/
 results*/
 instance.txt
 
-# Mined OAS traces contain sandbox GitLab tokens; keep local-only
+# Mined OAS traces contain sandbox GitLab tokens; keep local-only.
+# Never git add / commit -a these paths (tokens + bulky local eval dumps).
 analysis_outputs/critic_training_pairs/trajectories.jsonl
+analysis_outputs/critic_training_pairs/
+results_safety_comparison/
