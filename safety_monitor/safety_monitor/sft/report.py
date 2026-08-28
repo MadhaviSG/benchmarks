@@ -2,14 +2,115 @@
 
 from __future__ import annotations
 
+import shlex
 from pathlib import Path
 from typing import Any
 
 
-def _pct(value: float | None) -> str:
-    if value is None:
-        return "n/a"
-    return f"{value:.3f}"
+def _infer_train_corpora(run_config: dict[str, Any], split: dict[str, Any]) -> str:
+    """Describe which synthetic corpora this run actually trained on."""
+    paths = [
+        str(p).lower()
+        for p in (run_config.get("train_paths") or run_config.get("train") or [])
+    ]
+    blob = " ".join(paths)
+    found: list[str] = []
+    for name in ("v4", "v5", "v6"):
+        if (
+            f"{name}_synthetic" in blob
+            or f"/{name}_" in blob
+            or f"corpus={name}" in blob
+        ):
+            found.append(name)
+    if found:
+        return " + ".join(found)
+    if "synthetic_pairs" in blob and "v4_synthetic" not in blob:
+        return "v4 + v5 + v6"
+    if (split.get("split_source") or "") == "shipped":
+        return "v4 + v5 + v6"
+    salt = str(split.get("salt") or "")
+    if "v6" in salt:
+        return "v4 + v5 + v6"
+    return "v4 / v5 / v6"
+
+
+def training_data_blurb(result: dict[str, Any]) -> str:
+    """Firewall paragraph that matches the split and train paths actually used."""
+    split = result.get("split") or {}
+    run_config = result.get("run_config") or {}
+    split_source = split.get("split_source") or "hashed"
+    n_train = split.get("n_train_tasks")
+    corpora = _infer_train_corpora(run_config, split)
+    paths = [str(p) for p in (run_config.get("train_paths") or [])]
+    path_note = ""
+    if paths:
+        quoted = ", ".join(f"`{p}`" for p in paths)
+        path_note = f" Train JSONL: {quoted}."
+    if split_source == "shipped":
+        n_bit = f" ({n_train} train tasks)" if n_train is not None else ""
+        return (
+            f"Training uses the corpus **shipped** task-level split of "
+            f"**synthetic {corpora}** trajectories{n_bit}.{path_note} Real OAS v3 runs "
+            "(`analysis_outputs/critic_training_pairs`) are eval-only. The synthetic "
+            "holdout is a **task-level** (`instance_id`) cut: no step from a holdout "
+            "task is in train. Holdout metrics are a leakage diagnostic "
+            '("can the model fit the generator?") and **must not** be treated as '
+            "the headline number."
+        )
+    return (
+        f"Training uses **synthetic {corpora}** trajectories only.{path_note} Real OAS v3 runs "
+        "(`analysis_outputs/critic_training_pairs`) are eval-only. The synthetic "
+        "holdout is a **task-level** (`instance_id`) cut: no step from a holdout "
+        "task is in train. Holdout metrics are a leakage diagnostic "
+        '("can the model fit the generator?") and **must not** be treated as '
+        "the headline number."
+    )
+
+
+def format_sft_rerun_command(run_config: dict[str, Any]) -> str:
+    """Reconstruct the CLI that produced this run (resolved flags, not a stale template)."""
+    command = str(run_config.get("command") or "sft-run")
+    lines = [
+        "cd safety_monitor",
+        f"PYTHONPATH=. python -m safety_monitor {command} \\",
+    ]
+
+    def add_flag(flag: str, value: object) -> None:
+        if value is None or value is False:
+            return
+        if value is True:
+            lines.append(f"  {flag} \\")
+            return
+        lines.append(f"  {flag} {shlex.quote(str(value))} \\")
+
+    trains = [str(p) for p in (run_config.get("train_paths") or [])]
+    if trains:
+        lines.append(f"  --train {shlex.quote(trains[0])} \\")
+        for extra in trains[1:]:
+            lines.append(f"         {shlex.quote(extra)} \\")
+    add_flag("--eval", run_config.get("eval_path"))
+    add_flag("--out-dir", run_config.get("out_dir"))
+    add_flag(
+        "--backend", run_config.get("requested_backend") or run_config.get("backend")
+    )
+    add_flag("--model-path", run_config.get("model_path"))
+    add_flag("--epochs", run_config.get("epochs"))
+    add_flag("--batch-size", run_config.get("batch_size"))
+    add_flag("--grad-accum", run_config.get("grad_accum"))
+    add_flag("--eval-batch-size", run_config.get("eval_batch_size"))
+    if not run_config.get("use_shipped_splits"):
+        frac = run_config.get("holdout_fraction")
+        if frac is not None:
+            add_flag("--holdout-fraction", frac)
+    add_flag("--max-v3-trajectories", run_config.get("max_v3_trajectories"))
+    add_flag("--use-shipped-splits", bool(run_config.get("use_shipped_splits")))
+    add_flag("--strict", bool(run_config.get("strict")))
+    add_flag("--rungs", run_config.get("rungs"))
+    add_flag("--seed", run_config.get("seed") if command == "sft-scaling" else None)
+    add_flag("--smoke", bool(run_config.get("smoke")))
+    if not lines[-1].startswith("cd "):
+        lines[-1] = lines[-1].rstrip(" \\")
+    return "\n".join(lines)
 
 
 def _cell(metrics: dict[str, Any] | None, *keys: str) -> str:
@@ -26,7 +127,7 @@ def _cell(metrics: dict[str, Any] | None, *keys: str) -> str:
 
 
 def _action_row(stage: dict[str, Any], eval_name: str) -> str:
-    block = (stage or {}).get(eval_name, {}).get("action", {})
+    block = ((stage or {}).get(eval_name) or {}).get("action") or {}
     cm = block.get("confusion") or {}
     return (
         f"| {eval_name} | {_cell(block, 'n')} | {_cell(block, 'n_positive')} | "
@@ -37,7 +138,7 @@ def _action_row(stage: dict[str, Any], eval_name: str) -> str:
 
 
 def _traj_row(stage: dict[str, Any], eval_name: str, prefix: str) -> str:
-    block = (stage or {}).get(eval_name, {}).get("trajectory", {})
+    block = ((stage or {}).get(eval_name) or {}).get("trajectory") or {}
     return (
         f"| {eval_name} / {prefix} | {_cell(block, 'n_trajectories')} | "
         f"{_cell(block, f'{prefix}_pearson')} | {_cell(block, f'{prefix}_spearman')} | "
@@ -93,12 +194,7 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         "",
         "## Train/eval firewall",
         "",
-        "Training uses **synthetic v4 + v5** trajectories only. Real OAS v3 runs "
-        "(`analysis_outputs/critic_training_pairs`) are eval-only. The synthetic "
-        "holdout is a **task-level** (`instance_id`) cut: no step from a holdout "
-        "task is in train. Holdout metrics are a leakage diagnostic "
-        '("can the model fit the generator?") and **must not** be treated as '
-        "the headline number.",
+        training_data_blurb(result),
         "",
         f"- Train tasks: **{split.get('n_train_tasks')}** "
         f"({split.get('n_train_trajectories')} trajectories)",
@@ -227,40 +323,21 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
     for note in probe.get("notes") or []:
         lines.append(f"- {note}")
 
+    rerun = format_sft_rerun_command(result.get("run_config") or {})
     lines += [
         "",
         "## Exact command to rerun",
         "",
-        "From the repo root, mock/smoke (this machine):",
+        "The invocation that produced this report (resolved flags):",
         "",
         "```bash",
-        "cd safety_monitor",
-        "PYTHONPATH=. .venv/bin/python -m safety_monitor sft-qwen \\",
-        "  --train ../analysis_outputs/v4_synthetic_pairs/trajectories.jsonl \\",
-        "         ../analysis_outputs/v5_synthetic_pairs/trajectories.jsonl \\",
-        "  --eval ../analysis_outputs/critic_training_pairs/trajectories.jsonl \\",
-        "  --out-dir ../analysis_outputs/qwen_sft \\",
-        "  --backend mock",
+        rerun,
         "```",
         "",
-        "When a local Qwen Instruct checkpoint and a CUDA GPU are available "
-        "(do **not** download a new 7B if disk is tight; point at an existing dir):",
-        "",
-        "```bash",
-        "cd safety_monitor",
-        "python -m venv .venv && .venv/bin/pip install -e '.[sft]'",
-        "PYTHONPATH=. .venv/bin/python -m safety_monitor sft-qwen \\",
-        "  --train ../analysis_outputs/v4_synthetic_pairs/trajectories.jsonl \\",
-        "         ../analysis_outputs/v5_synthetic_pairs/trajectories.jsonl \\",
-        "  --eval ../analysis_outputs/critic_training_pairs/trajectories.jsonl \\",
-        "  --out-dir ../analysis_outputs/qwen_sft \\",
-        "  --backend hf \\",
-        "  --model-path /path/to/Qwen2.5-1.5B-Instruct \\",
-        "  --epochs 2",
-        "```",
-        "",
-        "Optional: `--max-v3-trajectories 50` for a cheaper HF eval smoke. "
-        "Full v3 eval is ~2.5k trajectories / ~24k actions.",
+        "Install GPU extras with `pip install -e '.[sft]'` (pins `transformers>=4.44,<5` "
+        "and `peft<0.16`). Optional: `--max-v3-trajectories 50` for a cheaper HF eval "
+        "smoke. On 48GB A6000s, `--batch-size 8 --grad-accum 1` cuts training ~5× vs "
+        "the default batch 1 / accum 8. Full v3 eval is ~2.5k trajectories / ~24k actions.",
         "",
         "## Files",
         "",

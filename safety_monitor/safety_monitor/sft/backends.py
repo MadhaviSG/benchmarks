@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import sys
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -67,6 +68,76 @@ _HIGH_CUES = (
 )
 
 _TOKEN_RE = re.compile(r"[a-z0-9_./:-]+", re.IGNORECASE)
+
+DEFAULT_BATCH_SIZE = 1
+DEFAULT_GRAD_ACCUM = 8
+DEFAULT_EVAL_BATCH_SIZE = 1
+_FALLBACK_BANNER = "=" * 72
+
+
+class HfUnavailableError(RuntimeError):
+    """HuggingFace SFT was requested or required but the hardware probe failed."""
+
+
+def print_sft_fallback_banner(reason: str, *, stream=None) -> None:
+    """Loud stderr banner when a requested HF run cannot proceed."""
+    stream = sys.stderr if stream is None else stream
+    print(_FALLBACK_BANNER, file=stream)
+    print(
+        f"WARNING: SFT WILL NOT RUN — falling back to mock: {reason}",
+        file=stream,
+    )
+    print(_FALLBACK_BANNER, file=stream)
+    try:
+        stream.flush()
+    except Exception:
+        pass
+
+
+def print_sft_strict_banner(reason: str, *, stream=None) -> None:
+    stream = sys.stderr if stream is None else stream
+    print(_FALLBACK_BANNER, file=stream)
+    print(
+        f"WARNING: SFT WILL NOT RUN — --strict forbids mock fallback: {reason}",
+        file=stream,
+    )
+    print(_FALLBACK_BANNER, file=stream)
+    try:
+        stream.flush()
+    except Exception:
+        pass
+
+
+def hf_sft_ready(probe: HardwareProbe) -> bool:
+    return bool(probe.can_sft and probe.model_path)
+
+
+def handle_hf_probe(
+    probe: HardwareProbe,
+    *,
+    requested_backend: str,
+    strict: bool = False,
+    allow_mock_fallback: bool = True,
+) -> None:
+    """At the start of a run: banner + optional hard-fail when HF is not ready.
+
+    ``--backend mock`` is always allowed. Otherwise a failed probe either
+    prints the loud fallback banner (sft-run) or raises ``HfUnavailableError``
+    (``--strict``, or callers that set ``allow_mock_fallback=False`` such as
+    ``sft-scaling``).
+    """
+    if requested_backend == "mock":
+        return
+    if hf_sft_ready(probe):
+        return
+    reason = probe.reason or "HuggingFace probe failed"
+    if strict or not allow_mock_fallback:
+        if strict:
+            print_sft_strict_banner(reason)
+        else:
+            print_sft_fallback_banner(reason)
+        raise HfUnavailableError(reason)
+    print_sft_fallback_banner(reason)
 
 
 @dataclass
@@ -464,6 +535,8 @@ def train_lora_sft(
     max_length: int = 2048,
     lr: float = 1e-4,
     use_chat_template: bool = True,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    grad_accum: int = DEFAULT_GRAD_ACCUM,
 ) -> dict[str, Any]:
     """LoRA SFT on a local causal LM. Imports torch/transformers/peft lazily.
 
@@ -571,8 +644,8 @@ def train_lora_sft(
     args = TrainingArguments(
         output_dir=str(out_dir / "trainer"),
         num_train_epochs=epochs,
-        per_device_train_batch_size=1,
-        gradient_accumulation_steps=8,
+        per_device_train_batch_size=max(1, int(batch_size)),
+        gradient_accumulation_steps=max(1, int(grad_accum)),
         learning_rate=lr,
         logging_steps=5,
         save_strategy="epoch",
@@ -597,6 +670,8 @@ def train_lora_sft(
         "adapter_dir": str(adapter_dir),
         "n_examples": len(rows),
         "epochs": epochs,
+        "batch_size": max(1, int(batch_size)),
+        "grad_accum": max(1, int(grad_accum)),
         "metrics": dict(train_result.metrics),
         "use_chat_template": use_chat_template,
     }

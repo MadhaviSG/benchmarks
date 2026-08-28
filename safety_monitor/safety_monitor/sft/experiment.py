@@ -10,6 +10,11 @@ from typing import Any
 
 from safety_monitor.critic.base import SafetyCritic
 from safety_monitor.sft.backends import (
+    DEFAULT_BATCH_SIZE,
+    DEFAULT_EVAL_BATCH_SIZE,
+    DEFAULT_GRAD_ACCUM,
+    handle_hf_probe,
+    hf_sft_ready,
     make_hf_completer,
     make_keyword_critic,
     make_logreg_critic,
@@ -106,12 +111,42 @@ def run_experiment(
     upsample: bool = True,
     epochs: int = 2,
     use_shipped_splits: bool = False,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    grad_accum: int = DEFAULT_GRAD_ACCUM,
+    eval_batch_size: int = DEFAULT_EVAL_BATCH_SIZE,
+    strict: bool = False,
+    command: str = "sft-run",
 ) -> dict[str, Any]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 
     probe = probe_hardware(model_path=model_path, backend=backend)
     _dump(out / "probe.json", probe.as_dict())
+    handle_hf_probe(
+        probe,
+        requested_backend=backend,
+        strict=strict,
+        allow_mock_fallback=True,
+    )
+
+    run_config = {
+        "command": command,
+        "train_paths": [str(p) for p in train_paths],
+        "eval_path": str(eval_path),
+        "out_dir": str(out),
+        "backend": backend,
+        "requested_backend": backend,
+        "model_path": model_path,
+        "epochs": epochs,
+        "batch_size": int(batch_size),
+        "grad_accum": int(grad_accum),
+        "eval_batch_size": int(eval_batch_size),
+        "holdout_fraction": holdout_fraction,
+        "max_v3_trajectories": max_v3_trajectories,
+        "use_shipped_splits": bool(use_shipped_splits),
+        "strict": bool(strict),
+    }
+    _dump(out / "run_config.json", run_config)
 
     synthetic, v3 = load_synthetic_and_eval(train_paths, eval_path)
     assert_train_is_synthetic(synthetic)
@@ -169,9 +204,10 @@ def run_experiment(
     before_zero: SafetyCritic
     before_few: SafetyCritic
 
-    if probe.can_sft and probe.backend == "hf" and probe.model_path:
+    if hf_sft_ready(probe) and probe.backend == "hf":
         from safety_monitor.critic.prompted import PromptedSafetyCritic
 
+        assert probe.model_path is not None
         sft_messages = [
             e.messages
             for e in (upsample_high(train_examples) if upsample else train_examples)
@@ -181,6 +217,8 @@ def run_experiment(
             sft_messages,
             out / "hf",
             epochs=epochs,
+            batch_size=batch_size,
+            grad_accum=grad_accum,
         )
         sft_actually_ran = True
         zero_complete = make_hf_completer(probe.model_path)
@@ -200,6 +238,9 @@ def run_experiment(
         )
         train_stats["sft_actually_ran"] = False
         train_stats["note"] = probe.reason
+        train_stats["batch_size"] = int(batch_size)
+        train_stats["grad_accum"] = int(grad_accum)
+        train_stats["eval_batch_size"] = int(eval_batch_size)
         before_zero = make_keyword_critic(critic_id="mock-keyword-zero-shot")
         before_few = make_keyword_critic(
             critic_id="mock-keyword-few-shot", few_shot=few_shot
@@ -230,9 +271,12 @@ def run_experiment(
                 critic, trajs, eval_name=f"{stage_name}/{set_name}"
             )
 
+    used_backend = "hf" if sft_actually_ran else "mock"
     result = {
         "sft_actually_ran": sft_actually_ran,
-        "backend": probe.backend,
+        "backend": used_backend,
+        "requested_backend": backend,
+        "run_config": run_config,
         "probe": probe.as_dict(),
         "split": split.as_dict(),
         "example_counts": counts,

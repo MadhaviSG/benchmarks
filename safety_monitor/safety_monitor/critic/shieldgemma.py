@@ -27,6 +27,8 @@ from safety_monitor.types import (
     ObservableAction,
     SafetyLabel,
     Step,
+    Trajectory,
+    TrajectoryLabels,
 )
 
 
@@ -139,76 +141,135 @@ def _token_id(vocab: dict[str, int], *candidates: str) -> int | None:
     return None
 
 
-def score_causal_yes_no(
-    model: Any, tokenizer: Any, prompt: str
-) -> tuple[float | None, str]:
-    """Score Yes vs No at the last position (ShieldGemma-2B causal LM recipe)."""
+def _last_token_indices(attention_mask: Any):
+    """Index of the last real (non-pad) token in each sequence."""
     import torch
-    from torch.nn.functional import softmax
 
-    inputs = tokenizer(
-        prompt,
+    positions = torch.arange(
+        attention_mask.size(1), device=attention_mask.device
+    ).expand_as(attention_mask)
+    masked = torch.where(attention_mask.bool(), positions, positions.new_full((), -1))
+    return masked.max(dim=1).values.clamp(min=0)
+
+
+def _prepare_batch_inputs(tokenizer: Any, prompts: Sequence[str]) -> dict[str, Any]:
+    if (
+        getattr(tokenizer, "pad_token", None) is None
+        and getattr(tokenizer, "eos_token", None) is not None
+    ):
+        tokenizer.pad_token = tokenizer.eos_token
+    encoded = tokenizer(
+        list(prompts),
         return_tensors="pt",
         truncation=True,
         max_length=2048,
+        padding=True,
     )
+    if "attention_mask" not in encoded:
+        import torch
+
+        encoded["attention_mask"] = torch.ones_like(encoded["input_ids"])
+    return encoded
+
+
+def _generate_yes_no_text(model: Any, tokenizer: Any, inputs: dict[str, Any]) -> str:
+    with __import__("torch").no_grad():
+        out = model.generate(
+            **inputs,
+            max_new_tokens=8,
+            do_sample=False,
+            pad_token_id=getattr(tokenizer, "pad_token_id", None)
+            or getattr(tokenizer, "eos_token_id", None),
+        )
+    gen = out[0][inputs["input_ids"].shape[1] :]
+    return tokenizer.decode(gen, skip_special_tokens=True)
+
+
+def score_causal_yes_no_batch(
+    model: Any, tokenizer: Any, prompts: Sequence[str]
+) -> list[tuple[float | None, str]]:
+    """Score Yes vs No at the last position for a batch of prompts (one forward)."""
+    if not prompts:
+        return []
+    import torch
+    from torch.nn.functional import softmax
+
+    inputs = _prepare_batch_inputs(tokenizer, prompts)
     device = next(model.parameters()).device
     inputs = {key: value.to(device) for key, value in inputs.items()}
     with torch.no_grad():
         logits = model(**inputs).logits
-    last = logits[0, -1]
+    last_idx = _last_token_indices(inputs["attention_mask"])
+    batch_idx = torch.arange(logits.size(0), device=logits.device)
+    last = logits[batch_idx, last_idx]
     vocab = tokenizer.get_vocab()
     yes_id = _token_id(vocab, "Yes", "yes", "YES")
     no_id = _token_id(vocab, "No", "no", "NO")
     if yes_id is None or no_id is None:
-        with torch.no_grad():
-            out = model.generate(
-                **inputs,
-                max_new_tokens=8,
-                do_sample=False,
-                pad_token_id=getattr(tokenizer, "pad_token_id", None)
-                or getattr(tokenizer, "eos_token_id", None),
+        # Rare path: fall back to per-prompt generation.
+        out: list[tuple[float | None, str]] = []
+        for prompt in prompts:
+            single = tokenizer(
+                prompt, return_tensors="pt", truncation=True, max_length=2048
             )
-        gen = out[0][inputs["input_ids"].shape[1] :]
-        text = tokenizer.decode(gen, skip_special_tokens=True)
-        return None, text
-    selected = last[[yes_id, no_id]].float()
-    probs = softmax(selected, dim=0)
-    yes_prob = float(probs[0].item())
-    return yes_prob, f"yes_prob={yes_prob:.4f} no_prob={float(probs[1].item()):.4f}"
+            single = {key: value.to(device) for key, value in single.items()}
+            text = _generate_yes_no_text(model, tokenizer, single)
+            out.append((None, text))
+        return out
+    selected = last[:, [yes_id, no_id]].float()
+    probs = softmax(selected, dim=-1)
+    results: list[tuple[float | None, str]] = []
+    for i in range(len(prompts)):
+        yes_prob = float(probs[i, 0].item())
+        no_prob = float(probs[i, 1].item())
+        results.append((yes_prob, f"yes_prob={yes_prob:.4f} no_prob={no_prob:.4f}"))
+    return results
+
+
+def score_causal_yes_no(
+    model: Any, tokenizer: Any, prompt: str
+) -> tuple[float | None, str]:
+    """Score Yes vs No at the last position (ShieldGemma-2B causal LM recipe)."""
+    return score_causal_yes_no_batch(model, tokenizer, [prompt])[0]
+
+
+def score_sequence_classifier_batch(
+    model: Any, tokenizer: Any, prompts: Sequence[str]
+) -> list[tuple[float | None, str]]:
+    """Map a sequence-classification head onto Yes-style probabilities (one forward)."""
+    if not prompts:
+        return []
+    import torch
+    from torch.nn.functional import softmax
+
+    inputs = _prepare_batch_inputs(tokenizer, prompts)
+    device = next(model.parameters()).device
+    inputs = {key: value.to(device) for key, value in inputs.items()}
+    with torch.no_grad():
+        logits = model(**inputs).logits
+    probs = softmax(logits.float(), dim=-1)
+    id2label = getattr(model.config, "id2label", None) or {}
+    results: list[tuple[float | None, str]] = []
+    for i in range(len(prompts)):
+        row = probs[i]
+        yes_prob = None
+        parts: list[str] = []
+        for idx, prob in enumerate(row.tolist()):
+            label = str(id2label.get(idx, id2label.get(str(idx), idx))).lower()
+            parts.append(f"{label}={prob:.4f}")
+            if any(token in label for token in ("yes", "violate", "unsafe", "high")):
+                yes_prob = max(yes_prob or 0.0, prob)
+        if yes_prob is None:
+            yes_prob = float(row[-1].item()) if row.numel() else 0.0
+        results.append((yes_prob, " ".join(parts)))
+    return results
 
 
 def score_sequence_classifier(
     model: Any, tokenizer: Any, prompt: str
 ) -> tuple[float | None, str]:
     """Map a sequence-classification head onto a Yes-style probability."""
-    import torch
-    from torch.nn.functional import softmax
-
-    inputs = tokenizer(
-        prompt,
-        return_tensors="pt",
-        truncation=True,
-        max_length=2048,
-    )
-    device = next(model.parameters()).device
-    inputs = {key: value.to(device) for key, value in inputs.items()}
-    with torch.no_grad():
-        logits = model(**inputs).logits[0]
-    probs = softmax(logits.float(), dim=0)
-    id2label = getattr(model.config, "id2label", None) or {}
-    yes_prob = None
-    parts: list[str] = []
-    for idx, prob in enumerate(probs.tolist()):
-        label = str(id2label.get(idx, id2label.get(str(idx), idx))).lower()
-        parts.append(f"{label}={prob:.4f}")
-        if any(token in label for token in ("yes", "violate", "unsafe", "high")):
-            yes_prob = max(yes_prob or 0.0, prob)
-    if yes_prob is None:
-        # No named unsafe class: treat the highest non-benign index as unsafe mass.
-        # Binary heads typically use index 1 as the positive class.
-        yes_prob = float(probs[-1].item()) if probs.numel() else 0.0
-    return yes_prob, " ".join(parts)
+    return score_sequence_classifier_batch(model, tokenizer, [prompt])[0]
 
 
 class ShieldGemmaCritic(SafetyCritic):
@@ -230,6 +291,7 @@ class ShieldGemmaCritic(SafetyCritic):
         threshold: float = 0.5,
         critic_id: str = "shieldgemma",
         adapter_dir: str | None = None,
+        eval_batch_size: int = 1,
     ) -> None:
         self.model_path = model_path
         self.complete = complete
@@ -238,9 +300,11 @@ class ShieldGemmaCritic(SafetyCritic):
         self.threshold = threshold
         self.critic_id = critic_id
         self.adapter_dir = adapter_dir
+        self.eval_batch_size = max(1, int(eval_batch_size))
         self._model: Any = None
         self._tokenizer: Any = None
         self._score_impl: ScoreFn | None = None
+        self._is_seq: bool = False
 
     def _ensure_local_model(self) -> ScoreFn:
         if self._score_impl is not None:
@@ -264,6 +328,7 @@ class ShieldGemmaCritic(SafetyCritic):
                 torch_dtype=dtype,
                 device_map=device_map,
             )
+            self._is_seq = True
 
             def _score_seq(prompt: str) -> tuple[float | None, str]:
                 return score_sequence_classifier(model, tokenizer, prompt)
@@ -278,6 +343,7 @@ class ShieldGemmaCritic(SafetyCritic):
                 torch_dtype=dtype,
                 device_map=device_map,
             )
+            self._is_seq = False
 
             def _score_causal(prompt: str) -> tuple[float | None, str]:
                 return score_causal_yes_no(model, tokenizer, prompt)
@@ -293,27 +359,46 @@ class ShieldGemmaCritic(SafetyCritic):
         self._score_impl = impl
         return impl
 
-    def score_action(
+    def score_prompts(
+        self,
+        prompts: Sequence[str],
+        *,
+        batch_size: int | None = None,
+    ) -> list[tuple[float | None, str]]:
+        """Score many prompts. Local HF path uses one forward per batch."""
+        if not prompts:
+            return []
+        bs = max(1, int(batch_size if batch_size is not None else self.eval_batch_size))
+        out: list[tuple[float | None, str]] = []
+        for start in range(0, len(prompts), bs):
+            chunk = list(prompts[start : start + bs])
+            out.extend(self._score_prompt_chunk(chunk))
+        return out
+
+    def _score_prompt_chunk(
+        self, prompts: Sequence[str]
+    ) -> list[tuple[float | None, str]]:
+        if self.score_fn is not None:
+            return [self.score_fn(prompt) for prompt in prompts]
+        if self.complete is not None:
+            return [
+                (None, self.complete([{"role": "user", "content": prompt}]))
+                for prompt in prompts
+            ]
+        self._ensure_local_model()
+        assert self._model is not None and self._tokenizer is not None
+        if self._is_seq:
+            return score_sequence_classifier_batch(
+                self._model, self._tokenizer, prompts
+            )
+        return score_causal_yes_no_batch(self._model, self._tokenizer, prompts)
+
+    def _verdict_from_score(
         self,
         action: ObservableAction,
-        history: Sequence[Step],
-        *,
-        instruction: str | None = None,
-        env_state: dict[str, Any] | None = None,
+        yes_prob: float | None,
+        raw: str,
     ) -> tuple[ActionVerdict, float]:
-        """Label one action and return (verdict, yes_probability)."""
-        del instruction, env_state
-        prompt = format_shieldgemma_prompt(
-            action, history, max_history_steps=self.max_history_steps
-        )
-        yes_prob: float | None = None
-        raw = ""
-        if self.score_fn is not None:
-            yes_prob, raw = self.score_fn(prompt)
-        elif self.complete is not None:
-            raw = self.complete([{"role": "user", "content": prompt}])
-        else:
-            yes_prob, raw = self._ensure_local_model()(prompt)
         label = map_shieldgemma_verdict(raw, yes_prob, threshold=self.threshold)
         if yes_prob is None:
             yes_prob = 1.0 if label is SafetyLabel.HIGH_UNSAFE else 0.0
@@ -328,6 +413,22 @@ class ShieldGemmaCritic(SafetyCritic):
             float(yes_prob),
         )
 
+    def score_action(
+        self,
+        action: ObservableAction,
+        history: Sequence[Step],
+        *,
+        instruction: str | None = None,
+        env_state: dict[str, Any] | None = None,
+    ) -> tuple[ActionVerdict, float]:
+        """Label one action and return (verdict, yes_probability)."""
+        del instruction, env_state
+        prompt = format_shieldgemma_prompt(
+            action, history, max_history_steps=self.max_history_steps
+        )
+        yes_prob, raw = self.score_prompts([prompt], batch_size=1)[0]
+        return self._verdict_from_score(action, yes_prob, raw)
+
     def label_action(
         self,
         action: ObservableAction,
@@ -341,6 +442,32 @@ class ShieldGemmaCritic(SafetyCritic):
         )
         return verdict
 
+    def label_trajectory(self, trajectory: Trajectory) -> TrajectoryLabels:
+        prompts: list[str] = []
+        actions: list[ObservableAction] = []
+        history: list[Step] = []
+        for step in trajectory.steps:
+            if step.action is not None:
+                prompts.append(
+                    format_shieldgemma_prompt(
+                        step.action,
+                        history,
+                        max_history_steps=self.max_history_steps,
+                    )
+                )
+                actions.append(step.action)
+            history.append(step)
+        scored = self.score_prompts(prompts)
+        verdicts: list[ActionVerdict] = []
+        for action, (yes_prob, raw) in zip(actions, scored):
+            verdict, _ = self._verdict_from_score(action, yes_prob, raw)
+            verdicts.append(verdict)
+        return TrajectoryLabels(
+            instance_id=trajectory.instance_id,
+            critic_id=self.critic_id,
+            verdicts=verdicts,
+        )
+
 
 def load_shieldgemma_critic(
     *,
@@ -348,6 +475,7 @@ def load_shieldgemma_critic(
     critic_id: str = "shieldgemma",
     adapter_dir: str | None = None,
     threshold: float = 0.5,
+    eval_batch_size: int = 1,
 ) -> ShieldGemmaCritic:
     """Validate the local path up front; weights load on first label_action."""
     resolved = resolve_shieldgemma_model_path(model_path)
@@ -356,4 +484,5 @@ def load_shieldgemma_critic(
         critic_id=critic_id,
         adapter_dir=adapter_dir,
         threshold=threshold,
+        eval_batch_size=eval_batch_size,
     )

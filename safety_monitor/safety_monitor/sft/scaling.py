@@ -12,9 +12,18 @@ from pathlib import Path
 from typing import Any
 
 from safety_monitor.critic.base import SafetyCritic
-from safety_monitor.critic.shieldgemma import ShieldGemmaCritic
+from safety_monitor.critic.shieldgemma import (
+    ShieldGemmaCritic,
+    format_shieldgemma_prompt,
+)
 from safety_monitor.sft.backends import (
+    DEFAULT_BATCH_SIZE,
+    DEFAULT_EVAL_BATCH_SIZE,
+    DEFAULT_GRAD_ACCUM,
     HardwareProbe,
+    HfUnavailableError,
+    handle_hf_probe,
+    hf_sft_ready,
     make_shieldgemma_keyword_critic,
     make_shieldgemma_logreg_critic,
     probe_hardware,
@@ -154,7 +163,9 @@ def _require_eval_file(eval_path: Path) -> None:
         )
 
 
-def _require_hf_ready(probe: HardwareProbe, *, context: str) -> None:
+def _require_hf_ready(
+    probe: HardwareProbe, *, context: str, strict: bool = False
+) -> None:
     missing: list[str] = []
     if not probe.cuda:
         missing.append("CUDA/GPU")
@@ -168,61 +179,85 @@ def _require_hf_ready(probe: HardwareProbe, *, context: str) -> None:
         missing.append("transformers")
     if not probe.peft_available:
         missing.append("peft")
-    if missing:
-        raise RuntimeError(
+    if missing or not hf_sft_ready(probe):
+        probe.reason = (
             f"{context}: HuggingFace ShieldGemma path is not ready. Missing: "
-            + ", ".join(missing)
-            + f". Probe: {probe.reason}. Use --backend mock for CPU, or see "
-            "safety_monitor/SFT_SETUP.md."
+            + ", ".join(missing or [probe.reason or "unknown"])
+            + f". Probe: {probe.reason}."
         )
+        handle_hf_probe(
+            probe,
+            requested_backend="hf",
+            strict=strict,
+            allow_mock_fallback=False,
+        )
+        raise HfUnavailableError(probe.reason)
 
 
 def score_trajectories(
-    critic: SafetyCritic, trajs: Sequence[MinedTrajectory]
+    critic: SafetyCritic,
+    trajs: Sequence[MinedTrajectory],
+    *,
+    eval_batch_size: int = DEFAULT_EVAL_BATCH_SIZE,
 ) -> list[ScoredTrajectory]:
-    scored: list[ScoredTrajectory] = []
-    for traj in trajs:
-        wrapped = _traj_as_framework(traj)
-        history = []
-        actions: list[ScoredAction] = []
-        if isinstance(critic, ShieldGemmaCritic):
-            for step, labeled in zip(wrapped.steps, traj.steps):
-                if step.action is None:
-                    history.append(step)
-                    continue
-                verdict, yes_prob = critic.score_action(
-                    step.action,
-                    history,
-                    instruction=wrapped.instruction,
-                    env_state=wrapped.env_state,
-                )
-                actions.append(
-                    ScoredAction(
-                        action_id=labeled.action_id or verdict.action_id,
-                        gold=binary_from_label(labeled.label),
-                        yes_prob=float(yes_prob),
-                    )
-                )
-                history.append(step)
-        else:
+    scored = [
+        ScoredTrajectory(
+            instance_id=traj.instance_id,
+            trajectory_key=traj.key,
+            role=traj.role,
+            rule_based=int(traj.rule_based or 0),
+        )
+        for traj in trajs
+    ]
+    if not isinstance(critic, ShieldGemmaCritic):
+        for row, traj in zip(scored, trajs):
+            wrapped = _traj_as_framework(traj)
             labels = critic.label_trajectory(wrapped)
             for verdict, labeled in zip(labels.verdicts, traj.steps):
                 yes_prob = 1.0 if verdict.label is SafetyLabel.HIGH_UNSAFE else 0.0
-                actions.append(
+                row.actions.append(
                     ScoredAction(
                         action_id=labeled.action_id or verdict.action_id,
                         gold=binary_from_label(labeled.label),
                         yes_prob=yes_prob,
                     )
                 )
-        scored.append(
-            ScoredTrajectory(
-                instance_id=traj.instance_id,
-                trajectory_key=traj.key,
-                role=traj.role,
-                rule_based=int(traj.rule_based or 0),
-                actions=actions,
+        return scored
+
+    jobs: list[tuple[int, str, int]] = []
+    prompts: list[str] = []
+    for ti, traj in enumerate(trajs):
+        wrapped = _traj_as_framework(traj)
+        history: list = []
+        for step, labeled in zip(wrapped.steps, traj.steps):
+            if step.action is None:
+                history.append(step)
+                continue
+            prompts.append(
+                format_shieldgemma_prompt(
+                    step.action,
+                    history,
+                    max_history_steps=critic.max_history_steps,
+                )
             )
+            jobs.append(
+                (
+                    ti,
+                    labeled.action_id or step.action.action_id,
+                    binary_from_label(labeled.label),
+                )
+            )
+            history.append(step)
+
+    results = critic.score_prompts(prompts, batch_size=eval_batch_size)
+    for (ti, action_id, gold), (yes_prob, raw) in zip(jobs, results):
+        if yes_prob is None:
+            from safety_monitor.critic.shieldgemma import map_shieldgemma_verdict
+
+            label = map_shieldgemma_verdict(raw, None, threshold=critic.threshold)
+            yes_prob = 1.0 if label is SafetyLabel.HIGH_UNSAFE else 0.0
+        scored[ti].actions.append(
+            ScoredAction(action_id=action_id, gold=gold, yes_prob=float(yes_prob))
         )
     return scored
 
@@ -416,6 +451,11 @@ def run_scaling_ladder(
     seed: int = 42,
     smoke: bool = False,
     upsample: bool = True,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    grad_accum: int = DEFAULT_GRAD_ACCUM,
+    eval_batch_size: int = DEFAULT_EVAL_BATCH_SIZE,
+    strict: bool = False,
+    command: str = "sft-scaling",
 ) -> dict[str, Any]:
     """Nested ShieldGemma SFT rungs with identical v3 + synthetic-test eval."""
     out = Path(out_dir)
@@ -428,10 +468,10 @@ def run_scaling_ladder(
     )
     _dump(out / "probe.json", probe.as_dict())
 
-    if smoke and backend in {"hf", "auto"}:
-        _require_hf_ready(probe, context="sft-scaling --smoke")
-    if backend == "hf":
-        _require_hf_ready(probe, context="sft-scaling --backend hf")
+    # Scaling never silently degrades to mock: HF is required unless --backend mock.
+    if backend != "mock":
+        context = "sft-scaling --smoke" if smoke else f"sft-scaling --backend {backend}"
+        _require_hf_ready(probe, context=context, strict=strict or backend == "hf")
 
     if smoke:
         rungs = ["0"]
@@ -461,7 +501,7 @@ def run_scaling_ladder(
         shipped.train_instance_ids, strata, positive_sizes, seed=seed
     )
 
-    use_hf = probe.can_sft and probe.backend == "hf" and probe.model_path
+    use_hf = hf_sft_ready(probe) and probe.backend == "hf"
     per_rung: list[dict[str, Any]] = []
     for label, n_tasks in rung_sizes:
         rung_out = out / _rung_dir_name(label)
@@ -484,6 +524,9 @@ def run_scaling_ladder(
             upsample=upsample,
             out_dir=rung_out,
             smoke=smoke,
+            batch_size=batch_size,
+            grad_accum=grad_accum,
+            eval_batch_size=eval_batch_size,
         )
         per_rung.append(rung_result)
 
@@ -491,6 +534,25 @@ def run_scaling_ladder(
         "experiment": "shieldgemma-sft-scaling",
         "sft_actually_ran": any(r.get("sft_actually_ran") for r in per_rung),
         "backend": probe.backend if not use_hf else "hf",
+        "requested_backend": backend,
+        "run_config": {
+            "command": command,
+            "train_paths": [str(p) for p in train_paths],
+            "eval_path": str(eval_file),
+            "out_dir": str(out),
+            "backend": backend,
+            "requested_backend": backend,
+            "model_path": model_path,
+            "epochs": epochs,
+            "batch_size": int(batch_size),
+            "grad_accum": int(grad_accum),
+            "eval_batch_size": int(eval_batch_size),
+            "strict": bool(strict),
+            "rungs": ",".join(str(r) for r in rungs),
+            "seed": seed,
+            "smoke": bool(smoke),
+            "use_shipped_splits": True,
+        },
         "probe": probe.as_dict(),
         "split": shipped.as_dict(),
         "salt": SHIPPED_SPLIT_SALT,
@@ -528,6 +590,9 @@ def _run_one_rung(
     upsample: bool,
     out_dir: Path,
     smoke: bool,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    grad_accum: int = DEFAULT_GRAD_ACCUM,
+    eval_batch_size: int = DEFAULT_EVAL_BATCH_SIZE,
 ) -> dict[str, Any]:
     critic_id = f"shieldgemma-rung-{label}"
     train_stats: dict[str, Any]
@@ -542,6 +607,7 @@ def _run_one_rung(
             critic: SafetyCritic = ShieldGemmaCritic(
                 model_path=probe.model_path,
                 critic_id=f"{critic_id}-zero-shot",
+                eval_batch_size=eval_batch_size,
             )
         else:
             critic = make_shieldgemma_keyword_critic(critic_id=f"{critic_id}-zero-shot")
@@ -561,6 +627,8 @@ def _run_one_rung(
                 out_dir / "hf",
                 epochs=epochs,
                 use_chat_template=False,
+                batch_size=batch_size,
+                grad_accum=grad_accum,
             )
             sft_actually_ran = True
             adapter_dir = str(train_stats.get("adapter_dir") or "")
@@ -570,6 +638,7 @@ def _run_one_rung(
                 model_path=probe.model_path,
                 adapter_dir=adapter_dir or None,
                 critic_id=f"{critic_id}-lora",
+                eval_batch_size=eval_batch_size,
             )
         else:
             model, train_stats = train_mock_sft(
@@ -578,6 +647,9 @@ def _run_one_rung(
             )
             train_stats["sft_actually_ran"] = False
             train_stats["note"] = probe.reason
+            train_stats["batch_size"] = int(batch_size)
+            train_stats["grad_accum"] = int(grad_accum)
+            train_stats["eval_batch_size"] = int(eval_batch_size)
             critic = make_shieldgemma_logreg_critic(
                 model, critic_id=f"{critic_id}-mock"
             )
@@ -604,7 +676,9 @@ def _run_one_rung(
         f"Scoring dev ({len(shipped.dev_trajectories)} trajs) for rung {label}",
         file=sys.stderr,
     )
-    scored_dev = score_trajectories(critic, shipped.dev_trajectories)
+    scored_dev = score_trajectories(
+        critic, shipped.dev_trajectories, eval_batch_size=eval_batch_size
+    )
     threshold, thresh_info = select_threshold(scored_dev, critic_id=critic_id)
     if hasattr(critic, "threshold"):
         setattr(critic, "threshold", threshold)
@@ -628,7 +702,7 @@ def _run_one_rung(
         scored = (
             scored_dev
             if set_name == "synthetic_dev"
-            else score_trajectories(critic, trajs)
+            else score_trajectories(critic, trajs, eval_batch_size=eval_batch_size)
         )
         score_cache[set_name] = scored
         metrics[set_name] = metrics_from_scores(

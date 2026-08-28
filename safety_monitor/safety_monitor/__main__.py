@@ -179,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Zero-shot only, first 100 v3 trajectories, print score summary",
     )
+    _add_sft_compute_args(p_scale)
     p_scale.set_defaults(func=_cmd_sft_scaling)
 
     args = parser.parse_args(argv)
@@ -187,6 +188,32 @@ def main(argv: list[str] | None = None) -> int:
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def _add_sft_compute_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=1,
+        help="Per-device train batch size (default 1; try 8 on 48GB A6000)",
+    )
+    parser.add_argument(
+        "--grad-accum",
+        type=int,
+        default=8,
+        help="Gradient accumulation steps (default 8; try 1 with --batch-size 8)",
+    )
+    parser.add_argument(
+        "--eval-batch-size",
+        type=int,
+        default=1,
+        help="ShieldGemma eval forward batch size (default 1, sequential)",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit nonzero if HuggingFace SFT cannot run (no mock fallback)",
+    )
 
 
 def _add_sft_run_args(parser: argparse.ArgumentParser) -> None:
@@ -214,6 +241,7 @@ def _add_sft_run_args(parser: argparse.ArgumentParser) -> None:
         action="store_true",
         help="Use corpus split=train/dev/test instead of the hashed qwen-sft cut",
     )
+    _add_sft_compute_args(parser)
 
 
 def _default_train() -> Path:
@@ -230,22 +258,31 @@ def _default_eval() -> Path:
 
 
 def _cmd_sft_run(args: argparse.Namespace) -> int:
+    from safety_monitor.sft.backends import HfUnavailableError
     from safety_monitor.sft.experiment import run_experiment
 
     train = args.train or [_default_train()]
     eval_path = args.eval or _default_eval()
     out_dir = args.out_dir or (_repo_root() / "analysis_outputs" / "qwen_sft")
-    result = run_experiment(
-        train_paths=train,
-        eval_path=eval_path,
-        out_dir=out_dir,
-        holdout_fraction=args.holdout_fraction,
-        backend=args.backend,
-        model_path=args.model_path,
-        max_v3_trajectories=args.max_v3_trajectories,
-        epochs=args.epochs,
-        use_shipped_splits=bool(args.use_shipped_splits),
-    )
+    try:
+        result = run_experiment(
+            train_paths=train,
+            eval_path=eval_path,
+            out_dir=out_dir,
+            holdout_fraction=args.holdout_fraction,
+            backend=args.backend,
+            model_path=args.model_path,
+            max_v3_trajectories=args.max_v3_trajectories,
+            epochs=args.epochs,
+            use_shipped_splits=bool(args.use_shipped_splits),
+            batch_size=args.batch_size,
+            grad_accum=args.grad_accum,
+            eval_batch_size=args.eval_batch_size,
+            strict=bool(args.strict),
+            command=args.command,
+        )
+    except HfUnavailableError:
+        return 1
     print(
         json.dumps(
             {
@@ -260,6 +297,7 @@ def _cmd_sft_run(args: argparse.Namespace) -> int:
 
 
 def _cmd_sft_scaling(args: argparse.Namespace) -> int:
+    from safety_monitor.sft.backends import HfUnavailableError
     from safety_monitor.sft.scaling import parse_rungs, run_scaling_ladder
 
     train = args.train or [_default_train()]
@@ -267,17 +305,25 @@ def _cmd_sft_scaling(args: argparse.Namespace) -> int:
     out_dir = args.out_dir or (
         _repo_root() / "analysis_outputs" / "shieldgemma_sft_scaling"
     )
-    result = run_scaling_ladder(
-        train_paths=train,
-        eval_path=eval_path,
-        out_dir=out_dir,
-        backend=args.backend,
-        model_path=args.model_path,
-        rungs=parse_rungs(args.rungs),
-        epochs=args.epochs,
-        seed=args.seed,
-        smoke=bool(args.smoke),
-    )
+    try:
+        result = run_scaling_ladder(
+            train_paths=train,
+            eval_path=eval_path,
+            out_dir=out_dir,
+            backend=args.backend,
+            model_path=args.model_path,
+            rungs=parse_rungs(args.rungs),
+            epochs=args.epochs,
+            seed=args.seed,
+            smoke=bool(args.smoke),
+            batch_size=args.batch_size,
+            grad_accum=args.grad_accum,
+            eval_batch_size=args.eval_batch_size,
+            strict=bool(args.strict),
+            command=args.command,
+        )
+    except HfUnavailableError:
+        return 1
     print(
         json.dumps(
             {

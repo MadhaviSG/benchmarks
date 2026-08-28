@@ -307,6 +307,8 @@ def test_train_lora_sft_exposes_completion_mode():
     params = inspect.signature(train_lora_sft).parameters
     assert "use_chat_template" in params
     assert params["use_chat_template"].default is True
+    assert params["batch_size"].default == 1
+    assert params["grad_accum"].default == 8
 
 
 def test_shieldgemma_critic_records_adapter_dir(tmp_path: Path, monkeypatch):
@@ -392,3 +394,17 @@ def test_cli_registers_sft_scaling_and_sft_run():
     with pytest.raises(SystemExit) as exc:
         main(["sft-qwen", "--help"])
     assert exc.value.code == 0
+
+
+def test_cli_help_lists_batch_strict_eval_flags(capsys):
+    from safety_monitor.__main__ import main
+
+    for cmd in ("sft-run", "sft-scaling"):
+        with pytest.raises(SystemExit) as exc:
+            main([cmd, "--help"])
+        assert exc.value.code == 0
+        out = capsys.readouterr().out
+        assert "--batch-size" in out
+        assert "--grad-accum" in out
+        assert "--eval-batch-size" in out
+        assert "--strict" in out

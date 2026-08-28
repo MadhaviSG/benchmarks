@@ -395,3 +395,15 @@ def test_run_experiment_mock_on_fixture(tmp_path: Path):
     assert train_ids.isdisjoint(hold_ids)
     assert "safety-v3-x" not in train_ids
     assert "safety-v3-x" not in hold_ids
+    cfg = result["run_config"]
+    assert cfg["batch_size"] == 1
+    assert cfg["grad_accum"] == 8
+    assert cfg["eval_batch_size"] == 1
+    assert cfg["strict"] is False
+    report = (out / "report.md").read_text(encoding="utf-8")
+    assert "v4_synthetic_pairs" not in report
+    assert "sft-run" in report
+    assert str(train_path) in report
+    assert "--batch-size 1" in report
+    assert "--grad-accum 8" in report
+    assert "--eval-batch-size 1" in report
