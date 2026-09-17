@@ -182,6 +182,32 @@ def main(argv: list[str] | None = None) -> int:
     _add_sft_compute_args(p_scale)
     p_scale.set_defaults(func=_cmd_sft_scaling)
 
+    p_online = sub.add_parser(
+        "online-replay",
+        help="Replay recorded trajectories as an online monitor (CPU, read-only)",
+    )
+    p_online.add_argument(
+        "--trajectories",
+        type=Path,
+        default=None,
+        help="Trajectory JSONL (default: critic_training_pairs)",
+    )
+    p_online.add_argument("--out-dir", type=Path, default=None)
+    p_online.add_argument(
+        "--families",
+        type=str,
+        default="llm_blocking,cygnal",
+        help="Run families to replay: llm_blocking, cygnal, passive, other",
+    )
+    p_online.add_argument(
+        "--aggregators",
+        type=str,
+        default="cummax,noisy_or,ew_decay,logodds_sum",
+        help="Credence aggregators to report",
+    )
+    p_online.add_argument("--max-trajectories", type=int, default=None)
+    p_online.set_defaults(func=_cmd_online_replay)
+
     args = parser.parse_args(argv)
     return args.func(args)
 
@@ -261,6 +287,26 @@ def _default_eval() -> Path:
         / "critic_training_pairs"
         / "trajectories.jsonl"
     )
+
+
+def _cmd_online_replay(args: argparse.Namespace) -> int:
+    from safety_monitor.online.replay import main as replay_main
+
+    path = args.trajectories or _default_eval()
+    try:
+        replay_main(
+            path,
+            out_dir=args.out_dir,
+            families=[f.strip() for f in args.families.split(",") if f.strip()],
+            aggregator_names=[
+                a.strip() for a in args.aggregators.split(",") if a.strip()
+            ],
+            max_trajectories=args.max_trajectories,
+        )
+    except (ValueError, FileNotFoundError) as exc:
+        print(f"online-replay failed: {exc}", file=sys.stderr)
+        return 1
+    return 0
 
 
 def _cmd_sft_run(args: argparse.Namespace) -> int:

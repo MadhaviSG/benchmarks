@@ -37,6 +37,11 @@ class LabeledStep(BaseModel):
     contrast_lift: float = 0.0
     label: SafetyLabel = SafetyLabel.LOW_UNSAFE
     label_source: str = "unknown"
+    # Recorded by the v3 llm-blocking / cygnal runs. Passive baselines leave
+    # analyzer_risk at UNKNOWN; without these declared, pydantic drops them and
+    # an analyzer replay silently scores flat.
+    analyzer_risk: str | None = None
+    was_blocked: bool = False
 
 
 class MinedTrajectory(BaseModel):
