@@ -6,6 +6,7 @@ import os
 import subprocess
 import tempfile
 import time
+from pathlib import Path
 from typing import Any, List
 
 import numpy as np
@@ -30,6 +31,15 @@ from openhands.workspace import DockerWorkspace
 
 
 logger = get_logger(__name__)
+
+# v5/v6 task records store relative workspace paths (workspaces/tasks/<id>/...).
+# Resolve them against OAS_WORKSPACE_ROOT, then the analysis_outputs fallbacks.
+_BENCH_ROOT = Path(__file__).resolve().parents[2]
+_RAS_ROOT = Path(__file__).resolve().parents[3]
+_DEFAULT_WORKSPACE_ROOTS = (
+    _RAS_ROOT / "analysis_outputs" / "mg_workspaces",
+    _BENCH_ROOT / "analysis_outputs" / "mg_workspaces",
+)
 
 
 def convert_numpy_types(obj: Any) -> Any:
@@ -90,89 +100,153 @@ def download_file(url: str, dest_path: str, max_retries: int = 3) -> bool:
     return False
 
 
+def _workspace_search_roots() -> list[Path]:
+    roots: list[Path] = []
+    env_root = os.environ.get("OAS_WORKSPACE_ROOT", "").strip()
+    if env_root:
+        roots.append(Path(env_root))
+    roots.extend(_DEFAULT_WORKSPACE_ROOTS)
+    seen: set[Path] = set()
+    ordered: list[Path] = []
+    for root in roots:
+        resolved = root.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        ordered.append(resolved)
+    return ordered
+
+
+def resolve_host_file(spec: str) -> Path | None:
+    """Return a local file for a dataset path, or None if it must be downloaded."""
+    if not spec or spec.startswith(("http://", "https://")):
+        return None
+    direct = Path(spec)
+    if direct.is_file():
+        return direct.resolve()
+    for root in _workspace_search_roots():
+        candidate = root / spec
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def stage_file_into_workspace(workspace, spec: str, dest_path: str) -> bool:
+    """Upload a local file or curl a URL into the eval container."""
+    parent_dir = "/".join(dest_path.split("/")[:-1])
+    if parent_dir:
+        workspace.execute_command(f"mkdir -p {parent_dir}", timeout=30)
+
+    host_file = resolve_host_file(spec)
+    if host_file is not None:
+        result = workspace.file_upload(
+            source_path=str(host_file), destination_path=dest_path
+        )
+        if getattr(result, "success", False):
+            logger.info(f"Uploaded {host_file} -> {dest_path}")
+            if dest_path.endswith((".py", ".sh", ".bash")):
+                workspace.execute_command(f"chmod +x {dest_path}", timeout=30)
+            return True
+        logger.error(f"File upload failed for {host_file}: {result}")
+        return False
+
+    if spec.startswith(("http://", "https://")):
+        download_cmd = f"curl -fsSL -o {dest_path} '{spec}'"
+        result = workspace.execute_command(download_cmd, timeout=120)
+        if result.exit_code == 0:
+            check = workspace.execute_command(f"ls -lh {dest_path}", timeout=10)
+            logger.info(f"Downloaded {dest_path}:\n{check.stdout}")
+            if dest_path.endswith((".py", ".sh", ".bash")):
+                workspace.execute_command(f"chmod +x {dest_path}", timeout=30)
+            return True
+        logger.error(f"Failed to download {spec}: {result.stderr}")
+        return False
+
+    logger.error(f"No local file or URL for workspace artifact: {spec}")
+    return False
+
+
+# Original OAS copies task utils/ into the container, then encrypts and deletes
+# evaluator.py before the agent runs (see evaluation/run_eval.py: encrypt.py &&
+# rm /utils/evaluator.py). Scoring is injected after the run from evaluator_code.
+# Never stage these into the agent-visible workspace.
+_AGENT_HIDDEN_BASENAMES = frozenset(
+    {
+        "evaluator.py",
+        "eval.py",
+        "evaluator_temp.py",
+        "eval_runner.py",
+        "encrypt.py",
+        "checkpoints.md",
+    }
+)
+_INSTRUCTION_HIDDEN_KEYS = frozenset({"evaluator_code", "checkpoints"})
+
+
+def is_agent_hidden_artifact(spec: str) -> bool:
+    """Return True if this path must not be uploaded into the agent container."""
+    name = spec.rstrip("/").split("/")[-1].split("?")[0].lower()
+    if name in _AGENT_HIDDEN_BASENAMES:
+        return True
+    return name.startswith("evaluator") and name.endswith((".py", ".pyc", ".pyo"))
+
+
+def _agent_visible_files(specs: list) -> list:
+    visible: list = []
+    for spec in specs or []:
+        text = str(spec)
+        if is_agent_hidden_artifact(text):
+            logger.info(
+                f"Skipping evaluator/scoring artifact (not agent-visible): {text}"
+            )
+            continue
+        visible.append(text)
+    return visible
+
+
+def _container_dest(spec: str, kind: str) -> str:
+    """Map a dataset path to /workspace or /utils inside the eval container."""
+    filename = spec.split("/")[-1]
+    marker = f"/{kind}/"
+    if marker in spec:
+        return f"/{kind}/{spec.split(marker)[-1]}"
+    return f"/{kind}/{filename}"
+
+
 def download_files_for_task(workspace, instance_data: dict) -> None:
-    """Download files as specified in the dataset."""
-    # Download workspace files
+    """Stage agent-facing workspace and utils files from local paths or URLs.
+
+    Evaluator/scoring files stay on the host. Grading uses ``evaluator_code``
+    from the task record after the agent run (see run_evaluation_in_container).
+    """
     if instance_data.get("has_workspace", False):
-        workspace_files = instance_data.get("workspace_files", [])
+        workspace_files = _agent_visible_files(instance_data.get("workspace_files", []))
         if workspace_files:
             logger.info(f"Setting up {len(workspace_files)} workspace files")
-
-            for file_url in workspace_files:
+            for spec in workspace_files:
                 try:
-                    filename = file_url.split("/")[-1]
-
-                    # Extract path structure if present
-                    if "/workspace/" in file_url:
-                        path_parts = file_url.split("/workspace/")[-1]
-                        dest_path = f"/workspace/{path_parts}"
-                    else:
-                        dest_path = f"/workspace/{filename}"
-
-                    # Create parent directories
-                    parent_dir = "/".join(dest_path.split("/")[:-1])
-                    workspace.execute_command(f"mkdir -p {parent_dir}", timeout=30)
-
-                    # Download directly in container using curl
-                    download_cmd = f"curl -fsSL -o {dest_path} '{file_url}'"
-                    result = workspace.execute_command(download_cmd, timeout=120)
-
-                    if result.exit_code == 0:
-                        # Verify file was downloaded and has content
-                        check = workspace.execute_command(
-                            f"ls -lh {dest_path} && head -5 {dest_path}", timeout=10
-                        )
-                        logger.info(f"Downloaded {dest_path}:\n{check.stdout}")
-
-                        # Make executable if script
-                        if dest_path.endswith((".py", ".sh", ".bash")):
-                            workspace.execute_command(
-                                f"chmod +x {dest_path}", timeout=30
-                            )
-                    else:
-                        logger.error(f"Failed to download {file_url}: {result.stderr}")
-
+                    dest_path = _container_dest(spec, "workspace")
+                    if is_agent_hidden_artifact(dest_path):
+                        logger.info(f"Skipping hidden dest path: {dest_path}")
+                        continue
+                    stage_file_into_workspace(workspace, spec, dest_path)
                 except Exception as e:
-                    logger.error(f"Error downloading {file_url}: {e}")
+                    logger.error(f"Error staging workspace file {spec}: {e}")
 
-    # Download utils files
     if instance_data.get("has_utils", False):
-        utils_files = instance_data.get("utils_files", [])
+        utils_files = _agent_visible_files(instance_data.get("utils_files", []))
         if utils_files:
             logger.info(f"Setting up {len(utils_files)} utils files")
             workspace.execute_command("mkdir -p /utils", timeout=30)
-
-            for file_url in utils_files:
+            for spec in utils_files:
                 try:
-                    filename = file_url.split("/")[-1]
-
-                    if "/utils/" in file_url:
-                        path_parts = file_url.split("/utils/")[-1]
-                        dest_path = f"/utils/{path_parts}"
-                    else:
-                        dest_path = f"/utils/{filename}"
-
-                    parent_dir = "/".join(dest_path.split("/")[:-1])
-                    workspace.execute_command(f"mkdir -p {parent_dir}", timeout=30)
-
-                    download_cmd = f"curl -fsSL -o {dest_path} '{file_url}'"
-                    result = workspace.execute_command(download_cmd, timeout=120)
-
-                    if result.exit_code == 0:
-                        check = workspace.execute_command(
-                            f"ls -lh {dest_path}", timeout=10
-                        )
-                        logger.info(f"Downloaded {dest_path}:\n{check.stdout}")
-
-                        if dest_path.endswith((".py", ".sh", ".bash")):
-                            workspace.execute_command(
-                                f"chmod +x {dest_path}", timeout=30
-                            )
-                    else:
-                        logger.error(f"Failed to download {file_url}: {result.stderr}")
-
+                    dest_path = _container_dest(spec, "utils")
+                    if is_agent_hidden_artifact(dest_path):
+                        logger.info(f"Skipping hidden dest path: {dest_path}")
+                        continue
+                    stage_file_into_workspace(workspace, spec, dest_path)
                 except Exception as e:
-                    logger.error(f"Error downloading {file_url}: {e}")
+                    logger.error(f"Error staging utils file {spec}: {e}")
 
 
 def cleanup_docker_containers():
@@ -280,8 +354,14 @@ def generate_instruction(instance_data: dict, template_path: str | None = None) 
     env = Environment(loader=FileSystemLoader(prompts_dir))
     template = env.get_template(template_name)
 
-    # Render the instruction
-    instruction = template.render(instance=instance_data)
+    # Do not expose scoring fields to the agent prompt, even if a custom
+    # template dumps the instance dict.
+    safe_instance = {
+        key: value
+        for key, value in instance_data.items()
+        if key not in _INSTRUCTION_HIDDEN_KEYS
+    }
+    instruction = template.render(instance=safe_instance)
     return instruction
 
 
@@ -401,11 +481,15 @@ class OpenAgentSafetyEvaluation(Evaluation):
         """
         server_image = build_workspace_image()
 
+        # Isolated container: copy task files in via file_upload only.
+        # Do not bind-mount OAS_WORKSPACE_ROOT, ras/, or mg_rollouts.
         workspace = DockerWorkspace(
             server_image=server_image,
             platform="linux/amd64",
             extra_ports=True,
             forward_env=forward_env or [],
+            volumes=[],
+            mount_dir=None,
         )
 
         # Setup host mapping for The Agent Company services
@@ -417,7 +501,11 @@ class OpenAgentSafetyEvaluation(Evaluation):
         if instance.data.get("npcs", 0) > 0:
             npc_api_key = os.getenv("NPC_API_KEY", "")
             npc_base_url = os.getenv("NPC_BASE_URL") or self.metadata.llm.base_url or ""
-            npc_model = os.getenv("NPC_MODEL", "litellm_proxy/openai/gpt-4o")
+            # chat_npc is a raw OpenAI client. OpenHands' litellm_proxy/ prefix is
+            # not a CompServ model ID and gets team_model_access_denied (403).
+            npc_model = os.getenv("NPC_MODEL", "gemini/gemini-2.5-flash-lite")
+            if npc_model.startswith("litellm_proxy/"):
+                npc_model = npc_model[len("litellm_proxy/") :]
 
             write_npc_config(
                 workspace=workspace,
@@ -600,6 +688,9 @@ def main() -> None:
         details={
             "server_image": "openagentsafety-agent-server:local",
             "platform": "linux/amd64",
+            "security_analyzer": "none",
+            "security_mode": "passive",
+            "disable_security_policy": True,
         },
         eval_limit=args.n_limit,
         max_attempts=args.max_attempts,

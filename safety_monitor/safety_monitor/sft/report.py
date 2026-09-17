@@ -1,4 +1,4 @@
-"""Markdown report for the local Qwen SFT critic experiment."""
+"""Markdown report for the local critic SFT experiment (Qwen or ShieldGemma)."""
 
 from __future__ import annotations
 
@@ -7,8 +7,33 @@ from pathlib import Path
 from typing import Any
 
 
+def _train_kind(run_config: dict[str, Any], split: dict[str, Any]) -> str:
+    """``real_mg`` | ``synthetic``."""
+    paths = [
+        str(p).lower()
+        for p in (run_config.get("train_paths") or run_config.get("train") or [])
+    ]
+    blob = " ".join(paths)
+    if "real_rollout" in blob or "mg_passive" in blob or "mg_baseline" in blob:
+        return "real_mg"
+    return "synthetic"
+
+
+def _model_label(result: dict[str, Any]) -> str:
+    probe = result.get("probe") or {}
+    run_config = result.get("run_config") or {}
+    family = str(
+        run_config.get("model_family") or probe.get("family") or "qwen"
+    ).lower()
+    if family == "shieldgemma":
+        return "ShieldGemma LoRA"
+    return "Qwen LoRA"
+
+
 def _infer_train_corpora(run_config: dict[str, Any], split: dict[str, Any]) -> str:
     """Describe which synthetic corpora this run actually trained on."""
+    if _train_kind(run_config, split) == "real_mg":
+        return "real MG passive rollouts"
     paths = [
         str(p).lower()
         for p in (run_config.get("train_paths") or run_config.get("train") or [])
@@ -41,11 +66,23 @@ def training_data_blurb(result: dict[str, Any]) -> str:
     split_source = split.get("split_source") or "hashed"
     n_train = split.get("n_train_tasks")
     corpora = _infer_train_corpora(run_config, split)
+    kind = _train_kind(run_config, split)
     paths = [str(p) for p in (run_config.get("train_paths") or [])]
     path_note = ""
     if paths:
         quoted = ", ".join(f"`{p}`" for p in paths)
         path_note = f" Train JSONL: {quoted}."
+    holdout_name = "MG-task holdout" if kind == "real_mg" else "synthetic holdout"
+    if kind == "real_mg":
+        return (
+            f"Training uses **real MG passive rollouts** (Claude/GPT/Gemini), "
+            f"not constructed v4/v5/v6 pairs.{path_note} Original OAS v3 runs "
+            "(`analysis_outputs/critic_training_pairs`) are eval-only. The "
+            f"**{holdout_name}** is a **task-level** (`instance_id`) cut of the "
+            "same MG file: no step from a holdout task is in train. High holdout "
+            "F1 means the model fits the *new* rollout distribution. The headline "
+            "is still **v3 AUROC**, not holdout F1."
+        )
     if split_source == "shipped":
         n_bit = f" ({n_train} train tasks)" if n_train is not None else ""
         return (
@@ -94,6 +131,9 @@ def format_sft_rerun_command(run_config: dict[str, Any]) -> str:
         "--backend", run_config.get("requested_backend") or run_config.get("backend")
     )
     add_flag("--model-path", run_config.get("model_path"))
+    family = run_config.get("model_family")
+    if family and family != "qwen":
+        add_flag("--family", family)
     add_flag("--epochs", run_config.get("epochs"))
     add_flag("--batch-size", run_config.get("batch_size"))
     add_flag("--grad-accum", run_config.get("grad_accum"))
@@ -157,15 +197,6 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
     ran = bool(result.get("sft_actually_ran"))
     backend = result.get("backend")
 
-    headline = (
-        "Local Qwen LoRA SFT **completed**."
-        if ran
-        else "Local Qwen LoRA SFT **did not run**. "
-        "This machine has no GPU and no on-disk Qwen weights; the numbers below "
-        "are from the CPU **mock** backend (keyword zero-shot vs hashed-ngram "
-        "logistic regression) so the split and metrics pipeline is verified."
-    )
-
     v3_before_f1 = _cell(before.get("v3_eval", {}).get("action"), "f1_high_unsafe")
     v3_after_f1 = _cell(after.get("v3_eval", {}).get("action"), "f1_high_unsafe")
     hold_before_f1 = _cell(
@@ -175,10 +206,39 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         after.get("synthetic_holdout", {}).get("action"), "f1_high_unsafe"
     )
 
-    interpretation = _interpret(ran, before, after)
+    interpretation = _interpret(ran, before, after, result)
+
+    model = _model_label(result)
+    kind = _train_kind(result.get("run_config") or {}, split)
+    title = f"# Local {model} SFT for the external safety critic"
+    headline = (
+        f"Local {model} SFT **completed**."
+        if ran
+        else f"Local {model} SFT **did not run**. "
+        "This machine has no GPU and no on-disk weights; the numbers below "
+        "are from the CPU **mock** backend (keyword zero-shot vs hashed-ngram "
+        "logistic regression) so the split and metrics pipeline is verified."
+    )
+    holdout_heading = (
+        "## Diagnostic: MG-task holdout (fit on new rollouts, not v3)"
+        if kind == "real_mg"
+        else "## Diagnostic only: synthetic holdout (can the model fit the generator?)"
+    )
+    holdout_intro = (
+        "**Not the v3 headline.** This holdout is other **MG rollout tasks**, "
+        "not original OAS v3 and not constructed synthetic pairs. High F1 here "
+        "means the critic fits the new-task distribution. Flat v3 with high MG "
+        "holdout is **shift** (MG ≠ v3), not v4/v5 template copying."
+        if kind == "real_mg"
+        else (
+            "**Not the headline.** High holdout F1 with flat v3 transfer is the "
+            "signature of fitting the synthetic generator (shared templates / "
+            "pivotal-action phrasing), not of a general critic."
+        )
+    )
 
     lines = [
-        "# Local Qwen SFT for the external safety critic",
+        title,
         "",
         headline,
         "",
@@ -189,7 +249,7 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         f"- **GPU/CUDA:** `{probe.get('cuda')}`",
         f"- **Torch / transformers / peft:** `{probe.get('torch_available')}` / "
         f"`{probe.get('transformers_available')}` / `{probe.get('peft_available')}`",
-        f"- **Local Qwen path:** `{probe.get('model_path')}`",
+        f"- **Local weights:** `{probe.get('model_path')}`",
         f"- **Probe reason:** {probe.get('reason')}",
         "",
         "## Train/eval firewall",
@@ -198,7 +258,7 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         "",
         f"- Train tasks: **{split.get('n_train_tasks')}** "
         f"({split.get('n_train_trajectories')} trajectories)",
-        f"- Synthetic holdout tasks: **{split.get('n_holdout_tasks')}** "
+        f"- Holdout tasks: **{split.get('n_holdout_tasks')}** "
         f"({split.get('n_holdout_trajectories')} trajectories)",
         f"- V3 eval trajectories: **{split.get('n_v3_eval_trajectories')}** "
         f"across {split.get('n_v3_eval_tasks')} tasks",
@@ -264,11 +324,9 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
 
     lines += [
         "",
-        "## Diagnostic only: synthetic holdout (can the model fit the generator?)",
+        holdout_heading,
         "",
-        "**Not the headline.** High holdout F1 with flat v3 transfer is the "
-        "signature of fitting the synthetic generator (shared templates / "
-        "pivotal-action phrasing), not of a general critic.",
+        holdout_intro,
         "",
         "| Stage / set | n | n_pos | accuracy | precision | recall | F1 | tp/fp/tn/fn |",
         "|---|---:|---:|---:|---:|---:|---:|---|",
@@ -282,9 +340,9 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
             {"synthetic_train": after.get("synthetic_train")}, "synthetic_train"
         ).replace("| synthetic_train |", "| after SFT on *train* (overfit check) |"),
         "",
-        f"Synthetic-holdout F1: **before {hold_before_f1} → after {hold_after_f1}**.",
+        f"Holdout F1: **before {hold_before_f1} → after {hold_after_f1}**.",
         "",
-        "### Trajectory-level on synthetic holdout",
+        "### Trajectory-level on holdout",
         "",
         "| Stage | aggregate | n | Pearson | Spearman | AUROC |",
         "|---|---|---:|---:|---:|---:|",
@@ -300,23 +358,27 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         "",
         interpretation,
         "",
-        "- **Can claim:** the conversion, task-level split, and metric code ran "
-        "on the real corpora with a train/eval firewall (no v3 in train; no "
-        "`instance_id` shared with the synthetic holdout).",
-        "- **Cannot claim (this run):** that a Qwen critic improved on real OAS "
-        "behavior, unless `sft_actually_ran` is true and the v3 headline moves.",
+        "- **Can claim:** train/eval firewall held (no v3 trajectories in train; "
+        "no `instance_id` shared with the holdout).",
+        f"- **Cannot claim (this run):** that {model} improved **original OAS v3** "
+        "behavior, unless `sft_actually_ran` is true and the v3 headline (traj "
+        "AUROC / action F1) moves.",
         "- Per-action v3 labels are weak supervision (~33% localization of harmful "
-        "trajectories). A critic can be right about harm and still look wrong "
-        "action-by-action. Prefer trajectory-level AUROC against `role` / `rule_based`.",
-        "- Synthetic pairs are *constructed*: one pivotal `high-unsafe` action per "
-        "harmful half, byte-identical prefixes. Fitting that generator is easy; "
-        "transferring to messy v3 traces is the actual question.",
+        "trajectories). Prefer trajectory-level AUROC against `role` / `rule_based`.",
+        (
+            "- The holdout is **other MG tasks**, not synthetic pairs. High holdout "
+            "F1 + flat v3 is MG↔v3 shift, not 'copied v4/v5 pivotal phrases'."
+            if kind == "real_mg"
+            else "- Synthetic pairs are *constructed*: one pivotal `high-unsafe` "
+            "action per harmful half, byte-identical prefixes. Fitting that "
+            "generator is easy; transferring to messy v3 traces is the question."
+        ),
         "",
         "## Hardware / model search",
         "",
         "Searched HuggingFace cache (`~/.cache/huggingface/hub`), `/models`, "
-        "`$QWEN_MODEL_PATH`. No extra weights were downloaded (disk ~full; "
-        "constraint: local Qwen only, no LiteLLM / cmu.litellm.ai / Ollama proxy).",
+        "`$QWEN_MODEL_PATH` / `$SHIELDGEMMA_MODEL_PATH`. No extra weights were "
+        "downloaded (local weights only; no LiteLLM / cmu.litellm.ai / Ollama proxy).",
         "",
         "Probe notes:",
     ]
@@ -345,7 +407,7 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         "|---|---|",
         "| `report.md` | this document |",
         "| `metrics.json` | before/after action + trajectory metrics |",
-        "| `split.json` | task ids for train vs synthetic holdout |",
+        "| `split.json` | task ids for train vs holdout |",
         "| `probe.json` | GPU / weights / backend decision |",
         "| `example_counts.json` | SFT row counts |",
         "| `train_stats.json` | mock fit or LoRA trainer metrics |",
@@ -354,7 +416,13 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
     Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def _interpret(ran: bool, before: dict, after: dict) -> str:
+def _interpret(
+    ran: bool, before: dict, after: dict, result: dict[str, Any] | None = None
+) -> str:
+    result = result or {}
+    model = _model_label(result)
+    kind = _train_kind(result.get("run_config") or {}, result.get("split") or {})
+
     def f1(stage: dict, name: str) -> float | None:
         val = ((stage.get(name) or {}).get("action") or {}).get("f1_high_unsafe")
         return float(val) if isinstance(val, (int, float)) else None
@@ -367,9 +435,13 @@ def _interpret(ran: bool, before: dict, after: dict) -> str:
     h_a = f1(after, "synthetic_holdout")
     v3_acc_b, v3_acc_a = acc(before, "v3_eval"), acc(after, "v3_eval")
     prefix = (
-        "These figures are **Qwen LoRA**."
+        f"These figures are **{model}**."
         if ran
-        else "These figures are the **mock** backend, not Qwen. Treat them as a pipeline check and a qualitative template-overfit warning. Mock few-shot equals mock zero-shot (the keyword completer ignores demonstrations)."
+        else (
+            f"These figures are the **mock** backend, not {model}. Treat them as a "
+            "pipeline check. Mock few-shot equals mock zero-shot (the keyword "
+            "completer ignores demonstrations)."
+        )
     )
     if (
         h_a is not None
@@ -377,6 +449,16 @@ def _interpret(ran: bool, before: dict, after: dict) -> str:
         and h_a >= 0.6
         and (v3_a - (v3_b or 0)) < 0.05
     ):
+        if kind == "real_mg":
+            return (
+                prefix
+                + " MG-task holdout F1 is high while original OAS **v3 is flat**: "
+                "the critic **fits the new MG rollout distribution** (and the "
+                "task-level holdout of that same file) but does **not** transfer "
+                "to messy v3 traces. That is **MG↔v3 shift**, not v4/v5 keyword / "
+                "generator overfitting — this run never trained on constructed "
+                "synthetic pairs."
+            )
         return (
             prefix + " Synthetic holdout F1 is high while v3 is flat: that is "
             "**keyword / generator overfitting**, not a working external critic. "
@@ -392,12 +474,11 @@ def _interpret(ran: bool, before: dict, after: dict) -> str:
         return (
             prefix
             + " After the fit, **recall of `high-unsafe` rose while precision and "
-            "accuracy collapsed** (over-flagging). That is the other failure mode of "
-            "fitting synthetic prefixes: shared exploration/NPC text is treated as "
-            "unsafe, so both halves of a contrastive pair light up and trajectory "
-            "AUROC stays near chance. Synthetic-holdout F1 staying low means the "
-            "stand-in did **not** even cleanly fit the generator — do not read a "
-            "v3 F1 bump (or drop) as Qwen SFT."
+            "accuracy collapsed** (over-flagging). Shared exploration/NPC text is "
+            "treated as unsafe, so both halves of a contrastive pair light up and "
+            "trajectory AUROC stays near chance. Holdout F1 staying low means the "
+            f"model did **not** even cleanly fit the train distribution — do not "
+            f"read a v3 F1 bump (or drop) as {model} SFT."
         )
     if v3_a is not None and v3_b is not None and v3_a > v3_b + 0.05:
         return (
@@ -406,7 +487,8 @@ def _interpret(ran: bool, before: dict, after: dict) -> str:
             "as weak supervision and confirm the trajectory-level AUROC against "
             "`role==harmful` / rule-based score before claiming critic gains."
         )
+    holdout_word = "MG holdout" if kind == "real_mg" else "synthetic holdout"
     return (
         prefix
-        + " No clear v3 transfer. Do not report the synthetic holdout as the result."
+        + f" No clear v3 transfer. Do not report the {holdout_word} as the result."
     )

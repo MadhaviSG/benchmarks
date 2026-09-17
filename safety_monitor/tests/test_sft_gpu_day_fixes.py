@@ -444,6 +444,73 @@ def test_report_uses_shipped_split_not_stale_v4v5(tmp_path: Path):
     assert "--batch-size 8" in text
 
 
+def test_report_real_mg_shieldgemma_does_not_claim_v4_overfit(tmp_path):
+    result = {
+        "sft_actually_ran": True,
+        "backend": "hf",
+        "probe": {
+            "family": "shieldgemma",
+            "cuda": True,
+            "torch_available": True,
+            "transformers_available": True,
+            "peft_available": True,
+            "model_path": "/models/shieldgemma-2b",
+            "reason": "local ShieldGemma",
+            "notes": [],
+        },
+        "split": {
+            "split_source": "hashed",
+            "salt": "qwen-sft",
+            "n_train_tasks": 424,
+            "n_train_trajectories": 1017,
+            "n_holdout_tasks": 122,
+            "n_holdout_trajectories": 287,
+            "n_v3_eval_trajectories": 2575,
+            "n_v3_eval_tasks": 300,
+            "holdout_fraction": 0.2,
+        },
+        "example_counts": {},
+        "metrics": {
+            "before_zero_shot": {
+                "v3_eval": {"action": {"f1_high_unsafe": 0.026}},
+                "synthetic_holdout": {"action": {"f1_high_unsafe": 0.019}},
+            },
+            "after_sft": {
+                "v3_eval": {"action": {"f1_high_unsafe": 0.021}},
+                "synthetic_holdout": {"action": {"f1_high_unsafe": 0.794}},
+            },
+        },
+        "firewall": {"holdout_instance_overlap_with_train": []},
+        "run_config": {
+            "command": "sft-run",
+            "train_paths": [
+                "/home/mgulavan/ras/analysis_outputs/real_rollout_sft/trajectories.jsonl"
+            ],
+            "eval_path": "/home/mgulavan/ras/analysis_outputs/critic_training_pairs/trajectories.jsonl",
+            "out_dir": "/tmp/sg",
+            "backend": "hf",
+            "model_path": "/models/shieldgemma-2b",
+            "model_family": "shieldgemma",
+            "epochs": 2,
+            "batch_size": 1,
+            "grad_accum": 8,
+            "eval_batch_size": 1,
+        },
+    }
+    blurb = training_data_blurb(result)
+    assert "real MG passive rollouts" in blurb
+    assert "synthetic v4" not in blurb
+    path = tmp_path / "report.md"
+    write_report(path, result)
+    text = path.read_text(encoding="utf-8")
+    assert "ShieldGemma LoRA" in text
+    assert "Qwen LoRA" not in text
+    assert "that is **keyword / generator overfitting**" not in text
+    assert "The constructed v4/v5 pairs share templated" not in text
+    assert "MG↔v3 shift" in text
+    assert "--family shieldgemma" in text
+
+
 def test_report_explicit_v4_v5_paths():
     result = {
         "split": {"split_source": "hashed", "salt": "qwen-sft"},

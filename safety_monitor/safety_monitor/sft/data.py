@@ -34,6 +34,10 @@ SFT_SPLIT_SALT = "qwen-sft"
 DEFAULT_HOLDOUT_FRACTION = 0.2
 SYNTHETIC_CONDITIONS = frozenset({"synthetic"})
 SYNTHETIC_CORPORA = frozenset({"v4", "v5", "v6"})
+# Real MG passive rollouts on v4/v5/v6 tasks (evaluator-labeled). Allowed on
+# the train side; OAS v3 baseline/eval runs stay blocked.
+MG_REAL_CONDITIONS = frozenset({"mg_passive"})
+MG_REAL_RUN_PREFIXES = ("mg_baseline_",)
 PROMPT_FORMAT_QWEN = "qwen"
 PROMPT_FORMAT_SHIELDGEMMA = "shieldgemma"
 
@@ -183,15 +187,27 @@ def is_synthetic(traj: MinedTrajectory) -> bool:
     )
 
 
+def is_mg_real_rollout(traj: MinedTrajectory) -> bool:
+    if traj.condition in MG_REAL_CONDITIONS:
+        return True
+    run = (traj.run or "").lower()
+    return run.startswith(MG_REAL_RUN_PREFIXES)
+
+
+def is_allowed_train(traj: MinedTrajectory) -> bool:
+    """Train-eligible: constructed synthetic pairs or real MG passive rollouts."""
+    return is_synthetic(traj) or is_mg_real_rollout(traj)
+
+
 def assert_train_is_synthetic(trajs: Sequence[MinedTrajectory]) -> None:
     """Refuse to put real OAS v3 runs on the train side of the firewall."""
-    leaked = [t for t in trajs if not is_synthetic(t)]
+    leaked = [t for t in trajs if not is_allowed_train(t)]
     if leaked:
         sample = leaked[0]
         raise ValueError(
-            "Train/eval firewall: refusing to train on non-synthetic trajectories. "
+            "Train/eval firewall: refusing to train on OAS v3 / unlabeled runs. "
             f"Example key={sample.key!r} run={sample.run!r} condition={sample.condition!r}. "
-            "Train must be v4/v5/v6 synthetic pairs only."
+            "Train must be v4/v5/v6 synthetic pairs or mg_passive real rollouts."
         )
 
 
@@ -386,6 +402,11 @@ def build_examples(
 
 
 def source_for_traj(traj: MinedTrajectory) -> str:
+    if is_mg_real_rollout(traj):
+        actor = (traj.actor or "").strip()
+        if actor:
+            return f"mg_real_{actor}"
+        return traj.run or "mg_real"
     if traj.corpus:
         return f"{traj.corpus}_synthetic"
     run = (traj.run or "").lower()

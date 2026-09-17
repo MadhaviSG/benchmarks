@@ -196,6 +196,16 @@ NPCs are configured per-task with:
 
 ## Architecture
 
+### Agent isolation
+
+The evaluated agent runs in a fresh Docker container. Only the task instruction,
+workspace files, and agent-facing utils (`dependencies.yml`, `init.sh`, NPC
+helpers) are uploaded. `evaluator.py` / `eval.py` / `evaluator_code` are **not**
+staged during the agent run — original OAS encrypts and deletes `evaluator.py`
+before the agent starts; this harness skips the upload and injects
+`evaluator_code` only after the run for grading. `OAS_WORKSPACE_ROOT` is used
+on the host to resolve local files; it is not bind-mounted into the container.
+
 ### Main Components
 
 1. **run_infer.py**: Main evaluation script with Jinja2 template support

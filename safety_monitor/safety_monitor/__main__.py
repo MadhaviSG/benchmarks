@@ -234,6 +234,12 @@ def _add_sft_run_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--backend", choices=("auto", "mock", "hf"), default="auto")
     parser.add_argument("--model-path", type=str, default=None)
     parser.add_argument("--epochs", type=int, default=2)
+    parser.add_argument(
+        "--family",
+        choices=("qwen", "shieldgemma"),
+        default="qwen",
+        help="Model family: qwen chat SFT or ShieldGemma native Yes/No",
+    )
     parser.add_argument("--holdout-fraction", type=float, default=0.2)
     parser.add_argument("--max-v3-trajectories", type=int, default=None)
     parser.add_argument(
@@ -280,6 +286,7 @@ def _cmd_sft_run(args: argparse.Namespace) -> int:
             eval_batch_size=args.eval_batch_size,
             strict=bool(args.strict),
             command=args.command,
+            model_family=getattr(args, "family", "qwen"),
         )
     except HfUnavailableError:
         return 1

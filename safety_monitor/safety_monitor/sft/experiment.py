@@ -23,6 +23,8 @@ from safety_monitor.sft.backends import (
     train_mock_sft,
 )
 from safety_monitor.sft.data import (
+    PROMPT_FORMAT_QWEN,
+    PROMPT_FORMAT_SHIELDGEMMA,
     SFTExample,
     assert_train_is_synthetic,
     build_examples,
@@ -116,11 +118,16 @@ def run_experiment(
     eval_batch_size: int = DEFAULT_EVAL_BATCH_SIZE,
     strict: bool = False,
     command: str = "sft-run",
+    model_family: str = "qwen",
 ) -> dict[str, Any]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 
-    probe = probe_hardware(model_path=model_path, backend=backend)
+    family = (model_family or "qwen").strip().lower()
+    if family not in {"qwen", "shieldgemma"}:
+        raise ValueError(f"Unknown model_family {model_family!r}")
+
+    probe = probe_hardware(model_path=model_path, backend=backend, model_family=family)
     _dump(out / "probe.json", probe.as_dict())
     handle_hf_probe(
         probe,
@@ -145,6 +152,7 @@ def run_experiment(
         "max_v3_trajectories": max_v3_trajectories,
         "use_shipped_splits": bool(use_shipped_splits),
         "strict": bool(strict),
+        "model_family": family,
     }
     _dump(out / "run_config.json", run_config)
 
@@ -173,10 +181,14 @@ def run_experiment(
         split = split_synthetic_tasks(synthetic, v3, holdout_fraction=holdout_fraction)
     _dump(out / "split.json", split.as_dict())
 
+    prompt_format = (
+        PROMPT_FORMAT_SHIELDGEMMA if family == "shieldgemma" else PROMPT_FORMAT_QWEN
+    )
     train_examples = build_examples(
         split.train_trajectories,
         bucket="train",
         source="synthetic",
+        prompt_format=prompt_format,
     )
     for example, traj in _align_sources(train_examples, split.train_trajectories):
         example.source = source_for_traj(traj)
@@ -219,17 +231,38 @@ def run_experiment(
             epochs=epochs,
             batch_size=batch_size,
             grad_accum=grad_accum,
+            use_chat_template=family != "shieldgemma",
         )
         sft_actually_ran = True
-        zero_complete = make_hf_completer(probe.model_path)
-        after_complete = make_hf_completer(
-            probe.model_path, adapter_dir=train_stats["adapter_dir"]
-        )
-        before_zero = PromptedSafetyCritic(zero_complete, critic_id="qwen-zero-shot")
-        before_few = PromptedSafetyCritic(
-            zero_complete, critic_id="qwen-few-shot", few_shot=few_shot
-        )
-        after_critic = PromptedSafetyCritic(after_complete, critic_id="qwen-lora-sft")
+        if family == "shieldgemma":
+            from safety_monitor.critic.shieldgemma import ShieldGemmaCritic
+
+            before_zero = ShieldGemmaCritic(
+                model_path=probe.model_path,
+                critic_id="shieldgemma-zero-shot",
+                eval_batch_size=eval_batch_size,
+            )
+            before_few = before_zero
+            after_critic = ShieldGemmaCritic(
+                model_path=probe.model_path,
+                adapter_dir=str(train_stats.get("adapter_dir") or "") or None,
+                critic_id="shieldgemma-lora-sft",
+                eval_batch_size=eval_batch_size,
+            )
+        else:
+            zero_complete = make_hf_completer(probe.model_path)
+            after_complete = make_hf_completer(
+                probe.model_path, adapter_dir=train_stats["adapter_dir"]
+            )
+            before_zero = PromptedSafetyCritic(
+                zero_complete, critic_id="qwen-zero-shot"
+            )
+            before_few = PromptedSafetyCritic(
+                zero_complete, critic_id="qwen-few-shot", few_shot=few_shot
+            )
+            after_critic = PromptedSafetyCritic(
+                after_complete, critic_id="qwen-lora-sft"
+            )
     else:
         fit_examples = upsample_high(train_examples) if upsample else train_examples
         model, train_stats = train_mock_sft(
