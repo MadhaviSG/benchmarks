@@ -226,9 +226,7 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
     )
     holdout_intro = (
         "**Not the v3 headline.** This holdout is other **MG rollout tasks**, "
-        "not original OAS v3 and not constructed synthetic pairs. High F1 here "
-        "means the critic fits the new-task distribution. Flat v3 with high MG "
-        "holdout is **shift** (MG ≠ v3), not v4/v5 template copying."
+        "not original OAS v3 and not constructed synthetic pairs."
         if kind == "real_mg"
         else (
             "**Not the headline.** High holdout F1 with flat v3 transfer is the "
@@ -361,13 +359,12 @@ def write_report(path: str | Path, result: dict[str, Any]) -> None:
         "- **Can claim:** train/eval firewall held (no v3 trajectories in train; "
         "no `instance_id` shared with the holdout).",
         f"- **Cannot claim (this run):** that {model} improved **original OAS v3** "
-        "behavior, unless `sft_actually_ran` is true and the v3 headline (traj "
-        "AUROC / action F1) moves.",
+        "behavior. The v3 headline is action F1 and trajectory AUROC; holdout F1 is "
+        "not a substitute.",
         "- Per-action v3 labels are weak supervision (~33% localization of harmful "
         "trajectories). Prefer trajectory-level AUROC against `role` / `rule_based`.",
         (
-            "- The holdout is **other MG tasks**, not synthetic pairs. High holdout "
-            "F1 + flat v3 is MG↔v3 shift, not 'copied v4/v5 pivotal phrases'."
+            "- The holdout is **other MG tasks**, not synthetic pairs."
             if kind == "real_mg"
             else "- Synthetic pairs are *constructed*: one pivotal `high-unsafe` "
             "action per harmful half, byte-identical prefixes. Fitting that "
@@ -479,6 +476,13 @@ def _interpret(
             "trajectory AUROC stays near chance. Holdout F1 staying low means the "
             f"model did **not** even cleanly fit the train distribution — do not "
             f"read a v3 F1 bump (or drop) as {model} SFT."
+        )
+    if kind == "real_mg" and (h_a or 0) < 0.4:
+        return (
+            prefix
+            + " The model did **not** fit the MG train/holdout labels (holdout F1 "
+            "stayed low). That is underfitting on real rollouts, not v4/v5 generator "
+            "copying. v3 transfer is not interpretable until the MG holdout is high."
         )
     if v3_a is not None and v3_b is not None and v3_a > v3_b + 0.05:
         return (

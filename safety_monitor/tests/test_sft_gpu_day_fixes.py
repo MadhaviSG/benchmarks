@@ -511,6 +511,55 @@ def test_report_real_mg_shieldgemma_does_not_claim_v4_overfit(tmp_path):
     assert "--family shieldgemma" in text
 
 
+def test_report_real_mg_qwen_underfit_not_generator_copy(tmp_path):
+    result = {
+        "sft_actually_ran": True,
+        "backend": "hf",
+        "probe": {"family": "qwen", "cuda": True, "notes": []},
+        "split": {
+            "split_source": "hashed",
+            "salt": "qwen-sft",
+            "n_train_tasks": 424,
+            "n_train_trajectories": 1017,
+            "n_holdout_tasks": 122,
+            "n_holdout_trajectories": 287,
+            "n_v3_eval_trajectories": 2575,
+            "n_v3_eval_tasks": 300,
+            "holdout_fraction": 0.2,
+        },
+        "example_counts": {},
+        "metrics": {
+            "before_zero_shot": {
+                "v3_eval": {"action": {"f1_high_unsafe": 0.056, "accuracy": 0.201}},
+                "synthetic_holdout": {"action": {"f1_high_unsafe": 0.103}},
+            },
+            "after_sft": {
+                "v3_eval": {"action": {"f1_high_unsafe": 0.003, "accuracy": 0.969}},
+                "synthetic_holdout": {"action": {"f1_high_unsafe": 0.053}},
+            },
+        },
+        "firewall": {"holdout_instance_overlap_with_train": []},
+        "run_config": {
+            "command": "sft-run",
+            "train_paths": [
+                "/home/mgulavan/ras/analysis_outputs/real_rollout_sft/trajectories.jsonl"
+            ],
+            "eval_path": "/home/mgulavan/ras/analysis_outputs/critic_training_pairs/trajectories.jsonl",
+            "out_dir": "/tmp/qwen",
+            "backend": "hf",
+            "model_path": "/models/qwen",
+            "model_family": "qwen",
+        },
+    }
+    text = tmp_path.joinpath("report.md")
+    write_report(text, result)
+    body = text.read_text(encoding="utf-8")
+    assert "Qwen LoRA" in body
+    assert "underfitting on real rollouts" in body
+    assert "that is **keyword / generator overfitting**" not in body
+    assert "synthetic v4 / v5 / v6" not in body
+
+
 def test_report_explicit_v4_v5_paths():
     result = {
         "split": {"split_source": "hashed", "salt": "qwen-sft"},
