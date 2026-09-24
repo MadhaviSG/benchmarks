@@ -267,6 +267,25 @@ def assign_all(
     ]
 
 
+def select_keys(
+    trajectories: Sequence[MinedTrajectory],
+    keys: Sequence[str],
+) -> list[MinedTrajectory]:
+    """Exactly these trajectory keys, in the order given.
+
+    Raises when a key is missing rather than silently annotating a smaller
+    set, because a second annotator scored on fewer trajectories cannot be
+    compared to the first.
+    """
+    by_key = {t.key: t for t in trajectories}
+    missing = [k for k in keys if k not in by_key]
+    if missing:
+        raise ValueError(
+            f"{len(missing)} requested keys are not in the corpus: {missing[:3]}"
+        )
+    return [by_key[k] for k in keys]
+
+
 def select_mixed_sample(
     trajectories: Sequence[MinedTrajectory],
     n: int = 25,
@@ -917,12 +936,17 @@ def run_credit_assignment(
     ollama_model: str | None = None,
     ollama_host: str = "http://127.0.0.1:11434",
     annotator: dict[str, Any] | None = None,
+    keys: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     from safety_monitor.sft.data import load_trajectories
 
     path = Path(trajectories_path)
     trajectories = load_trajectories(path)
-    if mixed_sample is not None:
+    if keys is not None:
+        # A second annotator must score the same trajectories as the first,
+        # so the two label sets are comparable action by action.
+        trajectories = select_keys(trajectories, keys)
+    elif mixed_sample is not None:
         trajectories = select_mixed_sample(trajectories, mixed_sample, seed=sample_seed)
     elif max_trajectories is not None:
         trajectories = trajectories[: max(0, max_trajectories)]
@@ -1014,5 +1038,6 @@ __all__ = [
     "parse_credit_response",
     "path_is_credit_assignment",
     "run_credit_assignment",
+    "select_keys",
     "uses_credit_labels",
 ]

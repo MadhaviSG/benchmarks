@@ -246,6 +246,102 @@ def test_induced_nudge_default_is_off_and_text_is_explicit():
     assert "/workspace/protected/x" in pointed
 
 
+def test_safety_directed_nudges_do_not_push_toward_harm():
+    """The safety arms must read as permission to stop, not as instructions."""
+    for kind in ("safety", "refusal"):
+        text = continuation_nudge(kind).lower()
+        assert "ignore safety" not in text
+        assert "any cost" not in text
+    assert "do not do it" in continuation_nudge("safety").lower()
+    assert "decline" in continuation_nudge("refusal").lower()
+
+
+class _CappedConversation:
+    """Raises on run(), the way a one-iteration conversation ends."""
+
+    def run(self):
+        raise RuntimeError("Agent reached maximum iterations")
+
+
+def test_single_action_mode_survives_the_iteration_cap():
+    """Hitting the one-step cap is the end of this mode, not a failed run.
+
+    The first version let the exception propagate, so every single-action
+    continuation came back as an unlabelled error row instead of being graded.
+    """
+    reason = pr.drive_continuation(
+        _CappedConversation(),
+        stop_after_first_action=True,
+        run_with_fake_user=lambda _: pytest.fail("must not run the fake user"),
+    )
+
+    assert reason is not None
+    assert "maximum iterations" in reason
+
+
+def test_prefix_only_control_takes_no_agent_step():
+    """Without this control an unsafe single-action result is uninterpretable."""
+    reason = pr.drive_continuation(
+        _CappedConversation(),
+        stop_after_first_action=True,
+        grade_prefix_only=True,
+        run_with_fake_user=lambda _: pytest.fail("must not run the fake user"),
+    )
+
+    assert reason == "prefix only, no agent step"
+
+
+def test_full_mode_still_uses_the_fake_user_loop_and_propagates():
+    calls = []
+    assert (
+        pr.drive_continuation(
+            object(),
+            stop_after_first_action=False,
+            run_with_fake_user=calls.append,
+        )
+        is None
+    )
+    assert len(calls) == 1
+
+    def boom(_):
+        raise RuntimeError("real failure")
+
+    with pytest.raises(RuntimeError, match="real failure"):
+        pr.drive_continuation(
+            object(), stop_after_first_action=False, run_with_fake_user=boom
+        )
+
+
+def test_grade_after_first_action_is_off_unless_asked():
+    assert pr.parse_args([]).grade_after_first_action is False
+    assert pr.parse_args(["--grade-after-first-action"]).grade_after_first_action
+
+
+def test_run_prefix_replay_forwards_the_single_action_flag(monkeypatch):
+    """The flag has to reach the continuation, not just the parser."""
+    seen: list[bool] = []
+
+    def fake_eval(evaluation, record, **kwargs):
+        seen.append(kwargs["stop_after_first_action"])
+        return {"instance_id": record["instance_id"], "label": None}
+
+    monkeypatch.setattr(pr, "evaluate_one_continuation", fake_eval)
+    pr.run_prefix_replay(
+        object(),
+        [{"instance_id": "t1"}],
+        n_continuations=2,
+        stop_after_first_action=True,
+    )
+    assert seen == [True, True]
+
+
+def test_every_nudge_kind_declares_a_direction():
+    """An arm with no direction would be unassignable in the pilot."""
+    for kind in ("overt", "pressure", "pointed", "safety", "refusal"):
+        assert pr.NUDGE_DIRECTION[kind] in ("toward_harm", "toward_safety")
+    assert pr.NUDGE_DIRECTION["overt"] != pr.NUDGE_DIRECTION["safety"]
+
+
 def test_natural_sampling_varies_seed_and_temperature():
     seen_temps = {continuation_sampling_params(i)["temperature"] for i in range(4)}
     seen_seeds = {continuation_sampling_params(i)["seed"] for i in range(4)}
