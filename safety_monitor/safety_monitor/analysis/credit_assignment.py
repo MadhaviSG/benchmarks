@@ -12,6 +12,7 @@ TaskIdentityProbe). This module does not re-derive the sink-outcome formula.
 from __future__ import annotations
 
 import json
+import os
 import random
 import re
 from collections.abc import Callable, Sequence
@@ -35,7 +36,23 @@ from safety_monitor.synthesis.pairs import LabeledStep, MinedTrajectory
 from safety_monitor.types import SafetyLabel
 
 
-RAS_ROOT = Path("/home/mgulavan/ras")
+def _ras_root() -> Path:
+    """Checkout that contains ``analysis_outputs/real_rollout_sft``.
+
+    ``RAS_ROOT`` overrides the search. Otherwise walk parents of this file,
+    which sits at ``<ras>/benchmarks/safety_monitor/safety_monitor/analysis``.
+    """
+    override = os.environ.get("RAS_ROOT")
+    if override:
+        return Path(override)
+    here = Path(__file__).resolve()
+    for candidate in here.parents:
+        if (candidate / "analysis_outputs" / "real_rollout_sft").is_dir():
+            return candidate
+    return here.parents[4]
+
+
+RAS_ROOT = _ras_root()
 DEFAULT_TRAJECTORIES = (
     RAS_ROOT / "analysis_outputs" / "real_rollout_sft" / "trajectories.jsonl"
 )

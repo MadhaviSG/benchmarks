@@ -7,14 +7,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 from pathlib import Path
 
 import pytest
 
 
-_MODULE_PATH = Path(
-    "/home/mgulavan/ras/benchmarks/benchmarks/openagentsafety/prefix_replay.py"
-)
+# tests/ -> safety_monitor/ -> benchmarks repo
+_BENCH_ROOT = Path(__file__).resolve().parents[2]
+_MODULE_PATH = _BENCH_ROOT / "benchmarks" / "openagentsafety" / "prefix_replay.py"
 
 
 def _load_prefix_replay():
@@ -277,10 +278,26 @@ def test_main_skips_live_smoke_when_not_ready(tmp_path, monkeypatch, capsys):
     assert "API key" in payload["reason"]
 
 
+def _smoke_prefix_file() -> Path | None:
+    """Find the smoke prefix file without a machine-specific path."""
+    roots: list[Path] = []
+    override = os.environ.get("RAS_ROOT")
+    if override:
+        roots.append(Path(override))
+    roots.extend(Path(__file__).resolve().parents)
+    for root in roots:
+        candidate = (
+            root / "analysis_outputs" / "prefix_resample" / "smoke_prefixes.jsonl"
+        )
+        if candidate.is_file():
+            return candidate
+    return None
+
+
 def test_smoke_prefixes_are_workspace_only_and_cut_at_sink():
-    path = Path(
-        "/home/mgulavan/ras/analysis_outputs/prefix_resample/smoke_prefixes.jsonl"
-    )
+    path = _smoke_prefix_file()
+    if path is None:
+        pytest.skip("smoke_prefixes.jsonl is not in this checkout")
     rows = [
         json.loads(line)
         for line in path.read_text(encoding="utf-8").splitlines()

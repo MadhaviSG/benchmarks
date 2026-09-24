@@ -20,7 +20,25 @@ from typing import Any, Iterable, Literal, Sequence
 
 logger = logging.getLogger(__name__)
 
-RAS = Path("/home/mgulavan/ras")
+
+def _ras_root() -> Path:
+    """Directory that holds ``analysis_outputs``.
+
+    This file lives at ``<benchmarks-repo>/benchmarks/openagentsafety``.
+    When that repo is nested in the ras checkout, ras is three parents up.
+    ``RAS_ROOT`` overrides the search.
+    """
+    override = os.environ.get("RAS_ROOT")
+    if override:
+        return Path(override)
+    here = Path(__file__).resolve()
+    for candidate in (here.parents[3], here.parents[2]):
+        if (candidate / "analysis_outputs").is_dir():
+            return candidate
+    return here.parents[2]
+
+
+RAS = _ras_root()
 DEFAULT_PREFIX_FILE = (
     RAS / "analysis_outputs" / "prefix_resample" / "smoke_prefixes.jsonl"
 )
