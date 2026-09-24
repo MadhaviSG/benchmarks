@@ -208,6 +208,61 @@ def main(argv: list[str] | None = None) -> int:
     p_online.add_argument("--max-trajectories", type=int, default=None)
     p_online.set_defaults(func=_cmd_online_replay)
 
+    p_credit = sub.add_parser(
+        "credit-assign",
+        help="LLM/fixture credit assignment over recorded trajectories",
+    )
+    p_credit.add_argument(
+        "--trajectories",
+        type=Path,
+        default=None,
+        help="Trajectory JSONL (default: analysis_outputs/real_rollout_sft)",
+    )
+    p_credit.add_argument("--out-dir", type=Path, default=None)
+    p_credit.add_argument(
+        "--completer",
+        choices=("fixture", "llm", "ollama"),
+        default="fixture",
+        help="fixture = no-credit stand-in; llm = litellm; ollama = local server",
+    )
+    p_credit.add_argument("--llm-config", type=Path, default=None)
+    p_credit.add_argument("--ollama-model", type=str, default="qwen3.5:9b")
+    p_credit.add_argument("--ollama-host", type=str, default="http://127.0.0.1:11434")
+    p_credit.add_argument("--max-trajectories", type=int, default=None)
+    p_credit.add_argument(
+        "--mixed-sample",
+        type=int,
+        default=None,
+        help="Take a balanced grader-safe/unsafe sample of this size",
+    )
+    p_credit.add_argument("--sample-seed", type=int, default=0)
+    p_credit.set_defaults(func=_cmd_credit_assign)
+
+    p_gate = sub.add_parser(
+        "sft-from-labels",
+        help="Evaluate the action-level SFT gate; default path does not train",
+    )
+    p_gate.add_argument(
+        "--trajectories",
+        type=Path,
+        default=None,
+        help="Original trajectories used for the sink oracle and task probe",
+    )
+    p_gate.add_argument(
+        "--labels",
+        type=Path,
+        default=None,
+        help="proposed_labels.jsonl from credit-assign",
+    )
+    p_gate.add_argument("--out-dir", type=Path, default=None)
+    p_gate.add_argument(
+        "--launch-if-open",
+        action="store_true",
+        help="Only then consider launching SFT, and only if the gate is open "
+        "on real labels. Default: never launch.",
+    )
+    p_gate.set_defaults(func=_cmd_sft_from_labels)
+
     args = parser.parse_args(argv)
     return args.func(args)
 
@@ -287,6 +342,48 @@ def _default_eval() -> Path:
         / "critic_training_pairs"
         / "trajectories.jsonl"
     )
+
+
+def _cmd_credit_assign(args: argparse.Namespace) -> int:
+    from safety_monitor.analysis.credit_assignment import (
+        DEFAULT_OUT_DIR,
+        DEFAULT_TRAJECTORIES,
+        run_credit_assignment,
+    )
+
+    result = run_credit_assignment(
+        trajectories_path=args.trajectories or DEFAULT_TRAJECTORIES,
+        out_dir=args.out_dir or DEFAULT_OUT_DIR,
+        completer_kind=args.completer,
+        llm_config=args.llm_config,
+        max_trajectories=args.max_trajectories,
+        mixed_sample=args.mixed_sample,
+        sample_seed=args.sample_seed,
+        ollama_model=getattr(args, "ollama_model", None),
+        ollama_host=getattr(args, "ollama_host", "http://127.0.0.1:11434"),
+    )
+    print(json.dumps(result, indent=2, default=str))
+    return 0
+
+
+def _cmd_sft_from_labels(args: argparse.Namespace) -> int:
+    from safety_monitor.analysis.credit_assignment import (
+        DEFAULT_OUT_DIR,
+        DEFAULT_TRAJECTORIES,
+    )
+    from safety_monitor.sft.label_gate import run_sft_gate
+
+    result = run_sft_gate(
+        trajectories_path=args.trajectories or DEFAULT_TRAJECTORIES,
+        labels_path=args.labels,
+        out_dir=args.out_dir or DEFAULT_OUT_DIR,
+        launch_if_open=bool(args.launch_if_open),
+    )
+    print(json.dumps(result, indent=2, default=str))
+    if result.get("sft_launched"):
+        return 0
+    # Closed (or open-but-not-launched) is the expected default path.
+    return 0
 
 
 def _cmd_online_replay(args: argparse.Namespace) -> int:

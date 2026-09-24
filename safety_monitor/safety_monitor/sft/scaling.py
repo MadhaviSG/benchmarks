@@ -463,6 +463,26 @@ def run_scaling_ladder(
     eval_file = Path(eval_path)
     _require_eval_file(eval_file)
 
+    from safety_monitor.sft.data import load_trajectories
+    from safety_monitor.sft.label_gate import refuse_sft_if_closed
+
+    peeked: list[MinedTrajectory] = []
+    for path in train_paths:
+        peeked.extend(load_trajectories(path))
+    gate = refuse_sft_if_closed(peeked, train_paths)
+    if gate is not None:
+        _dump(out / "gate.json", gate.as_dict())
+        if not gate.sft_allowed:
+            print(f"SFT refused: {gate.reason}", file=sys.stderr)
+            return {
+                "experiment": "shieldgemma_sft_scaling",
+                "sft_actually_ran": False,
+                "sft_launched": False,
+                "backend": "refused",
+                "gate": gate.as_dict(),
+                "rungs": {},
+            }
+
     probe = probe_hardware(
         model_path=model_path, backend=backend, model_family="shieldgemma"
     )
@@ -882,10 +902,10 @@ def write_scaling_report(path: str | Path, result: dict[str, Any]) -> None:
 
 def write_scaling_plot(path: str | Path, rungs: Sequence[dict[str, Any]]) -> None:
     """Log-x plot of v3 and synthetic-test trajectory AUROC vs n_train_tasks."""
-    import matplotlib
+    import matplotlib  # pyright: ignore[reportMissingImports]
 
     matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt  # pyright: ignore[reportMissingImports]
 
     xs: list[float] = []
     og_max: list[float] = []

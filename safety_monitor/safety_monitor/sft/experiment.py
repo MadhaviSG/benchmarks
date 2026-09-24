@@ -127,6 +127,35 @@ def run_experiment(
     if family not in {"qwen", "shieldgemma"}:
         raise ValueError(f"Unknown model_family {model_family!r}")
 
+    from safety_monitor.sft.data import load_trajectories
+    from safety_monitor.sft.label_gate import refuse_sft_if_closed
+
+    # Peek only at files that are actually there. A missing train path is not
+    # this hook's error to report: the real load below raises with context.
+    peeked: list[MinedTrajectory] = []
+    for path in train_paths:
+        if Path(path).exists():
+            peeked.extend(load_trajectories(path))
+    gate = refuse_sft_if_closed(peeked, train_paths)
+    if gate is not None:
+        _dump(out / "gate.json", gate.as_dict())
+        if not gate.sft_allowed:
+            print(f"SFT refused: {gate.reason}", file=sys.stderr)
+            return {
+                "sft_actually_ran": False,
+                "sft_launched": False,
+                "backend": "refused",
+                "gate": gate.as_dict(),
+                "run_config": {
+                    "command": command,
+                    "train_paths": [str(p) for p in train_paths],
+                    "eval_path": str(eval_path),
+                    "out_dir": str(out),
+                    "model_family": family,
+                    "backend": backend,
+                },
+            }
+
     probe = probe_hardware(model_path=model_path, backend=backend, model_family=family)
     _dump(out / "probe.json", probe.as_dict())
     handle_hf_probe(

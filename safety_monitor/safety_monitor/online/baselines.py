@@ -123,6 +123,55 @@ class TaskIdentityProbe:
         prob = self.model.predict_proba(self.features(trajectory))
         return [prob] * len(trajectory.steps)
 
+    @classmethod
+    def out_of_fold_scores(
+        cls,
+        trajectories: Sequence[MinedTrajectory],
+        *,
+        n_folds: int = 5,
+        dim: int = 4096,
+        epochs: int = 40,
+    ) -> list[float]:
+        """One score per trajectory, each from a probe that never saw its task.
+
+        ``features`` carries a unique ``task:<instance_id>`` token, so a probe
+        fit and scored on the same trajectories memorises them and reports
+        AUROC 1.0 at small n. Folds are split by ``instance_id`` so that token
+        cannot leak, which makes the score answer the question the baseline is
+        actually for: was the outcome predictable from the task alone, on a
+        task the probe had not seen?
+        """
+        if not trajectories:
+            return []
+        groups: dict[str, list[int]] = {}
+        for i, traj in enumerate(trajectories):
+            groups.setdefault(traj.instance_id, []).append(i)
+        ordered = sorted(groups)
+        folds = max(2, min(n_folds, len(ordered)))
+        if len(ordered) < 2:
+            return [float("nan")] * len(trajectories)
+
+        scores = [float("nan")] * len(trajectories)
+        for fold in range(folds):
+            held = {g for j, g in enumerate(ordered) if j % folds == fold}
+            train = [t for t in trajectories if t.instance_id not in held]
+            if not train:
+                continue
+            labels = {1 if t.rule_based == 1 else 0 for t in train}
+            probe = cls(dim=dim, epochs=epochs)
+            if len(labels) < 2:
+                # A single-class fold teaches nothing; emit the base rate.
+                prob = float(next(iter(labels)))
+                for i, traj in enumerate(trajectories):
+                    if traj.instance_id in held:
+                        scores[i] = prob
+                continue
+            probe.fit(train)
+            for i, traj in enumerate(trajectories):
+                if traj.instance_id in held:
+                    scores[i] = probe.model.predict_proba(cls.features(traj))
+        return scores
+
 
 def pivotal_index(trajectory: MinedTrajectory) -> int | None:
     """First high-unsafe action: the step a monitor had to beat."""

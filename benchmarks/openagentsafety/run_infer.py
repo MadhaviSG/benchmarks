@@ -14,6 +14,7 @@ import pandas as pd
 import requests
 from jinja2 import Environment, FileSystemLoader
 
+from benchmarks.openagentsafety import prefix_replay
 from benchmarks.openagentsafety.build_images import build_workspace_image
 from benchmarks.utils.args_parser import get_parser
 from benchmarks.utils.conversation import build_event_persistence_callback
@@ -641,13 +642,95 @@ class OpenAgentSafetyEvaluation(Evaluation):
             metrics=metrics,
         )
 
+    def evaluate_prefix_replay(
+        self,
+        record: dict[str, Any],
+        *,
+        n_continuations: int = 4,
+        mode: str = "natural",
+        induced_nudge: str | None = None,
+        output_path: Path | None = None,
+    ) -> list[dict[str, Any]]:
+        """Replay a saved prefix, sample K continuations, grade, and label.
+
+        Fresh Docker workspace and the same file staging as evaluate_instance.
+        Does not stage evaluator.py into the agent-visible workspace. Prefix
+        tool calls are re-executed without the actor LLM; recorded observations
+        are injected. Induced nudges stay off unless ``mode='induced'``.
+        """
+        return prefix_replay.run_prefix_replay(
+            self,
+            [record],
+            n_continuations=n_continuations,
+            mode=mode,  # type: ignore[arg-type]
+            induced_nudge=induced_nudge,  # type: ignore[arg-type]
+            output_path=output_path,
+        )
+
 
 def main() -> None:
     """Main entry point."""
     parser = get_parser(add_llm_config=True)
-    # OpenAgentSafety-specific arguments here if needed
+    parser.add_argument(
+        "--prefix-replay",
+        action="store_true",
+        help="Replay saved prefixes then sample K continuations (no actor LLM on the prefix).",
+    )
+    parser.add_argument(
+        "--prefix-file",
+        type=str,
+        default=str(prefix_replay.DEFAULT_PREFIX_FILE),
+        help="JSONL of prefixes for --prefix-replay",
+    )
+    parser.add_argument(
+        "--n-continuations",
+        type=int,
+        default=prefix_replay.SMOKE_N_CONTINUATIONS,
+        help="Continuations per prefix (smoke default 4)",
+    )
+    parser.add_argument(
+        "--continuation-mode",
+        choices=("natural", "induced"),
+        default="natural",
+        help="natural = same task instruction, varied seed/temperature",
+    )
+    parser.add_argument(
+        "--induced-nudge",
+        choices=("overt", "pressure", "pointed"),
+        default=None,
+        help="Induced nudge after the prefix. Default off.",
+    )
+    parser.add_argument(
+        "--prefix-smoke",
+        action="store_true",
+        help="5 tasks, 1 cut, 4 natural continuations. Skips if Docker or an API key is missing.",
+    )
 
     args = parser.parse_args()
+
+    if args.prefix_replay or args.prefix_smoke:
+        output_dir = args.output_dir
+        if args.prefix_smoke and args.output_dir in {"./eval_outputs", "eval_outputs"}:
+            output_dir = str(prefix_replay.DEFAULT_PREFIX_FILE.parent / "smoke_runs")
+        extra: list[str] = [
+            "--llm-config",
+            args.llm_config_path,
+            "--prefix-file",
+            args.prefix_file,
+            "--output-dir",
+            output_dir,
+            "--n-continuations",
+            str(args.n_continuations),
+            "--mode",
+            args.continuation_mode,
+            "--max-iterations",
+            str(args.max_iterations),
+        ]
+        if args.induced_nudge:
+            extra.extend(["--induced-nudge", args.induced_nudge])
+        if args.prefix_smoke:
+            extra.append("--smoke")
+        raise SystemExit(prefix_replay.main(extra))
 
     # Validate args
     if args.max_attempts < 1:
