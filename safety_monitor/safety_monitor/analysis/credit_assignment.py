@@ -54,7 +54,10 @@ def _ras_root() -> Path:
 
 RAS_ROOT = _ras_root()
 DEFAULT_TRAJECTORIES = (
-    RAS_ROOT / "analysis_outputs" / "real_rollout_sft" / "trajectories.jsonl"
+    RAS_ROOT
+    / "analysis_outputs"
+    / "real_rollout_sft"
+    / "trajectories.decontaminated.jsonl"
 )
 DEFAULT_OUT_DIR = RAS_ROOT / "analysis_outputs" / "credit_assignment"
 
@@ -938,9 +941,10 @@ def run_credit_assignment(
     annotator: dict[str, Any] | None = None,
     keys: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    from safety_monitor.sft.data import load_trajectories
+    from safety_monitor.sft.data import load_trajectories, reject_contaminated_corpus
 
     path = Path(trajectories_path)
+    reject_contaminated_corpus(path)
     trajectories = load_trajectories(path)
     if keys is not None:
         # A second annotator must score the same trajectories as the first,

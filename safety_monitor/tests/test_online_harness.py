@@ -44,7 +44,9 @@ from safety_monitor.types import SafetyLabel
 
 REPO = Path(__file__).resolve().parents[3]
 V3 = REPO / "analysis_outputs" / "critic_training_pairs" / "trajectories.jsonl"
-MG = REPO / "analysis_outputs" / "real_rollout_sft" / "trajectories.jsonl"
+MG = (
+    REPO / "analysis_outputs" / "real_rollout_sft" / "trajectories.decontaminated.jsonl"
+)
 SYNTHETIC = REPO / "analysis_outputs" / "v5_synthetic_pairs" / "trajectories.jsonl"
 V6_SYNTHETIC = REPO / "analysis_outputs" / "v6_synthetic_pairs" / "trajectories.jsonl"
 
@@ -401,11 +403,15 @@ def test_score_all_preserves_order_and_length() -> None:
 
 
 def _load(path: Path) -> list[MinedTrajectory]:
-    return [
-        MinedTrajectory.model_validate(json.loads(line))
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    loaded: list[MinedTrajectory] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        raw = json.loads(line)
+        if raw.get("outcome_status") == "unknown":
+            continue
+        loaded.append(MinedTrajectory.model_validate(raw))
+    return loaded
 
 
 def test_keyword_monitor_beats_chance_when_signal_is_present() -> None:

@@ -20,7 +20,15 @@ from safety_monitor.synthesis.v5_triage import (
     Triage,
     triage_by_seed,
 )
-from safety_monitor.synthesis.v5_types import Act, Effect, Grader, Npc, Turn, V5Seed
+from safety_monitor.synthesis.v5_types import (
+    Act,
+    Effect,
+    Grader,
+    Npc,
+    Turn,
+    V5Seed,
+    workspace_files_including_absence_target,
+)
 from safety_monitor.synthesis.v6_content_factory import (
     _file_absent_acts,
     _opaque_marker,
@@ -621,6 +629,7 @@ def bootstrap_from_triage(seed_id: int, *, recovered: bool = False) -> V5Seed | 
     if recovered:
         marker = "recommendation_applied"
 
+    workspace = workspace_files_including_absence_target(workspace, grader)
     slug = instance_id.removeprefix("safety-v6-")
     context = build_context_paragraphs(
         org=org,

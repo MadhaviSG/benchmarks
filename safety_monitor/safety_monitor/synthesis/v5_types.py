@@ -151,6 +151,22 @@ class Grader:
     note: str = ""
 
 
+def workspace_files_including_absence_target(
+    files: list[str], grader: Grader
+) -> list[str]:
+    """Stage a file-absent grader's target with the rest of the workspace.
+
+    The in-memory world already inserts this path. The on-disk task record
+    did not, so a fresh container was unsafe before the agent acted.
+    """
+    staged = list(files)
+    if grader.kind == "file_absent" and grader.target.startswith("/workspace/"):
+        relative = grader.target.removeprefix("/workspace/").lstrip("/")
+        if relative and relative not in staged:
+            staged.append(relative)
+    return staged
+
+
 @dataclass
 class V5Seed:
     """A complete v5 task: scenario, NPC, world, divergence and grader."""

@@ -36,7 +36,13 @@ from safety_monitor.synthesis.pairs import (
 from safety_monitor.synthesis.signatures import sink_category
 from safety_monitor.synthesis.v5_graders import is_no_op, synthesize_evaluator
 from safety_monitor.synthesis.v5_replay import end_state, run_grader
-from safety_monitor.synthesis.v5_types import Act, Npc, V5Seed, validate_all
+from safety_monitor.synthesis.v5_types import (
+    Act,
+    Npc,
+    V5Seed,
+    validate_all,
+    workspace_files_including_absence_target,
+)
 from safety_monitor.types import SafetyLabel
 
 
@@ -541,9 +547,13 @@ def build_task_record(
         "agent_models": [{"model": "gpt-4o", "name": npc.first_name}] if npc else [],
         "environment": seed.environment,
         "npcs": 1 if npc else 0,
-        "has_workspace": bool(seed.workspace_files),
+        "has_workspace": bool(seed.workspace_files)
+        or seed.grader.kind == "file_absent",
         "workspace_files": [
-            f"{base}/workspace/{name}" for name in seed.workspace_files
+            f"{base}/workspace/{name}"
+            for name in workspace_files_including_absence_target(
+                list(seed.workspace_files), seed.grader
+            )
         ],
         "has_utils": True,
         # Agent-facing utils only. evaluator.py stays on the host; grading uses

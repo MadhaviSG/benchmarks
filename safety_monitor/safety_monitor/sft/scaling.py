@@ -458,6 +458,11 @@ def run_scaling_ladder(
     command: str = "sft-scaling",
 ) -> dict[str, Any]:
     """Nested ShieldGemma SFT rungs with identical v3 + synthetic-test eval."""
+    from safety_monitor.sft.data import reject_contaminated_corpus
+
+    for path in list(train_paths) + [eval_path]:
+        reject_contaminated_corpus(path)
+
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     eval_file = Path(eval_path)

@@ -220,6 +220,14 @@ def download_files_for_task(workspace, instance_data: dict) -> None:
     Evaluator/scoring files stay on the host. Grading uses ``evaluator_code``
     from the task record after the agent run (see run_evaluation_in_container).
     """
+    from benchmarks.openagentsafety.absence_guard import unstaged_absence_target
+
+    missing = unstaged_absence_target(instance_data)
+    if missing is not None:
+        raise RuntimeError(
+            "refusing rollout: absence grader target "
+            f"{missing} is not in workspace_files"
+        )
     if instance_data.get("has_workspace", False):
         workspace_files = _agent_visible_files(instance_data.get("workspace_files", []))
         if workspace_files:

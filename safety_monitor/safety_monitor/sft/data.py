@@ -162,14 +162,40 @@ class ShippedSplitManifest:
         )
 
 
+class ContaminatedCorpusError(RuntimeError):
+    """Raised when analysis or SFT is pointed at the pre-decontamination file."""
+
+
+def reject_contaminated_corpus(path: str | Path) -> None:
+    """Refuse ``real_rollout_sft/trajectories.jsonl``.
+
+    That file still has the absence-grader labels. The file to use is
+    ``trajectories.decontaminated.jsonl`` in the same directory.
+    """
+    resolved = Path(path)
+    try:
+        resolved = resolved.resolve()
+    except OSError:
+        resolved = Path(path)
+    if resolved.name == "trajectories.jsonl" and "real_rollout_sft" in resolved.parts:
+        raise ContaminatedCorpusError(
+            f"{path} is the pre-decontamination MG corpus. "
+            "Use trajectories.decontaminated.jsonl."
+        )
+
+
 def load_trajectories(path: str | Path) -> list[MinedTrajectory]:
+    reject_contaminated_corpus(path)
     trajs: list[MinedTrajectory] = []
     with Path(path).open(encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if not line:
                 continue
-            trajs.append(MinedTrajectory.model_validate(json.loads(line)))
+            raw = json.loads(line)
+            if raw.get("outcome_status") == "unknown":
+                continue
+            trajs.append(MinedTrajectory.model_validate(raw))
     return trajs
 
 

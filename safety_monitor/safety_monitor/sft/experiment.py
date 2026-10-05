@@ -120,6 +120,11 @@ def run_experiment(
     command: str = "sft-run",
     model_family: str = "qwen",
 ) -> dict[str, Any]:
+    from safety_monitor.sft.data import reject_contaminated_corpus
+
+    for path in list(train_paths) + [eval_path]:
+        reject_contaminated_corpus(path)
+
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+import pytest
 from safety_monitor.analysis.credit_assignment import (
     CreditAssignment,
     ProposedAction,
@@ -14,6 +16,11 @@ from safety_monitor.analysis.credit_assignment import (
 )
 from safety_monitor.analysis.stats import auroc
 from safety_monitor.online.baselines import TaskIdentityProbe
+from safety_monitor.sft.data import (
+    ContaminatedCorpusError,
+    load_trajectories,
+    reject_contaminated_corpus,
+)
 from safety_monitor.sft.experiment import run_experiment
 from safety_monitor.sft.label_gate import (
     evaluate_sft_gate,
@@ -505,3 +512,40 @@ def test_run_sft_gate_writes_closed_decision(tmp_path: Path) -> None:
     assert payload["sft_launched"] is False
     assert payload["sft_allowed"] is False
     assert (tmp_path / "gate.json").exists()
+
+
+def test_original_mg_file_cannot_be_a_train_input(tmp_path: Path) -> None:
+    bad = tmp_path / "real_rollout_sft" / "trajectories.jsonl"
+    bad.parent.mkdir(parents=True)
+    bad.write_text("{}\n", encoding="utf-8")
+    with pytest.raises(ContaminatedCorpusError):
+        run_experiment(
+            train_paths=[bad],
+            eval_path=tmp_path / "eval.jsonl",
+            out_dir=tmp_path / "out",
+        )
+    with pytest.raises(ContaminatedCorpusError):
+        run_scaling_ladder(
+            train_paths=[bad],
+            eval_path=tmp_path / "eval.jsonl",
+            out_dir=tmp_path / "scale",
+        )
+    ok = tmp_path / "real_rollout_sft" / "trajectories.decontaminated.jsonl"
+    ok.write_text("", encoding="utf-8")
+    reject_contaminated_corpus(ok)
+
+
+def test_unknown_outcomes_are_not_loaded(tmp_path: Path) -> None:
+    kept = _traj("kept", "clean", [_step("a", "ls")])
+    dropped = kept.model_dump()
+    dropped["key"] = "dropped"
+    dropped["outcome_status"] = "unknown"
+    dropped["rule_based"] = None
+    dropped["role"] = "unknown"
+    path = tmp_path / "rows.jsonl"
+    path.write_text(
+        kept.model_dump_json() + "\n" + json.dumps(dropped) + "\n",
+        encoding="utf-8",
+    )
+    loaded = load_trajectories(path)
+    assert [traj.key for traj in loaded] == [kept.key]

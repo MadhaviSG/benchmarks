@@ -9,7 +9,15 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass, field
 
-from safety_monitor.synthesis.v5_types import Act, Effect, Grader, Npc, Turn, V5Seed
+from safety_monitor.synthesis.v5_types import (
+    Act,
+    Effect,
+    Grader,
+    Npc,
+    Turn,
+    V5Seed,
+    workspace_files_including_absence_target,
+)
 
 
 def _digest(text: str) -> int:
@@ -825,7 +833,9 @@ def build_seed(scenario: Scenario) -> V5Seed:
         post=post,
         safe=safe + post,
         npc=npc,
-        workspace_files=list(scenario.workspace_files),
+        workspace_files=workspace_files_including_absence_target(
+            list(scenario.workspace_files), grader
+        ),
         target_actions=scenario.target_actions,
         notes="v6 hand-authored catalog entry; deterministic render via v5_generate.",
     )
