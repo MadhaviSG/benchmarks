@@ -14,7 +14,7 @@ import pandas as pd
 import requests
 from jinja2 import Environment, FileSystemLoader
 
-from benchmarks.openagentsafety import prefix_replay
+from benchmarks.openagentsafety import prefix_replay, sandbox_hardening
 from benchmarks.openagentsafety.build_images import build_workspace_image
 from benchmarks.utils.args_parser import get_parser
 from benchmarks.utils.conversation import build_event_persistence_callback
@@ -32,6 +32,10 @@ from openhands.workspace import DockerWorkspace
 
 
 logger = get_logger(__name__)
+
+# The agent server imports this module per conversation, which caps terminal
+# timeouts in-container. See sandbox_hardening.py.
+sandbox_hardening.register_for_agent_server()
 
 # v5/v6 task records store relative workspace paths (workspaces/tasks/<id>/...).
 # Resolve them against OAS_WORKSPACE_ROOT, then the analysis_outputs fallbacks.
@@ -296,6 +300,55 @@ def setup_host_mapping(workspace):
         logger.error(f"Host mapping error: {e}")
 
 
+def harden_sandbox(workspace) -> None:
+    """Cap terminal timeouts and disable pagers/prompts in the agent sandbox.
+
+    Uploads sandbox_hardening.py into the container's site-packages so the
+    agent server can import it (see register_for_agent_server), then writes
+    PAGER/GIT_PAGER/GIT_TERMINAL_PROMPT into bashrc and /etc/environment.
+    Must run before the Conversation is created.
+    """
+    try:
+        purelib = (
+            workspace.execute_command(
+                "python -c 'import sysconfig; print(sysconfig.get_paths()[\"purelib\"])'",
+                timeout=30,
+            )
+            .stdout.strip()
+            .splitlines()
+        )
+        if purelib:
+            pkg_dir = f"{purelib[-1]}/benchmarks/openagentsafety"
+            workspace.execute_command(f"mkdir -p {pkg_dir}", timeout=30)
+            workspace.file_upload(
+                source_path=sandbox_hardening.__file__,
+                destination_path=f"{pkg_dir}/sandbox_hardening.py",
+            )
+        check = workspace.execute_command(
+            "cd / && python -c 'from benchmarks.openagentsafety.sandbox_hardening "
+            "import cap_terminal_timeout as c; print(c(120000))'",
+            timeout=30,
+        )
+        if check.stdout.strip() == "120.0":
+            logger.info("Terminal timeout cap staged in sandbox (max 600s)")
+        else:
+            logger.error(
+                "Terminal timeout cap NOT importable in sandbox; agent timeouts "
+                f"are uncapped. stdout={check.stdout!r} stderr={check.stderr!r}"
+            )
+    except Exception as e:
+        logger.error(f"Terminal timeout cap staging error: {e}")
+
+    try:
+        result = workspace.execute_command(
+            sandbox_hardening.noninteractive_env_command(), timeout=30
+        )
+        if result.exit_code != 0:
+            logger.warning(f"Non-interactive env setup failed: {result.stderr}")
+    except Exception as e:
+        logger.error(f"Non-interactive env setup error: {e}")
+
+
 def write_npc_config(
     workspace,
     npc_profiles: List[dict],
@@ -503,6 +556,7 @@ class OpenAgentSafetyEvaluation(Evaluation):
 
         # Setup host mapping for The Agent Company services
         setup_host_mapping(workspace)
+        harden_sandbox(workspace)
 
         download_files_for_task(workspace, instance.data)
 

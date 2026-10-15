@@ -18,6 +18,22 @@ from pathlib import Path
 from typing import Any, Callable, Iterable, Literal, Sequence
 
 
+try:
+    from benchmarks.openagentsafety.sandbox_hardening import cap_terminal_timeout
+except ImportError:
+    # Loaded by file path (safety_monitor tests), where the package __init__
+    # would pull in openhands. sandbox_hardening itself is stdlib-only.
+    import importlib.util as _ilu
+
+    _spec = _ilu.spec_from_file_location(
+        "oas_sandbox_hardening", Path(__file__).with_name("sandbox_hardening.py")
+    )
+    assert _spec is not None and _spec.loader is not None
+    _mod = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    cap_terminal_timeout = _mod.cap_terminal_timeout
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -362,16 +378,8 @@ def prefix_record_to_instance_data(record: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _terminal_timeout_seconds(raw: Any) -> float | None:
-    if raw is None:
-        return None
-    try:
-        value = float(raw)
-    except (TypeError, ValueError):
-        return None
-    if value > 3600:
-        value = value / 1000.0
-    return max(value, 1.0)
+# >3600 read as ms, clamped to [1, 600] s. Shared with the live rollout path.
+_terminal_timeout_seconds = cap_terminal_timeout
 
 
 def action_from_prefix_step(step: dict[str, Any]) -> Any:
