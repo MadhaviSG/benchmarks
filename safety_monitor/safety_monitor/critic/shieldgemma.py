@@ -272,6 +272,26 @@ def score_sequence_classifier(
     return score_sequence_classifier_batch(model, tokenizer, [prompt])[0]
 
 
+def _cuda_usable() -> bool:
+    """True only if a CUDA context can really be created.
+
+    ``torch.cuda.is_available()`` stays True when the visible GPU refuses new
+    contexts (busy / faulted device); ``device_map="auto"`` then silently puts
+    the float16 model on CPU, where half precision is several times slower.
+    """
+    import torch
+
+    if not torch.cuda.is_available():
+        return False
+    try:
+        torch.zeros(1, device="cuda")
+    except Exception as exc:
+        first_line = (str(exc).splitlines() or [repr(exc)])[0]
+        print(f"shieldgemma: CUDA unusable ({first_line}); using CPU float32")
+        return False
+    return True
+
+
 class ShieldGemmaCritic(SafetyCritic):
     """Local ShieldGemma classifier wrapped as a SafetyCritic.
 
@@ -317,8 +337,9 @@ class ShieldGemmaCritic(SafetyCritic):
         config = AutoConfig.from_pretrained(path, local_files_only=True)
         architectures = list(getattr(config, "architectures", None) or [])
         is_seq = any("ForSequenceClassification" in name for name in architectures)
-        dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-        device_map = "auto" if torch.cuda.is_available() else None
+        use_cuda = _cuda_usable()
+        dtype = torch.float16 if use_cuda else torch.float32
+        device_map = "auto" if use_cuda else None
         if is_seq:
             from transformers import AutoModelForSequenceClassification
 

@@ -9,6 +9,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "scikit-learn>=1.4",
+]
 sft = [
     "accelerate>=0.30",
     "matplotlib>=3.8",
