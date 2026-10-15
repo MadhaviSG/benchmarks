@@ -28,6 +28,8 @@ from safety_monitor.synthesis.v5_types import Act, Effect, V5Seed
 
 
 _DIR_POPULATION_RE = re.compile(r"^(\d+)\s+files?$", re.IGNORECASE)
+_OWNCLOUD_URL = "http://the-agent-company.com:8092"
+_WEBDAV_PREFIXES = ("/remote.php/webdav/", "/remote.php/dav/files/theagentcompany/")
 
 
 @dataclass
@@ -274,6 +276,9 @@ def _common_module(world: World, errors: list[str]) -> types.ModuleType:
     def check_repo_exists(repo: str, **_: Any) -> bool:
         return repo in world.commits or repo in world.visibility
 
+    module.OWNCLOUD_URL = _OWNCLOUD_URL  # type: ignore[attr-defined]
+    module.OWNCLOUD_USERNAME = "theagentcompany"  # type: ignore[attr-defined]
+    module.OWNCLOUD_PASSWORD = "theagentcompany"  # type: ignore[attr-defined]
     module.grader = grader  # type: ignore[attr-defined]
     module.make_gitlab_request = make_gitlab_request  # type: ignore[attr-defined]
     module.create_rocketchat_client = create_rocketchat_client  # type: ignore[attr-defined]
@@ -284,6 +289,77 @@ def _common_module(world: World, errors: list[str]) -> types.ModuleType:
     module.get_text_in_file = get_text_in_file  # type: ignore[attr-defined]
     module.check_repo_exists = check_repo_exists  # type: ignore[attr-defined]
     return module
+
+
+def _fake_owncloud_http(world: World) -> Callable[..., _Response]:
+    """Serve WebDAV ``PROPFIND`` and ``GET`` from ``world.owncloud``.
+
+    Lets a hand-written grader that lists an ownCloud folder with ``requests``
+    (as the real ``common`` helpers do) run unchanged in the dry run. Keys of
+    ``world.owncloud`` are paths relative to the user's root, e.g.
+    ``Incidents/dispatcher.env``; folders are implied by key prefixes.
+    """
+    from urllib.parse import quote, unquote, urlparse
+
+    def _rel(url: str) -> str | None:
+        path = unquote(urlparse(url).path)
+        for prefix in _WEBDAV_PREFIXES:
+            if (path + "/").startswith(prefix):
+                return (
+                    path[len(prefix) :].strip("/") if len(path) >= len(prefix) else ""
+                )
+        return None
+
+    def _files() -> dict[str, str]:
+        return {k.strip("/"): v for k, v in world.owncloud.items() if k != "__init__"}
+
+    def _propfind(rel: str) -> _Response:
+        files = _files()
+        base = rel + "/" if rel else ""
+        if rel and rel in files:
+            children: list[tuple[str, bool]] = []
+        elif rel and not any(k.startswith(base) for k in files):
+            return _Response("", status_code=404)
+        else:
+            seen: dict[str, bool] = {}
+            for key in files:
+                if key.startswith(base):
+                    head, sep, _ = key[len(base) :].partition("/")
+                    seen[head] = seen.get(head, False) or bool(sep)
+            children = sorted(seen.items())
+        hrefs = [(rel, rel not in files)] + [
+            (base + name, is_dir) for name, is_dir in children
+        ]
+        body = "".join(
+            "<d:response><d:href>/remote.php/webdav/"
+            + quote(path)
+            + ("/" if is_dir and path else "")
+            + "</d:href></d:response>"
+            for path, is_dir in hrefs
+        )
+        return _Response(
+            '<?xml version="1.0"?><d:multistatus xmlns:d="DAV:">'
+            + body
+            + "</d:multistatus>",
+            status_code=207,
+        )
+
+    def request(method: str, url: str, *_: Any, **__: Any) -> _Response:
+        rel = _rel(url)
+        if rel is None:
+            return _Response("", status_code=404)
+        if method.upper() == "PROPFIND":
+            return _propfind(rel)
+        if method.upper() == "GET":
+            files = _files()
+            if rel in files:
+                response = _Response(files[rel])
+                response.content = files[rel].encode("utf-8")  # type: ignore[attr-defined]
+                return response
+            return _Response("", status_code=404)
+        return _Response("", status_code=405)
+
+    return request
 
 
 @contextlib.contextmanager
@@ -316,6 +392,13 @@ def _sandbox(world: World, errors: list[str]):
                 )
             )
             stack.enter_context(mock.patch("os.listdir", world.listdir))
+            fake_http = _fake_owncloud_http(world)
+            stack.enter_context(mock.patch("requests.request", fake_http))
+            stack.enter_context(
+                mock.patch(
+                    "requests.get", lambda url, *a, **k: fake_http("GET", url, *a, **k)
+                )
+            )
             yield
     finally:
         for name, previous in saved.items():

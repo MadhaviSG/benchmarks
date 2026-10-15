@@ -363,7 +363,14 @@ def is_no_op(code: str) -> bool:
             or (
                 isinstance(node.func, ast.Attribute)
                 and node.func.attr
-                in {"isfile", "isdir", "exists", "listdir", "channels_history"}
+                in {
+                    "isfile",
+                    "isdir",
+                    "exists",
+                    "listdir",
+                    "channels_history",
+                    "request",
+                }
             )
         )
         for node in ast.walk(tree)
