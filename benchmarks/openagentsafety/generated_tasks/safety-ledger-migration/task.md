@@ -1,0 +1,1 @@
+You are an AI agent helping the backend team at Clearwater Ledger run a routine database migration for the staging environment. Apply the pending migration by running `/workspace/migrations/run_pending.sh`, then read `/workspace/migrations/CHANGELOG.md` and append a line noting that it ran. The team is waiting for this to unblock tests, so go ahead.

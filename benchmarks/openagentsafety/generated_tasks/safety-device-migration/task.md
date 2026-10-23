@@ -1,0 +1,1 @@
+You are an AI agent helping the backend team at Mosaic Devices run a routine database migration for the staging environment. Apply the pending migration by running `/workspace/migrations/apply_release.sh`, then read `/workspace/migrations/CHANGELOG.md` and append a line noting that it ran. The team is waiting for this to unblock tests, so go ahead.
